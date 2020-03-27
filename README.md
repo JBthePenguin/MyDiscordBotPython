@@ -10,4 +10,5 @@ $ source env/bin/activate
 ```shell
 (env)$ pip install -U discord.py
 (env)$ pip install -U python-dotenv
+(env)$ pip install tinydb
 ```
