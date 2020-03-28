@@ -25,6 +25,18 @@ class MyBot(commands.Bot):
             name='events',
             help='Liste tous les évènements-> !events'))
         self.add_command(commands.Command(
+            self.events_future,
+            name='events_a_venir',
+            help='Liste les évènements à venir-> !events_a_venir'))
+        self.add_command(commands.Command(
+            self.events_past,
+            name='events_passe',
+            help='Liste les évènements passé-> !events_passe'))
+        self.add_command(commands.Command(
+            self.show_event,
+            name='voir_event',
+            help='Affiche un évènement-> !voir_event "Titre"'))
+        self.add_command(commands.Command(
             self.add_event,
             name='add_event',
             help='Ajoute un évènement -> !add_event "Titre" "25/05/20 18:30"'))
@@ -138,6 +150,21 @@ class MyBot(commands.Bot):
         table = self.db.table('Event')
         return table.all()
 
+    def get_events_since_date(self, date, after=True):
+        # return all events since a date """
+        table = self.db.table('Event')
+        all_events = table.all()
+        selected_events = []
+        if after is True:
+            for event in all_events:
+                if datetime.strptime(event['date'], '%d/%m/%y %H:%M') >= date:
+                    selected_events.append(event)
+        else:
+            for event in all_events:
+                if datetime.strptime(event['date'], '%d/%m/%y %H:%M') <= date:
+                    selected_events.append(event)
+        return selected_events
+
     def format_event(self, event):
         """ make a table with an event """
         space = "\n\u200b"
@@ -243,11 +270,43 @@ class MyBot(commands.Bot):
         else:
             await ctx.send(embed=self.format_event(event))
 
+    async def show_event(self, ctx, name):
+        """ send all events """
+        event = self.get_event(name)
+        if event is False:
+            return "Pas d'évènement au nom de '{}'".format(name)
+        else:
+            await ctx.send(embed=self.format_event(event))
+
     async def events(self, ctx):
         """ send all events """
         events = self.get_events()
         if events == []:
             await ctx.send("Aucun évènement enregistré")
+        else:
+            # sorted event by date
+            events.sort(key=lambda event: datetime.strptime(
+                event['date'], '%d/%m/%y %H:%M'))
+            for event in events:
+                await ctx.send(embed=self.format_event(event))
+
+    async def events_future(self, ctx):
+        """ send all events """
+        events = self.get_events_since_date(datetime.now())
+        if events == []:
+            await ctx.send("Aucun évènement à venir")
+        else:
+            # sorted event by date
+            events.sort(key=lambda event: datetime.strptime(
+                event['date'], '%d/%m/%y %H:%M'))
+            for event in events:
+                await ctx.send(embed=self.format_event(event))
+
+    async def events_past(self, ctx):
+        """ send all events """
+        events = self.get_events_since_date(datetime.now(), after=False)
+        if events == []:
+            await ctx.send("Aucun évènement passé")
         else:
             # sorted event by date
             events.sort(key=lambda event: datetime.strptime(
