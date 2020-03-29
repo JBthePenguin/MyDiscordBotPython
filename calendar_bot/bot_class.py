@@ -1,17 +1,11 @@
 import os
 from datetime import datetime
 import discord
-from dotenv import load_dotenv
 from discord.ext import commands
 from tinydb import TinyDB, Query
 
 
-load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = os.getenv('DISCORD_GUILD')
-
-
-class MyBot(commands.Bot):
+class CalendarBot(commands.Bot):
     """ Custom Bot, subclass discord.ext.commands.Bot """
 
     def __init__(self):
@@ -23,27 +17,35 @@ class MyBot(commands.Bot):
         self.add_command(commands.Command(
             self.events,
             name='events',
-            help='Liste tous les évènements-> !events'))
+            help='Liste tous les events-> !events'))
         self.add_command(commands.Command(
             self.events_future,
             name='events_a_venir',
-            help='Liste les évènements à venir-> !events_a_venir'))
+            help='Liste les events à venir-> !events_a_venir'))
         self.add_command(commands.Command(
             self.events_past,
             name='events_passe',
-            help='Liste les évènements passé-> !events_passe'))
+            help='Liste les events passé-> !events_passe'))
+        self.add_command(commands.Command(
+            self.events_after,
+            name='events_apres',
+            help='Liste les events après une date -> !events_apres "25/05/20"'))
+        self.add_command(commands.Command(
+            self.events_before,
+            name='events_avant',
+            help='Liste les events avant une date -> !events_avant "25/05/20"'))
         self.add_command(commands.Command(
             self.show_event,
             name='voir_event',
-            help='Affiche un évènement-> !voir_event "Titre"'))
+            help='Affiche un event-> !voir_event "Titre"'))
         self.add_command(commands.Command(
             self.add_event,
             name='add_event',
-            help='Ajoute un évènement -> !add_event "Titre" "25/05/20 18:30"'))
+            help='Ajoute un event -> !add_event "Titre" "25/05/20 18:30"'))
         self.add_command(commands.Command(
             self.del_event,
             name='del_event',
-            help='Supprime un évènement -> !del_event "Titre"'))
+            help='Supprime un event -> !del_event "Titre"'))
         self.add_command(commands.Command(
             self.event_name,
             name='event_titre',
@@ -73,8 +75,8 @@ class MyBot(commands.Bot):
             name='event_lieu',
             help='Modifie le lieu -> !event_lieu "Titre" "Nom du lieu"'))
 
-    def run(self):
-        super().run(TOKEN)
+    def run(self, token):
+        super().run(token)
 
     async def on_ready(self):
         """ print in console when bot is started and connected """
@@ -151,7 +153,7 @@ class MyBot(commands.Bot):
         return table.all()
 
     def get_events_since_date(self, date, after=True):
-        # return all events since a date """
+        # return all events before or after a date """
         table = self.db.table('Event')
         all_events = table.all()
         selected_events = []
@@ -185,10 +187,14 @@ class MyBot(commands.Bot):
             name='Lieu', value=event['place'] + space, inline=True)
         return embed
 
-    def check_date_format(self, date):
+    def check_date_format(self, date, only_date=False):
         """ return true if date format is validated, else False """
+        if only_date is True:
+            date_format = '%d/%m/%y'
+        else:
+            date_format = '%d/%m/%y %H:%M'
         try:
-            datetime.strptime(date, '%d/%m/%y %H:%M')
+            datetime.strptime(date, date_format)
         except ValueError:
             return False
         else:
@@ -291,7 +297,7 @@ class MyBot(commands.Bot):
                 await ctx.send(embed=self.format_event(event))
 
     async def events_future(self, ctx):
-        """ send all events """
+        """ send all upcoming events """
         events = self.get_events_since_date(datetime.now())
         if events == []:
             await ctx.send("Aucun évènement à venir")
@@ -303,7 +309,7 @@ class MyBot(commands.Bot):
                 await ctx.send(embed=self.format_event(event))
 
     async def events_past(self, ctx):
-        """ send all events """
+        """ send all past events """
         events = self.get_events_since_date(datetime.now(), after=False)
         if events == []:
             await ctx.send("Aucun évènement passé")
@@ -314,6 +320,34 @@ class MyBot(commands.Bot):
             for event in events:
                 await ctx.send(embed=self.format_event(event))
 
+    async def events_after(self, ctx, date):
+        """ send all events since a date """
+        if self.check_date_format(date, only_date=True) is True:
+            events = self.get_events_since_date(
+                datetime.strptime(date, '%d/%m/%y'))
+            if events == []:
+                await ctx.send("Aucun évènement après {}".format(date))
+            else:
+                # sorted event by date
+                events.sort(key=lambda event: datetime.strptime(
+                    event['date'], '%d/%m/%y %H:%M'))
+                for event in events:
+                    await ctx.send(embed=self.format_event(event))
+        else:
+            await ctx.send("Format date non valide ex: '24/05/20'")
 
-bot = MyBot()
-bot.run()
+    async def events_before(self, ctx, date):
+        """ send all events before a date """
+        if self.check_date_format(date, only_date=True) is True:
+            events = self.get_events_since_date(
+                datetime.strptime(date, '%d/%m/%y'), after=False)
+            if events == []:
+                await ctx.send("Aucun évènement avant {}".format(date))
+            else:
+                # sorted event by date
+                events.sort(key=lambda event: datetime.strptime(
+                    event['date'], '%d/%m/%y %H:%M'))
+                for event in events:
+                    await ctx.send(embed=self.format_event(event))
+        else:
+            await ctx.send("Format date non valide ex: '24/05/20'")
