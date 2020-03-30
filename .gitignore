@@ -4,6 +4,6 @@ env/
 
 db.json
 
-__pycache__/
+my_bot/__pycache__/
 
-*/__pycache__/
+my_bot/*/__pycache__/

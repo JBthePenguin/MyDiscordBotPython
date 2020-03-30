@@ -16,13 +16,13 @@ $ source env/bin/activate
 ### Run
 - Full bot
 ```shell
-(env)$ python full_bot
+(env)$ python my_bot
 ```
 - Info Team bot
 ```shell
-(env)$ python info_team_bot
+(env)$ python my_bot/info_team
 ```
 - Calendar bot
 ```shell
-(env)$ python calendar_bot
+(env)$ python my_bot/calendar
 ```
