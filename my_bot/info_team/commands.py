@@ -7,88 +7,94 @@ class InfoCommand(Cog, name='Commandes pour lister des infos'):
     def __init__(self, bot):
         self.bot = bot
 
-    # without params
+    def format_message(self, title, list_obj):
+        """ return a formated message with a list of object's name """
+        list_obj_formated = '\n - '.join(
+            [obj.name for obj in list_obj])
+        return '{}:\n - {}'.format(title, list_obj_formated)
+
+    def check_param(self, list_obj, obj_name):
+        """ Check if parameter is Ok, return the corresponding object if it is
+        or a none message if not """
+        obj = get_obj(list_obj, name=obj_name)
+        if obj is None:
+            # no role with this name
+            return '"{}" introuvable'.format(obj_name)
+        else:
+            return obj
+
+    def add_condition(self, list_members, member_checked, add_conditon):
+        """ check if the condition is True
+        and add member to the list if it's ok """
+        if add_conditon is True:
+            list_members.append(member_checked)
+
+    def check_empty_list(self, title, list_members):
+        """ return no members if list is empty
+        or a formated message with it if not """
+        if list_members == []:
+            return 'Aucun membre trouvé'
+        return self.format_message(title, list_members)
+
+    # commands without params
     @command(
         name='list_membres',
-        help='liste tous les membres -> !list_membres')
+        help='liste tous les membres-> !list_membres')
     async def list_members(self, ctx):
         """ send a message with the list of all members """
-        members = '\n - '.join(
-            [member.name for member in self.bot.guild.members])
-        message = 'Membres de {}:\n - {}'.format(
-            self.bot.guild.name, members)
-        await ctx.send(message)
+        await ctx.send(self.format_message(
+            'Membres de {}'.format(self.bot.guild.name),
+            self.bot.guild.members))
 
     @command(
         name='list_roles',
         help='liste les différents rôles-> !list_roles')
     async def list_roles(self, ctx):
         """ send a message with the list of roles """
-        roles = '\n - '.join([role.name for role in self.bot.guild.roles])
-        message = 'Rôles de {}:\n - {}'.format(
-            self.bot.guild.name, roles)
-        await ctx.send(message)
+        await ctx.send(self.format_message(
+            'Rôles de {}'.format(self.bot.guild.name),
+            self.bot.guild.roles))
 
     @command(
         name='list_salons',
         help='liste tous les salons par catégorie-> !list_salons')
     async def list_salons(self, ctx):
-        """ send a message with the list of channels by category """
-        categories = self.bot.guild.by_category()
-        messages = []
-        for category in categories:
-            channels = '\n - '.join([channel.name for channel in category[1]])
-            messages.append('{}:\n - {}'.format(category[0].name, channels))
-        for message in messages:
-            await ctx.send(message)
+        """ send a message with the list of channels for each category """
+        for category in self.bot.guild.by_category():
+            await ctx.send(self.format_message(category[0].name, category[1]))
 
-    # with params
+    # commands with params
     @command(
         name='list_membres_role',
         help='liste les membres d un rôle-> !list_membres_role "role"')
     async def list_membres_role(self, ctx, role_name):
-        """ send a message with the list of members for a specific role """
-        # get role
-        role = get_obj(self.bot.guild.roles, name=role_name)
-        if role is None:
+        """ send a message with the list of members for a specific role
+        or none message """
+        role = self.check_param(self.bot.guild.roles, role_name)
+        if isinstance(role, str):
             # no role with this name
-            message = 'Pas de rôle "{}"'.format(role_name)
+            await ctx.send(role)
         else:
             role_members = []
             for member in self.bot.guild.members:
-                if role in member.roles:
-                    role_members.append(member)
-            if role_members == []:
-                message = 'Aucun membre avec le rôle "{}""'.format(role_name)
-            else:
-                members = '\n - '.join(
-                    [member.name for member in role_members])
-                message = '{}\n - {}'.format(role_name, members)
-        await ctx.send(message)
+                self.add_condition(role_members, member, role in member.roles)
+            await ctx.send(self.check_empty_list(role_name, role_members))
 
     @command(
         name='list_membres_salon',
         help='liste les membres d un salon-> !list_membres_salon "salon"')
     async def list_membres_salon(self, ctx, channel_name):
         """ send a message with the list of members
-        who have permission for a channel"""
+        with permission on a channel"""
         # get channel
-        channel = get_obj(self.bot.guild.channels, name=channel_name)
-        if channel is None:
+        channel = self.check_param(self.bot.guild.channels, channel_name)
+        if isinstance(channel, str):
             # no channel with this name
-            message = 'Pas de salon {}'.format(channel_name)
+            await ctx.send(channel)
         else:
-            # list authorized members
             auth_members = []
             for member in self.bot.guild.members:
-                permissions = channel.permissions_for(member)
-                if permissions.view_channel:
-                    auth_members.append(member)
-            if auth_members == []:
-                message = 'Aucun membre autorisé pour le salon {}'.format(
-                    channel_name)
-            else:
-                members = '\n - '.join(
-                    [member.name for member in auth_members])
-                message = '{}\n - {}'.format(channel_name, members)
-        await ctx.send(message)
+                self.add_condition(
+                    auth_members, member,
+                    channel.permissions_for(member).view_channel)
+            await ctx.send(self.check_empty_list(channel_name, auth_members))
