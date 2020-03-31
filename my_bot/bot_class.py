@@ -23,7 +23,8 @@ class FullBot(Bot):
     async def on_ready(self):
         """ print in console when bot is started and connected """
         self.guild = get_obj(self.guilds, name=GUILD)
-        print('{} is connected to "{}"'.format(self.user, self.guild.name))
+        print('Full {} is connected to "{}"'.format(
+            self.user, self.guild.name))
 
     async def on_command_error(self, ctx, error):
         """ send a message with the error """

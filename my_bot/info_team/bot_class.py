@@ -12,9 +12,10 @@ class InfoTeamBot(Bot):
     """ Custom Bot, subclass discord.ext.commands.Bot """
 
     def __init__(self):
-        """ init discord.ext.commands.Bot and add custom commands """
+        """ init discord.ext.commands.Bot
+        and add custom proprieties and commands """
         super().__init__(command_prefix="!")
-        # add commands
+        # add commands and guild
         self.add_cog(InfoCommands(self))
         self.guild = ""
 
