@@ -1,6 +1,7 @@
 from discord.ext.commands import Bot
 from tinydb import TinyDB
 from display_commands import EventDisplayCommands
+from action_commands import EventActionCommands
 
 
 class CalendarBot(Bot):
@@ -12,6 +13,7 @@ class CalendarBot(Bot):
         super().__init__(command_prefix="!")
         # add commands and json db
         self.add_cog(EventDisplayCommands(self))
+        self.add_cog(EventActionCommands(self))
         self.db = TinyDB("db.json")
 
     def run(self, token):

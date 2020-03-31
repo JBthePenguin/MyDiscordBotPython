@@ -8,9 +8,7 @@ $ source env/bin/activate
 
 ### Requirements
 ```shell
-(env)$ pip install -U discord.py
-(env)$ pip install -U python-dotenv
-(env)$ pip install tinydb
+(env)$ pip install -r requirements.txt
 ```
 
 ### Run

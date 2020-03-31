@@ -2,8 +2,10 @@ from os import getenv
 from dotenv import load_dotenv
 from discord.utils import get as get_obj
 from discord.ext.commands import Bot
+from tinydb import TinyDB
 from info_team.commands import InfoCommands
 from calendar.display_commands import EventDisplayCommands
+from calendar.action_commands import EventActionCommands
 
 load_dotenv()
 GUILD = getenv("DISCORD_GUILD")
@@ -17,7 +19,9 @@ class FullBot(Bot):
         super().__init__(command_prefix="!")
         self.add_cog(InfoCommands(self))
         self.add_cog(EventDisplayCommands(self))
+        self.add_cog(EventActionCommands(self))
         self.guild = ""
+        self.db = TinyDB("db.json")
 
     def run(self, token):
         super().run(token)
