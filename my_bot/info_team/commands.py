@@ -1,8 +1,16 @@
 from discord.ext.commands import Cog, command
 from discord.utils import get as get_obj
 
+# Configurations of commands -> [[name, help], [name, help], ...]
+confs = [
+    ['membres', 'Tous les membres-> !membres'],
+    ['roles', 'Tous les rôles-> !roles'],
+    ['salons', 'Tous les salons par catégorie-> !salons'],
+    ['membres_role', 'Les membres du rôle-> !membres_role "nom du role"'],
+    ['membres_salon', 'Les membres du salon-> !membres_salon "nom du salon"']]
 
-class InfoCommand(Cog, name='Commandes pour lister des infos'):
+
+class InfoCommands(Cog, name='Commandes Info'):
 
     def __init__(self, bot):
         self.bot = bot
@@ -37,36 +45,28 @@ class InfoCommand(Cog, name='Commandes pour lister des infos'):
         return self.format_message(title, list_members)
 
     # commands without params
-    @command(
-        name='list_membres',
-        help='liste tous les membres-> !list_membres')
+    @command(name=confs[0][0], help=confs[0][1], ignore_extra=False)
     async def list_members(self, ctx):
         """ send a message with the list of all members """
         await ctx.send(self.format_message(
             'Membres de {}'.format(self.bot.guild.name),
             self.bot.guild.members))
 
-    @command(
-        name='list_roles',
-        help='liste les différents rôles-> !list_roles')
+    @command(name=confs[1][0], help=confs[1][1], ignore_extra=False)
     async def list_roles(self, ctx):
         """ send a message with the list of roles """
         await ctx.send(self.format_message(
             'Rôles de {}'.format(self.bot.guild.name),
             self.bot.guild.roles))
 
-    @command(
-        name='list_salons',
-        help='liste tous les salons par catégorie-> !list_salons')
+    @command(name=confs[2][0], help=confs[2][1], ignore_extra=False)
     async def list_salons(self, ctx):
         """ send a message with the list of channels for each category """
         for category in self.bot.guild.by_category():
             await ctx.send(self.format_message(category[0].name, category[1]))
 
     # commands with params
-    @command(
-        name='list_membres_role',
-        help='liste les membres d un rôle-> !list_membres_role "role"')
+    @command(name=confs[3][0], help=confs[3][1], ignore_extra=False)
     async def list_membres_role(self, ctx, role_name):
         """ send a message with the list of members for a specific role
         or none message """
@@ -80,9 +80,7 @@ class InfoCommand(Cog, name='Commandes pour lister des infos'):
                 self.add_condition(role_members, member, role in member.roles)
             await ctx.send(self.check_empty_list(role_name, role_members))
 
-    @command(
-        name='list_membres_salon',
-        help='liste les membres d un salon-> !list_membres_salon "salon"')
+    @command(name=confs[4][0], help=confs[4][1], ignore_extra=False)
     async def list_membres_salon(self, ctx, channel_name):
         """ send a message with the list of members
         with permission on a channel"""

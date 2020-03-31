@@ -2,7 +2,7 @@ from os import getenv
 from dotenv import load_dotenv
 from discord.utils import get as get_obj
 from discord.ext.commands import Bot
-from commands import InfoCommand
+from commands import InfoCommands
 
 load_dotenv()
 GUILD = getenv('DISCORD_GUILD')
@@ -15,7 +15,7 @@ class InfoTeamBot(Bot):
         """ init discord.ext.commands.Bot and add custom commands """
         super().__init__(command_prefix="!")
         # add commands
-        self.add_cog(InfoCommand(self))
+        self.add_cog(InfoCommands(self))
         self.guild = ""
 
     def run(self, token):
