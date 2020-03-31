@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from discord.utils import get as get_obj
 from discord.ext.commands import Bot
 from info_team.commands import InfoCommands
+from calendar.display_commands import EventDisplayCommands
 
 load_dotenv()
 GUILD = getenv("DISCORD_GUILD")
@@ -15,6 +16,7 @@ class FullBot(Bot):
         """ init discord.ext.commands.Bot and add custom commands """
         super().__init__(command_prefix="!")
         self.add_cog(InfoCommands(self))
+        self.add_cog(EventDisplayCommands(self))
         self.guild = ""
 
     def run(self, token):
