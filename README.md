@@ -24,3 +24,7 @@ $ source env/bin/activate
 ```shell
 (env)$ python my_bot/my_calendar
 ```
+- Funny bot
+```shell
+(env)$ python my_bot/funny_bot
+```
