@@ -4,8 +4,8 @@ from discord.utils import get as get_obj
 from discord.ext.commands import Bot
 from tinydb import TinyDB
 from info_team.commands import InfoCommands
-from calendar.display_commands import EventDisplayCommands
-from calendar.action_commands import EventActionCommands
+from my_calendar.display_commands import EventDisplayCommands
+from my_calendar.action_commands import EventActionCommands
 
 load_dotenv()
 GUILD = getenv("DISCORD_GUILD")
@@ -32,6 +32,6 @@ class FullBot(Bot):
         print('Full {} is connected to "{}"'.format(
             self.user, self.guild.name))
 
-    async def on_command_error(self, ctx, error):
-        """ send a message with the error """
-        await ctx.send(str(error))
+    # async def on_command_error(self, ctx, error):
+    #     """ send a message with the error """
+    #     await ctx.send(str(error))

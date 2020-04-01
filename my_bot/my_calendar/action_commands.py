@@ -9,7 +9,7 @@ confs = [
     ['event_date', 'Modifie la date -> !event_date "Titre" "25/05/20 18:30"'],
     ['event_jeu', 'Modifie le jeu -> !event_jeu "Titre" "Nom du jeu"'],
     ['event_mj', 'Modifie le mj -> !event_mj "Titre" "@MJ1 @MJ2"'],
-    ['event_groupe', 'Modifie le groupe -> !event_groupe "Titre" @Groupe"'],
+    ['event_groupe', 'Modifie le groupe -> !event_groupe "Titre" "@Groupe"'],
     [
         'event_joueurs',
         'Modifie les joueurs -> !event_joueurs "Titre" "@J1 @J2 ..."'],
@@ -44,8 +44,8 @@ class EventActionCommands(Cog, name='Commandes "Ajout, Modif, Suppr" Event'):
             self.bot.db.table('Event').update(
                 {field: value}, Query().name == name)
             if change_name is True:
-                return "Ok! pour voir-> !show_event \"{}\"".format(value)
-            return "Ok! pour voir-> !show_event \"{}\"".format(name)
+                return "Ok! pour voir-> !voir_event \"{}\"".format(value)
+            return "Ok! pour voir-> !voir_event \"{}\"".format(name)
 
     # add delete commands
     @command(name=confs[0][0], help=confs[0][1], ignore_extra=False)
@@ -62,7 +62,7 @@ class EventActionCommands(Cog, name='Commandes "Ajout, Modif, Suppr" Event'):
                     'created_date': str(datetime.now())}
                 self.bot.db.table('Event').insert(new_event)  # save event
                 await ctx.send(
-                    "Ok! pour voir-> !show_event \"{}\"".format(name))
+                    "Ok! pour voir-> !voir_event \"{}\"".format(name))
         else:
             await ctx.send("Format date non valide ex: '24/05/20 18:30'")
 

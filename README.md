@@ -22,5 +22,5 @@ $ source env/bin/activate
 ```
 - Calendar bot
 ```shell
-(env)$ python my_bot/calendar
+(env)$ python my_bot/my_calendar
 ```
