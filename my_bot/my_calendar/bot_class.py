@@ -10,7 +10,7 @@ class CalendarBot(Bot):
     def __init__(self):
         """ init discord.ext.commands.Bot
         and add custom proprieties and commands """
-        super().__init__(command_prefix="!")
+        super().__init__(command_prefix="#")
         # add commands and json db
         self.add_cog(EventDisplayCommands(self))
         self.add_cog(EventActionCommands(self))

@@ -3,5 +3,3 @@ discord.py
 python-dotenv
 
 tinydb
-
-requests
