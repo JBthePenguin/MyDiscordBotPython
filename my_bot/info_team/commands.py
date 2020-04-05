@@ -47,12 +47,14 @@ class InfoCommands(Cog, name='Commandes Info'):
                 print(
                     "-- Chan -- id: {} - {}".format(channel.id, channel.name))
 
-    def format_list_in_embed(self, objs, name, icon_url, field_name="Members"):
+    def format_list_in_embed(self, objs, author_name, icon_url, title="Members"):
         """ return an embed with a list """
-        objs = "\n".join(obj.name for obj in objs)
-        embed = Embed(title='', color=0x161616)
-        embed.set_author(name=name, icon_url=icon_url)
-        embed.add_field(name=field_name, value=objs, inline=False)
+        objs_ids = "\n".join(str(obj.id) for obj in objs)
+        objs_names = "\n".join(obj.name for obj in objs)
+        embed = Embed(title=title, color=0x161616)
+        embed.set_author(name=author_name, icon_url=icon_url)
+        embed.add_field(name='ID', value=objs_ids, inline=True)
+        embed.add_field(name='Name', value=objs_names, inline=True)
         return embed
 
     @command(name=confs[1][0], help=confs[1][1], ignore_extra=False)
@@ -73,18 +75,12 @@ class InfoCommands(Cog, name='Commandes Info'):
     async def channels(self, ctx):
         """ send an embed with the list of all channels by category """
         guild = ctx.message.channel.guild
-        embed = Embed(title='', color=0x161616)
-        embed.set_author(name=guild.name, icon_url=guild.icon_url)
         for chans_by_cat in guild.by_category():
-            channels = "\n".join(chan.name for chan in chans_by_cat[1])
-            if chans_by_cat[0] is None:
-                cat_name = 'None'
-            else:
-                cat_name = chans_by_cat[0].name
-            embed.add_field(
-                name=cat_name, value=channels,
-                inline=True)
-        await ctx.send(embed=embed)
+            await ctx.send(embed=self.format_list_in_embed(
+                chans_by_cat[1],
+                "{} || {}".format(
+                    str(chans_by_cat[0].id), chans_by_cat[0].name),
+                '', 'Channels'))
 
     # commands with params
     def check_param(self, list_obj, obj_name_or_id):
@@ -113,7 +109,7 @@ class InfoCommands(Cog, name='Commandes Info'):
             await ctx.send(role)
         else:
             await ctx.send(embed=self.format_list_in_embed(
-                role.members, role.name, ''))
+                role.members, "{} || {}".format(str(role.id), role.name), ''))
 
     @command(name=confs[5][0], help=confs[5][1], ignore_extra=False)
     async def chan_members(self, ctx, chan_name_or_id):
@@ -131,4 +127,5 @@ class InfoCommands(Cog, name='Commandes Info'):
                 if channel.permissions_for(member).view_channel is True:
                     auth_members.append(member)
             await ctx.send(embed=self.format_list_in_embed(
-                auth_members, channel.name, ''))
+                auth_members, "{} || {}".format(str(channel.id), channel.name),
+                ''))
