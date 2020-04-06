@@ -5,12 +5,12 @@ from tinydb import Query
 
 # Configurations of commands -> [[name, help], [name, help], ...]
 confs = [
-    ['events', 'Tous les events-> !events'],
-    ['events_a_venir', 'Les events à venir-> !events_a_venir'],
-    ['events_passe', 'Les events passés-> !events_passe'],
-    ['events_apres', 'Les events après une date -> !events_apres "25/05/20"'],
-    ['events_avant', 'Les events avant une date -> !events_avant "25/05/20"'],
-    ['voir_event', 'Affiche un event-> !voir_event "Titre"']]
+    ['events', 'All events-> #events'],
+    ['up_events', 'Upcoming events-> #up_events'],
+    ['past_events', 'Past events-> #past_events'],
+    ['events_after', 'Events after a date -> #events_after 2020-12-31'],
+    ['events_before', 'Events before a date -> #events_before 2020-12-31'],
+    ['event', 'Display an event-> #event id']]
 
 
 class EventDisplayCommands(Cog, name='Commandes Affichage Event'):
@@ -53,90 +53,118 @@ class EventDisplayCommands(Cog, name='Commandes Affichage Event'):
             return True
 
     def format_event(self, event):
-        """ make an embed with an event and return it"""
-        spc = "\n\u200b"
-        f_game_master = event['game_master'].replace(' ', '\n')
-        f_players = event['players'].replace(' ', '\n')
-        embed = Embed(title=event['name'] + spc, color=0x38bc35)
-        embed.add_field(name='Date', value=event['date'] + spc, inline=False)
-        embed.add_field(name='Jeu', value=event['game'] + spc, inline=True)
-        embed.add_field(name='MJ', value=f_game_master + spc, inline=True)
-        embed.add_field(name='Groupe', value=event['group'] + spc, inline=True)
-        embed.add_field(name='Joueurs', value=f_players + spc, inline=True)
-        embed.add_field(name='Lieu', value=event['place'] + spc, inline=True)
+        """ make an embed for an event"""
+        if event['title'] is False:
+            event['title'] = Embed.Empty
+        embed = Embed(title=event['title'], color=0xff0000)
+        if event['url'] is False:
+            event['url'] = Embed.Empty
+        embed.url = event['url']
+        if event['description'] is False:
+            event['description'] = Embed.Empty
+        embed.description = event['description']
+        embed.timestamp = datetime.strptime(
+            event['timestamp'], '%Y-%m-%d %H:%M:%S.%f')
+        author = self.bot.get_user(event['author_id'])
+        embed.set_author(
+            name=author.name,
+            icon_url=author.avatar_url)
+        embed.set_thumbnail(url=event['thumbnail_url'])
+        embed.set_image(url=event['image_url'])
+        for key, value in event.items():
+            if value is False:
+                event[key] = '\u200b'
+        embed.set_footer(
+            text='id: ' + event['id'],
+            icon_url=self.bot.get_guild(event['guild_id']).icon_url)
+        embed.add_field(
+            name='Start date', value=event['start_date'], inline=True)
+        embed.add_field(
+            name='Start time', value=event['start_time'], inline=True)
+        embed.add_field(
+            name='End date', value=event['end_date'], inline=True)
+        embed.add_field(
+            name='End time', value=event['end_time'], inline=True)
+        embed.add_field(
+            name='Time zone', value=event['time_zone'], inline=True)
+        embed.add_field(
+            name='Location', value=event['location'], inline=True)
         return embed
 
     # commands without params
-    @command(name=confs[0][0], help=confs[0][1], ignore_extra=False)
-    async def events(self, ctx):
-        """ send all events """
-        sorted_events = self.sort_events(
-            self.bot.db.table('Event').all(), 'enregistré')
-        if isinstance(sorted_events, str):
-            # no events
-            await ctx.send(sorted_events)
-        else:
-            for event in sorted_events:
-                await ctx.send(embed=self.format_event(event))
-
-    @command(name=confs[1][0], help=confs[1][1], ignore_extra=False)
-    async def events_future(self, ctx):
-        """ send all upcoming events """
-        sorted_events = self.sort_events(
-            self.get_events_since_date(datetime.now()), 'à venir')
-        if isinstance(sorted_events, str):
-            # no events
-            await ctx.send(sorted_events)
-        else:
-            for event in sorted_events:
-                await ctx.send(embed=self.format_event(event))
-
-    @command(name=confs[2][0], help=confs[2][1], ignore_extra=False)
-    async def events_past(self, ctx):
-        """ send all past events """
-        sorted_events = self.sort_events(
-            self.get_events_since_date(datetime.now(), after=False), 'passé')
-        if isinstance(sorted_events, str):
-            await ctx.send(sorted_events)  # no event
-        else:
-            for event in sorted_events:
-                await ctx.send(embed=self.format_event(event))
-
-    # commands with params
-    @command(name=confs[3][0], help=confs[3][1], ignore_extra=False)
-    async def events_after(self, ctx, date):
-        """ send all events since a date """
-        if self.check_date_format(date) is True:
-            sorted_events = self.sort_events(self.get_events_since_date(
-                datetime.strptime(date, '%d/%m/%y')), 'après {}'.format(date))
-            if isinstance(sorted_events, str):
-                await ctx.send(sorted_events)  # no events
-            else:
-                for event in sorted_events:
-                    await ctx.send(embed=self.format_event(event))
-        else:
-            await ctx.send("Format date non valide ex: '24/05/20'")
-
-    @command(name=confs[4][0], help=confs[4][1], ignore_extra=False)
-    async def events_before(self, ctx, date):
-        """ send all events before a date """
-        if self.check_date_format(date) is True:
-            sorted_events = self.sort_events(self.get_events_since_date(
-                datetime.strptime(date, '%d/%m/%y'), after=False),
-                'avant {}'.format(date))
-            if isinstance(sorted_events, str):
-                await ctx.send(sorted_events)  # no events
-            else:
-                for event in sorted_events:
-                    await ctx.send(embed=self.format_event(event))
-        else:
-            await ctx.send("Format date non valide ex: '24/05/20'")
+    # @command(name=confs[0][0], help=confs[0][1], ignore_extra=False)
+    # async def events(self, ctx):
+    #     """ send all events """
+    #     sorted_events = self.sort_events(
+    #         self.bot.db.table('Event').all(), 'enregistré')
+    #     if isinstance(sorted_events, str):
+    #         # no events
+    #         await ctx.send(sorted_events)
+    #     else:
+    #         for event in sorted_events:
+    #             await ctx.send(embed=self.format_event(event))
+    #
+    # @command(name=confs[1][0], help=confs[1][1], ignore_extra=False)
+    # async def events_future(self, ctx):
+    #     """ send all upcoming events """
+    #     sorted_events = self.sort_events(
+    #         self.get_events_since_date(datetime.now()), 'à venir')
+    #     if isinstance(sorted_events, str):
+    #         # no events
+    #         await ctx.send(sorted_events)
+    #     else:
+    #         for event in sorted_events:
+    #             await ctx.send(embed=self.format_event(event))
+    #
+    # @command(name=confs[2][0], help=confs[2][1], ignore_extra=False)
+    # async def events_past(self, ctx):
+    #     """ send all past events """
+    #     sorted_events = self.sort_events(
+    #         self.get_events_since_date(datetime.now(), after=False), 'passé')
+    #     if isinstance(sorted_events, str):
+    #         await ctx.send(sorted_events)  # no event
+    #     else:
+    #         for event in sorted_events:
+    #             await ctx.send(embed=self.format_event(event))
+    #
+    # # commands with params
+    # @command(name=confs[3][0], help=confs[3][1], ignore_extra=False)
+    # async def events_after(self, ctx, date):
+    #     """ send all events since a date """
+    #     if self.check_date_format(date) is True:
+    #         sorted_events = self.sort_events(self.get_events_since_date(
+    #             datetime.strptime(date, '%d/%m/%y')), 'après {}'.format(date))
+    #         if isinstance(sorted_events, str):
+    #             await ctx.send(sorted_events)  # no events
+    #         else:
+    #             for event in sorted_events:
+    #                 await ctx.send(embed=self.format_event(event))
+    #     else:
+    #         await ctx.send("Format date non valide ex: '24/05/20'")
+    #
+    # @command(name=confs[4][0], help=confs[4][1], ignore_extra=False)
+    # async def events_before(self, ctx, date):
+    #     """ send all events before a date """
+    #     if self.check_date_format(date) is True:
+    #         sorted_events = self.sort_events(self.get_events_since_date(
+    #             datetime.strptime(date, '%d/%m/%y'), after=False),
+    #             'avant {}'.format(date))
+    #         if isinstance(sorted_events, str):
+    #             await ctx.send(sorted_events)  # no events
+    #         else:
+    #             for event in sorted_events:
+    #                 await ctx.send(embed=self.format_event(event))
+    #     else:
+    #         await ctx.send("Format date non valide ex: '24/05/20'")
 
     @command(name=confs[5][0], help=confs[5][1], ignore_extra=False)
-    async def show_event(self, ctx, name):
-        """ send all events """
-        event = self.bot.db.table('Event').search(Query().name == name)
-        if event == []:
-            await ctx.send('No Event "{}"'.format(name))
+    async def event(self, ctx, event_id):
+        """ send an event in embed """
+        if " " in event_id:
+            await ctx.send("id not accept space")
         else:
-            await ctx.send(embed=self.format_event(event[0]))
+            event = self.bot.db.table('Event').get(Query().id == event_id)
+            if event is None:
+                await ctx.send("No event founded with id {}".format(event_id))
+            else:
+                await ctx.send(embed=self.format_event(event))

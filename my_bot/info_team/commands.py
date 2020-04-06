@@ -5,14 +5,16 @@ from discord import Embed
 # Configurations of commands -> [[name, help], [name, help], ...]
 confs = [
     ['shell_info', 'Display infos in shell -> #shell_info'],
-    ['members', "All guild's members-> #members"],
-    ['roles', 'All roles-> #roles'],
+    ['members', "All team's members-> #members"],
+    ['roles', "All team's roles-> #roles"],
     ['channels', 'All channels by category-> #channels'],
-    ['role_members', 'Members for a role-> #role_members "role name or id"'],
-    ['chan_members', 'Authorized Members -> #chan_members "chan name or id"']]
+    ['role_members', 'Members with a role-> #role_members "role name or id"'],
+    [
+        'chan_members',
+        'Auth Members for a chan-> #chan_members "chan name or id"']]
 
 
-class InfoCommands(Cog, name='Commandes Info'):
+class InfoCommands(Cog, name='Commands Info Team'):
 
     def __init__(self, bot):
         self.bot = bot
@@ -37,7 +39,7 @@ class InfoCommands(Cog, name='Commandes Info'):
         for chans_by_cat in guild.by_category():
             print('#####')
             if chans_by_cat[0] is None:
-                print("Cat None")
+                print("No category")
             else:
                 print(
                     "Category id: {} - {}".format(
@@ -47,7 +49,8 @@ class InfoCommands(Cog, name='Commandes Info'):
                 print(
                     "-- Chan -- id: {} - {}".format(channel.id, channel.name))
 
-    def format_list_in_embed(self, objs, author_name, icon_url, title="Members"):
+    def format_list_in_embed(
+            self, objs, author_name, icon_url, title="Members"):
         """ return an embed with a list """
         objs_ids = "\n".join(str(obj.id) for obj in objs)
         objs_names = "\n".join(obj.name for obj in objs)
@@ -76,11 +79,13 @@ class InfoCommands(Cog, name='Commandes Info'):
         """ send an embed with the list of all channels by category """
         guild = ctx.message.channel.guild
         for chans_by_cat in guild.by_category():
+            if chans_by_cat[0] is None:
+                author_name = "No category"
+            else:
+                author_name = "{} || {}".format(
+                    str(chans_by_cat[0].id), chans_by_cat[0].name)
             await ctx.send(embed=self.format_list_in_embed(
-                chans_by_cat[1],
-                "{} || {}".format(
-                    str(chans_by_cat[0].id), chans_by_cat[0].name),
-                '', 'Channels'))
+                chans_by_cat[1], author_name, '', 'Channels'))
 
     # commands with params
     def check_param(self, list_obj, obj_name_or_id):
@@ -115,7 +120,6 @@ class InfoCommands(Cog, name='Commandes Info'):
     async def chan_members(self, ctx, chan_name_or_id):
         """ send a message with the list of members
         with permission on a channel"""
-        # get channel
         guild = ctx.message.channel.guild
         channel = self.check_param(guild.channels, chan_name_or_id)
         if isinstance(channel, str):
@@ -128,4 +132,4 @@ class InfoCommands(Cog, name='Commandes Info'):
                     auth_members.append(member)
             await ctx.send(embed=self.format_list_in_embed(
                 auth_members, "{} || {}".format(str(channel.id), channel.name),
-                ''))
+                '', 'Auth Members'))

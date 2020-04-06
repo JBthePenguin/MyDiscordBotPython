@@ -20,9 +20,13 @@ class CalendarBot(Bot):
         super().run(token)
 
     async def on_ready(self):
-        """ print in console when bot is started and connected """
-        print('Calendar {} is connected!'.format(self.user))
+        """ print in shell when bot is connected to guilds """
+        guild_names = []
+        for guid in self.guilds:
+            guild_names.append(guid.name)
+        print('Calendar {} is connected to "{}"'.format(
+            self.user, ' - '.join(guild_names)))
 
-    async def on_command_error(self, ctx, error):
-        """ send a message with the error """
-        await ctx.send(str(error))
+    # async def on_command_error(self, ctx, error):
+    #     """ send a message with the error """
+    #     await ctx.send(str(error))
