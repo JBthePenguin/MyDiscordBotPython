@@ -71,7 +71,7 @@ class EventDisplayCommands(Cog, name='Commandes Affichage Event'):
             name="CalendarBot",
             icon_url="".join([
                 "https://raw.githubusercontent.com/JBthePenguin",
-                "/MyDiscordBotPython/master/my_bot/my_calendar/calendar.png"]))
+                "/MyDiscordBotPython/master/my_bot/my_calendar/icon.png"]))
         embed.set_thumbnail(url=event['thumbnail_url'])
         embed.set_image(url=event['image_url'])
         for key, value in event.items():
