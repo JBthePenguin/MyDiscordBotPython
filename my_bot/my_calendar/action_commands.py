@@ -1,7 +1,9 @@
 from datetime import datetime
 from discord.ext.commands import Cog, command
 from tinydb import Query
-from validator_collection import checkers, validators
+from validator_collection import checkers
+from pytz import timezone
+from pytz.exceptions import UnknownTimeZoneError
 
 confs = [
     ['init_event', 'Init an event-> #init_event id_without_space'],
@@ -15,7 +17,9 @@ confs = [
     ['e_end_date', 'Update end date -> #e_end_date id 2020/12/31'],
     ['e_end_time', 'Update end time -> #e_end_time id 8:00PM'],
     ['e_thumb', 'Update thumbnail url -> #e_thumb id https://url.com/thumb.png'],
-    ['e_img', 'Update image url -> #e_img id https://url.com/img.png'], ]
+    ['e_img', 'Update image url -> #e_img id https://url.com/img.png'],
+    ['e_zone', 'Update timezone -> #e_zone id Europe/Paris'],
+    ['e_loc', 'Update location -> #e_loc id "The place to be"']]
 
 
 class EventActionCommands(
@@ -43,7 +47,7 @@ class EventActionCommands(
                 # 'image_url': 'https://placehold.it/400x200', 'start_date': False,
                 'thumbnail_url': '', 'image_url': '', 'start_date': False,
                 'start_time': False, 'end_date': False, 'end_time': False,
-                'time_zone': False, 'location': False, 'add_list': False}
+                'zone': False, 'location': False, 'add_list': False}
             self.bot.db.table('Event').insert(new_event)
             await ctx.send(
                 "Ok! to see -> #event {}".format(event_id))
@@ -192,6 +196,26 @@ class EventActionCommands(
         else:
             await ctx.send(self.update_event(
                 event_id, 'image_url', url, ctx.message.created_at))
+
+    @command(name=confs[12][0], help=confs[12][1], ignore_extra=False)
+    async def e_zone(self, ctx, event_id, e_timezone):
+        """ update timezone for a specific event """
+        try:
+            timezone(e_timezone)
+        except UnknownTimeZoneError:
+            await ctx.send("".join([
+                "timezone not valid, to see a list -> ",
+                "https://github.com/JBthePenguin/MyDiscordBotPython/blob/",
+                "master/my_bot/my_calendar/pytz_timezones_list.txt"]))
+        else:
+            await ctx.send(self.update_event(
+                event_id, 'zone', e_timezone, ctx.message.created_at))
+
+    @command(name=confs[13][0], help=confs[13][1], ignore_extra=False)
+    async def e_location(self, ctx, event_id, location):
+        """ update location for a specific event """
+        await ctx.send(self.update_event(
+            event_id, 'location', location, ctx.message.created_at))
     #
     # @command(name=confs[3][0], help=confs[3][1], ignore_extra=False)
     # async def event_date(self, ctx, name, date):

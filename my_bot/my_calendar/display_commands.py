@@ -101,16 +101,17 @@ class EventDisplayCommands(Cog, name='Commandes Affichage Event'):
             embed.add_field(
                 name='End time', value=event['end_time'], inline=True)
         embed.add_field(name='\u200b', value='\u200b', inline=True)
-        if event['time_zone'] is False:
+        if event['zone'] is False:
             embed.add_field(name='\u200b', value='\u200b', inline=True)
         else:
             embed.add_field(
-                name='Time zone', value=event['time_zone'], inline=True)
+                name='Time zone', value=event['zone'], inline=True)
         if event['location'] is False:
             embed.add_field(name='\u200b', value='\u200b', inline=True)
         else:
             embed.add_field(
                 name='Location', value=event['location'], inline=True)
+        embed.add_field(name='\u200b', value='\u200b', inline=True)
         embed.add_field(
             name='Event id', value=event['id'], inline=False)
         return embed
