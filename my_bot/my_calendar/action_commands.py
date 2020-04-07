@@ -1,7 +1,7 @@
 from datetime import datetime
 from discord.ext.commands import Cog, command
 from tinydb import Query
-from validator_collection import checkers
+from validator_collection import checkers, validators
 
 confs = [
     ['init_event', 'Init an event-> #init_event id_without_space'],
@@ -9,15 +9,13 @@ confs = [
     ['del_event', 'Delete an event -> #del_event id'],
     ['e_title', 'Update title -> #e_title id "New Title"'],
     ['e_descr', 'Update description -> #e_descr id "New Description"'],
-    ['e_url', 'Update url -> #e_url id "https://newurl.com"'],
-    ['event_date', 'Modifie la date -> !event_date "Titre" "25/05/20 18:30"'],
-    ['event_jeu', 'Modifie le jeu -> !event_jeu "Titre" "Nom du jeu"'],
-    ['event_mj', 'Modifie le mj -> !event_mj "Titre" "@MJ1 @MJ2"'],
-    ['event_groupe', 'Modifie le groupe -> !event_groupe "Titre" "@Groupe"'],
-    [
-        'event_joueurs',
-        'Modifie les joueurs -> !event_joueurs "Titre" "@J1 @J2 ..."'],
-    ['event_lieu', 'Modifie le lieu -> !event_lieu "Titre" "Nom du lieu"']]
+    ['e_url', 'Update url -> #e_url id https://newurl.com'],
+    ['e_start_date', 'Update start date -> #e_start_date id 2020/12/31'],
+    ['e_start_time', 'Update start time -> #e_start_time id 8:00PM'],
+    ['e_end_date', 'Update end date -> #e_end_date id 2020/12/31'],
+    ['e_end_time', 'Update end time -> #e_end_time id 8:00PM'],
+    ['e_thumb', 'Update thumbnail url -> #e_thumb id https://url.com/thumb.png'],
+    ['e_img', 'Update image url -> #e_img id https://url.com/img.png'], ]
 
 
 class EventActionCommands(
@@ -25,15 +23,6 @@ class EventActionCommands(
 
     def __init__(self, bot):
         self.bot = bot
-
-    def check_date_format(self, date):
-        """ return true if date format is validated, else False """
-        try:
-            datetime.strptime(date, '%d/%m/%y %H:%M')
-        except ValueError:
-            return False
-        else:
-            return True
 
     # init add delete commands
     @command(name=confs[0][0], help=confs[0][1], ignore_extra=False)
@@ -88,23 +77,70 @@ class EventActionCommands(
             await ctx.send("{} deleted".format(event_id))
 
     # update commands
-    def update_event(self, event_id, field, value):
-        """ update a specific field for an event """
+    def check_date_time_format(self, date_time):
+        """ return true if date or time format is validated, else False """
+        try:
+            datetime.strptime(date_time, '%Y/%m/%d %H:%M%p')
+        except ValueError:
+            return False
+        else:
+            return True
+
+    def update_event(self, event_id, field, value, timestamp):
+        """ check if event id exist, if value is date or time check format,
+        if time check if date exist, update a specific field for an event """
         Event = Query()
-        if self.bot.db.table('Event').get(Event.id == event_id) is None:
+        event_updated = self.bot.db.table('Event').get(Event.id == event_id)
+        if event_updated is None:
             return "No event founded with id {}".format(event_id)
+        if '_date' in field:
+            if ('end_' in field) and (
+                    event_updated[field.replace('end', 'start')] is False):
+                return "Set a value for {} before {}".format(
+                    field.replace('end', 'start'), field)
+            try:
+                e_date = datetime.strptime(value, '%Y/%m/%d')
+                if ('end_' in field) and (e_date < datetime.strptime(
+                        event_updated[
+                            field.replace('end', 'start')], '%Y/%m/%d')):
+                    return "{} can't be set before {}".format(
+                        field, event_updated[field.replace('end', 'start')])
+            except ValueError:
+                return "date format not valid -> 2020/12/31"
+        if '_time' in field:
+            if event_updated[field.replace('time', 'date')] is False:
+                return "Set a value for {} before {}".format(
+                    field.replace('time', 'date'), field)
+            if ('end_' in field) and (
+                    event_updated[field.replace('end', 'start')] is False):
+                return "Set a value for {} before {}".format(
+                    field.replace('end', 'start'), field)
+            try:
+                e_time = datetime.strptime(value, '%H:%M%p')
+                if ('end_' in field) and (event_updated[
+                        'start_date'] == event_updated['end_date']) and (
+                            e_time <= datetime.strptime(event_updated[
+                                field.replace('end', 'start')], '%H:%M%p')):
+                    return "{} must be set after {}".format(
+                        field, event_updated[field.replace('end', 'start')])
+            except ValueError:
+                return "time format not valid -> 8:00PM"
         self.bot.db.table('Event').update({field: value}, Event.id == event_id)
+        self.bot.db.table('Event').update(
+            {'timestamp': str(timestamp)}, Event.id == event_id)
         return "Ok, {} updated! to see -> #event {}".format(field, event_id)
 
     @command(name=confs[3][0], help=confs[3][1], ignore_extra=False)
     async def e_title(self, ctx, event_id, title):
         """ update title for a specific event """
-        await ctx.send(self.update_event(event_id, 'title', title))
+        await ctx.send(self.update_event(
+            event_id, 'title', title, ctx.message.created_at))
 
     @command(name=confs[4][0], help=confs[4][1], ignore_extra=False)
     async def e_descr(self, ctx, event_id, description):
         """ update description for a specific event """
-        await ctx.send(self.update_event(event_id, 'description', description))
+        await ctx.send(self.update_event(
+            event_id, 'description', description, ctx.message.created_at))
 
     @command(name=confs[5][0], help=confs[5][1], ignore_extra=False)
     async def e_url(self, ctx, event_id, url):
@@ -112,7 +148,50 @@ class EventActionCommands(
         if checkers.is_url(url) is False:
             await ctx.send("url format not valid -> https://newurl.com")
         else:
-            await ctx.send(self.update_event(event_id, 'url', url))
+            await ctx.send(self.update_event(
+                event_id, 'url', url, ctx.message.created_at))
+
+    @command(name=confs[6][0], help=confs[6][1], ignore_extra=False)
+    async def e_start_date(self, ctx, event_id, e_date):
+        """ update start_date for a specific event """
+        await ctx.send(self.update_event(
+            event_id, 'start_date', e_date, ctx.message.created_at))
+
+    @command(name=confs[7][0], help=confs[7][1], ignore_extra=False)
+    async def e_start_time(self, ctx, event_id, e_time):
+        """ update start_time for a specific event """
+        await ctx.send(self.update_event(
+            event_id, 'start_time', e_time, ctx.message.created_at))
+
+    @command(name=confs[8][0], help=confs[8][1], ignore_extra=False)
+    async def e_end_date(self, ctx, event_id, e_date):
+        """ update end_date for a specific event """
+        await ctx.send(self.update_event(
+            event_id, 'end_date', e_date, ctx.message.created_at))
+
+    @command(name=confs[9][0], help=confs[9][1], ignore_extra=False)
+    async def e_end_time(self, ctx, event_id, e_time):
+        """ update end_time for a specific event """
+        await ctx.send(self.update_event(
+            event_id, 'end_time', e_time, ctx.message.created_at))
+
+    @command(name=confs[10][0], help=confs[10][1], ignore_extra=False)
+    async def e_thumb(self, ctx, event_id, url):
+        """ update url for a specific event """
+        if checkers.is_url(url) is False:
+            await ctx.send("url format not valid -> https://newurl.com")
+        else:
+            await ctx.send(self.update_event(
+                event_id, 'thumbnail_url', url, ctx.message.created_at))
+
+    @command(name=confs[11][0], help=confs[11][1], ignore_extra=False)
+    async def e_img(self, ctx, event_id, url):
+        """ update url for a specific event """
+        if checkers.is_url(url) is False:
+            await ctx.send("url format not valid -> https://newurl.com")
+        else:
+            await ctx.send(self.update_event(
+                event_id, 'image_url', url, ctx.message.created_at))
     #
     # @command(name=confs[3][0], help=confs[3][1], ignore_extra=False)
     # async def event_date(self, ctx, name, date):

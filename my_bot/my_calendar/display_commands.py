@@ -74,27 +74,43 @@ class EventDisplayCommands(Cog, name='Commandes Affichage Event'):
                 "/MyDiscordBotPython/master/my_bot/my_calendar/icon.png"]))
         embed.set_thumbnail(url=event['thumbnail_url'])
         embed.set_image(url=event['image_url'])
-        for key, value in event.items():
-            if value is False:
-                event[key] = '\u200b'
         member = self.bot.get_user(event['member_id'])
         embed.set_footer(
             text=member.name,
             icon_url=member.avatar_url)
+        if event['start_date'] is False:
+            value = '\u200b'
+        else:
+            value = event['start_date']
         embed.add_field(
-            name='Start date', value=event['start_date'], inline=True)
-        embed.add_field(
-            name='Start time', value=event['start_time'], inline=True)
+            name='Start date', value=value, inline=True)
+        if event['start_time'] is False:
+            embed.add_field(name='\u200b', value='\u200b', inline=True)
+        else:
+            embed.add_field(
+                name='Start time', value=event['start_time'], inline=True)
         embed.add_field(name='\u200b', value='\u200b', inline=True)
-        embed.add_field(
-            name='End date', value=event['end_date'], inline=True)
-        embed.add_field(
-            name='End time', value=event['end_time'], inline=True)
+        if event['end_date'] is False:
+            embed.add_field(name='\u200b', value='\u200b', inline=True)
+        else:
+            embed.add_field(
+                name='End date', value=event['end_date'], inline=True)
+        if event['end_time'] is False:
+            embed.add_field(name='\u200b', value='\u200b', inline=True)
+        else:
+            embed.add_field(
+                name='End time', value=event['end_time'], inline=True)
         embed.add_field(name='\u200b', value='\u200b', inline=True)
-        embed.add_field(
-            name='Time zone', value=event['time_zone'], inline=True)
-        embed.add_field(
-            name='Location', value=event['location'], inline=True)
+        if event['time_zone'] is False:
+            embed.add_field(name='\u200b', value='\u200b', inline=True)
+        else:
+            embed.add_field(
+                name='Time zone', value=event['time_zone'], inline=True)
+        if event['location'] is False:
+            embed.add_field(name='\u200b', value='\u200b', inline=True)
+        else:
+            embed.add_field(
+                name='Location', value=event['location'], inline=True)
         embed.add_field(
             name='Event id', value=event['id'], inline=False)
         return embed
