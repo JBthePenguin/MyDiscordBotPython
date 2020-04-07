@@ -65,30 +65,35 @@ class EventDisplayCommands(Cog, name='Commandes Affichage Event'):
         embed.description = event['description']
         embed.timestamp = datetime.strptime(
             event['timestamp'], '%Y-%m-%d %H:%M:%S.%f')
-        author = self.bot.get_user(event['author_id'])
         embed.set_author(
-            name=author.name,
-            icon_url=author.avatar_url)
+            name=self.bot.user.name,
+            icon_url="https://img.icons8.com/doodle/48/000000/calendar--v2.png")
+            # icon_url=self.bot.user.avatar_url)
         embed.set_thumbnail(url=event['thumbnail_url'])
         embed.set_image(url=event['image_url'])
         for key, value in event.items():
             if value is False:
                 event[key] = '\u200b'
+        member = self.bot.get_user(event['member_id'])
         embed.set_footer(
-            text='id: ' + event['id'],
-            icon_url=self.bot.get_guild(event['guild_id']).icon_url)
+            text=member.name,
+            icon_url=member.avatar_url)
         embed.add_field(
             name='Start date', value=event['start_date'], inline=True)
         embed.add_field(
             name='Start time', value=event['start_time'], inline=True)
+        embed.add_field(name='\u200b', value='\u200b', inline=True)
         embed.add_field(
             name='End date', value=event['end_date'], inline=True)
         embed.add_field(
             name='End time', value=event['end_time'], inline=True)
+        embed.add_field(name='\u200b', value='\u200b', inline=True)
         embed.add_field(
             name='Time zone', value=event['time_zone'], inline=True)
         embed.add_field(
             name='Location', value=event['location'], inline=True)
+        embed.add_field(
+            name='Event id', value=event['id'], inline=False)
         return embed
 
     # commands without params

@@ -25,7 +25,7 @@ class CalendarBot(Bot):
         for guid in self.guilds:
             guild_names.append(guid.name)
         print('Calendar {} is connected to "{}"'.format(
-            self.user, ' - '.join(guild_names)))
+            self.user.name, ' - '.join(guild_names)))
 
     # async def on_command_error(self, ctx, error):
     #     """ send a message with the error """
