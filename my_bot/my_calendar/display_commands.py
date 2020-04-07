@@ -66,9 +66,12 @@ class EventDisplayCommands(Cog, name='Commandes Affichage Event'):
         embed.timestamp = datetime.strptime(
             event['timestamp'], '%Y-%m-%d %H:%M:%S.%f')
         embed.set_author(
-            name=self.bot.user.name,
-            icon_url="https://img.icons8.com/doodle/48/000000/calendar--v2.png")
-            # icon_url=self.bot.user.avatar_url)
+            #  name=self.bot.user.name,
+            #  icon_url=self.bot.user.avatar_url)
+            name="CalendarBot",
+            icon_url="".join([
+                "https://raw.githubusercontent.com/JBthePenguin",
+                "/MyDiscordBotPython/master/my_bot/my_calendar/calendar.png"]))
         embed.set_thumbnail(url=event['thumbnail_url'])
         embed.set_image(url=event['image_url'])
         for key, value in event.items():
