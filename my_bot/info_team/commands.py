@@ -9,9 +9,7 @@ confs = [
     ['roles', "All team's roles-> #roles"],
     ['channels', 'All channels by category-> #channels'],
     ['role_members', 'Members with a role-> #role_members "role name or id"'],
-    [
-        'chan_members',
-        'Auth Members for a chan-> #chan_members "chan name or id"']]
+    ['chan_members', 'Auth Members on chan-> #chan_members "chan name or id"']]
 
 
 class InfoCommands(Cog, name='Commands Info Team'):
