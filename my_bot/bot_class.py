@@ -33,6 +33,6 @@ class MyBot(Bot):
         print('{}{} is connected to "{}"'.format(
             self.label, self.user.name, ' - '.join(guild_names)))
 
-    async def on_command_error(self, ctx, error):
-        """ send a message with the error """
-        await ctx.send(str(error))
+    # async def on_command_error(self, ctx, error):
+    #     """ send a message with the error """
+    #     await ctx.send(str(error))

@@ -22,7 +22,7 @@ class InfoCommands(Cog, name='Commands Info Team'):
         name=confs['mem']['name'],
         help=confs['mem']['help'], ignore_extra=False)
     async def members(self, ctx):
-        """ Send an embed with the list of all members """
+        """ Send an embed with a sorted list of all members """
         guild = ctx.message.channel.guild
         await ctx.send(embed=list_in_embed(
             guild.members, guild.name, guild.icon_url, 'Members'))
@@ -50,10 +50,12 @@ class InfoCommands(Cog, name='Commands Info Team'):
         name=confs['chan']['name'], help=confs['chan']['help'],
         ignore_extra=False)
     async def channels(self, ctx):
-        """ Send an embed with the list of all channels """
+        """ Send an embed with the list of all channels (no send category) """
         guild = ctx.message.channel.guild
+        channels = [  # remove categories in guild.channels
+            chan for chan in guild.channels if chan not in guild.categories]
         await ctx.send(embed=list_in_embed(
-            guild.channels, guild.name, guild.icon_url, "Channels"))
+            channels, guild.name, guild.icon_url, "Channels"))
 
     # # commands with params
     @command(
@@ -90,7 +92,10 @@ class InfoCommands(Cog, name='Commands Info Team'):
         """ Send a message with the list of members
         who have view permission for a specific channel """
         guild = ctx.message.channel.guild
-        channel = param_command(guild.channels, chan_name_or_id, 'Channel')
+        channels = [  # remove categories in guild.channels
+            chan for chan in guild.channels if chan not in guild.categories]
+        channel = param_command(channels, chan_name_or_id, 'Channel')
+        ##### pb with vocal chan
         if isinstance(channel, str):  # no channel with this name or id
             await ctx.send(channel)
         else:
