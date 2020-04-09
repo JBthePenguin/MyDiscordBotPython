@@ -1,9 +1,9 @@
+# Configurations of commands -> {key: {'name': name, 'help': help text}}
 def conf_dict(name, help):
     """ return a dict with the name of a command and his help text"""
     return {'name': name, 'help': help}
 
 
-# Configurations of commands -> {key: {'name': name, 'help': help text}}
 confs = {
     'shell': conf_dict('shell_info', 'Display infos in shell -> #shell_info'),
     'mem': conf_dict('members', "All team's members-> #members"),
@@ -15,3 +15,7 @@ confs = {
     'chan_mem': conf_dict(
         'chan_members',
         'Auth Members on chan-> #chan_members "chan name or id"')}
+
+# Error messages -> {name: message, ...}
+error_msgs = {
+    'no_exist': "{}: {} not exist", }  # {} -> field, value

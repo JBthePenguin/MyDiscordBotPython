@@ -1,7 +1,7 @@
 from discord.ext.commands import Cog, command
 from discord.utils import get as get_obj
-from discord import Embed
-from .settings import confs
+from .settings import confs, error_msgs
+from .format import info_in_shell, list_in_embed
 
 
 class InfoCommands(Cog, name='Commands Info Team'):
@@ -14,39 +14,9 @@ class InfoCommands(Cog, name='Commands Info Team'):
     @command(
             name=confs['shell']['name'], help=confs['shell']['help'],
             ignore_extra=False)
-    async def shell_info_guild(self, ctx):
-        """ Display infos in shell """
-        guild = ctx.message.channel.guild
-        print('###########')  # guild
-        print("Guild id: {} - {}".format(guild.id, guild.name))
-        print('###########')  # members
-        for member in guild.members:
-            print("Member id: {} - {}".format(member.id, member.name))
-        print('#####')  # roles
-        for role in guild.roles:
-            print("Role id: {} - {}".format(role.id, role.name))
-        for chans_by_cat in guild.by_category():  # channel categories
-            print('#####')
-            if chans_by_cat[0] is None:
-                print("No category")
-            else:
-                print(
-                    "Category id: {} - {}".format(
-                        chans_by_cat[0].id, chans_by_cat[0].name))
-            for channel in chans_by_cat[1]:  # channels
-                print(
-                    "-- Chan -- id: {} - {}".format(channel.id, channel.name))
-
-    def format_list_in_embed(
-            self, objs, author_name, icon_url, title="Members"):
-        """ Return an embed with a list """
-        objs_ids = "\n".join(str(obj.id) for obj in objs)
-        objs_names = "\n".join(obj.name for obj in objs)
-        embed = Embed(title=title, color=0x161616)
-        embed.set_author(name=author_name, icon_url=icon_url)
-        embed.add_field(name='ID', value=objs_ids, inline=True)
-        embed.add_field(name='Name', value=objs_names, inline=True)
-        return embed
+    async def shell_info(self, ctx):
+        """ Display guild's infos in shell """
+        info_in_shell(ctx.message.channel.guild)
 
     @command(
         name=confs['mem']['name'], help=confs['mem']['help'],
@@ -54,7 +24,7 @@ class InfoCommands(Cog, name='Commands Info Team'):
     async def members(self, ctx):
         """ Send an embed with the list of all members """
         guild = ctx.message.channel.guild
-        await ctx.send(embed=self.format_list_in_embed(
+        await ctx.send(embed=list_in_embed(
             guild.members, guild.name, guild.icon_url))
 
     @command(
@@ -63,7 +33,7 @@ class InfoCommands(Cog, name='Commands Info Team'):
     async def roles(self, ctx):
         """ Send an embed with the list of all roles """
         guild = ctx.message.channel.guild
-        await ctx.send(embed=self.format_list_in_embed(
+        await ctx.send(embed=list_in_embed(
             guild.roles, guild.name, guild.icon_url, "Roles"))
 
     @command(
@@ -74,12 +44,12 @@ class InfoCommands(Cog, name='Commands Info Team'):
         guild = ctx.message.channel.guild
         for chans_by_cat in guild.by_category():
             if chans_by_cat[0] is None:
-                author_name = "No category"
+                cat_name = "No category"
             else:
-                author_name = "{} || {}".format(
+                cat_name = "{} || {}".format(
                     str(chans_by_cat[0].id), chans_by_cat[0].name)
-            await ctx.send(embed=self.format_list_in_embed(
-                chans_by_cat[1], author_name, '', 'Channels'))
+            await ctx.send(embed=list_in_embed(
+                chans_by_cat[1], cat_name, '', 'Channels'))
 
     # commands with params
     def check_param(self, list_obj, obj_name_or_id):
@@ -89,10 +59,10 @@ class InfoCommands(Cog, name='Commands Info Team'):
             try:
                 obj = get_obj(list_obj, id=int(obj_name_or_id))
             except ValueError:  # no obj with this name
-                return "name: {} not exist".format(obj_name_or_id)
+                return error_msgs['no_exist'].format('name', obj_name_or_id)
             else:
                 if obj is None:  # no obj with this id
-                    return "id: {} not exist".format(obj_name_or_id)
+                    return error_msgs['no_exist'].format('id', obj_name_or_id)
         return obj
 
     @command(
@@ -105,7 +75,7 @@ class InfoCommands(Cog, name='Commands Info Team'):
         if isinstance(role, str):  # no role with this name or id
             await ctx.send(role)
         else:
-            await ctx.send(embed=self.format_list_in_embed(
+            await ctx.send(embed=list_in_embed(
                 role.members, "{} || {}".format(str(role.id), role.name), ''))
 
     @command(
@@ -123,6 +93,6 @@ class InfoCommands(Cog, name='Commands Info Team'):
             for member in guild.members:  # list member with permisson
                 if channel.permissions_for(member).view_channel is True:
                     auth_members.append(member)
-            await ctx.send(embed=self.format_list_in_embed(
+            await ctx.send(embed=list_in_embed(
                 auth_members, "{} || {}".format(str(channel.id), channel.name),
                 '', 'Auth Members'))
