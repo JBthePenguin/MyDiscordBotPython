@@ -18,13 +18,13 @@ $ source env/bin/activate
 ```
 - Info Team bot
 ```shell
-(env)$ python my_bot/info_team
+(env)$ python my_bot --info
+# or
+(env)$ python my_bot -i
 ```
-- Calendar bot
+- Event bot
 ```shell
-(env)$ python my_bot/my_calendar
-```
-- Funny bot
-```shell
-(env)$ python my_bot/funny_bot
+(env)$ python my_bot --event
+# or
+(env)$ python my_bot -e
 ```
