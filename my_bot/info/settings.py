@@ -5,8 +5,11 @@ def conf_dict(name, help, title, obj_type):
     return {'name': name, 'help': help, 'title': title, 'obj_type': obj_type}
 
 
-confs = {
+confs_guild = {
     'shl': conf_dict('shell', 'Display infos in shell -> #shell', '', ''),
+    'own': conf_dict(
+        'owner', "The Owner-> #owner",
+        'Owner', 'owner'),
     'mem': conf_dict(
         'mems', "All members -> #mems",
         'Members', 'member'),
@@ -24,16 +27,33 @@ confs = {
         'Text Channels', 'text channel'),
     'vcha': conf_dict(
         'vchans', 'All voice channels -> #vchans',
-        'Voice Channels', 'voice channel'), }
-    # 'rolmem': conf_dict(
-    #     'role_mems',
-    #     'Members with a role-> #role_mems "role name or id"'),
-    # 'catcha': conf_dict(
-    #     'cat_chans',
-    #     'Channels with a category-> #cat_chans "cat name or id"'),
-    # 'chamem': conf_dict(
-    #     'chan_mems',
-    #     'Auth Members on chan-> #chan_mems "chan name or id"')}
+        'Voice Channels', 'voice channel'),
+    'pcha': conf_dict(
+        'pchans', 'All private channels -> #pchans',
+        'Private Channels', 'private channel'),
+    'gcha': conf_dict(
+        'gchans', 'All group channels -> #gchans',
+        'Group Channels', 'group channel'),
+    'ncha': conf_dict(
+        'nchans', 'All news channels -> #nchans',
+        'News Channels', 'news channel'),
+    'scha': conf_dict(
+        'schans', 'All store channels -> #schans',
+        'Store Channels', 'store channel'),
+    'emo': conf_dict(
+        'emos', 'All emojis -> #emos',
+        'Emojis', 'emoji'), }
+
+# confs_components = {
+#     'rolmem': conf_dict(
+#         'role_mems',
+#         'Members with a role-> #role_mems "role name or id"'),
+#     'catcha': conf_dict(
+#         'cat_chans',
+#         'Channels with a category-> #cat_chans "cat name or id"'),
+#     'chamem': conf_dict(
+#         'chan_mems',
+#         'Auth Members on chan-> #chan_mems "chan name or id"')}
 
 # Error messages -> {name: message, ...}
 error_msgs = {
