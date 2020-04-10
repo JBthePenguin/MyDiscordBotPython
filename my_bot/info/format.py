@@ -39,7 +39,7 @@ def info_in_shell(guild):
 
 
 def list_in_embed(objs, author_name, icon_url, title="Members"):
-    """ Return an embed with a specific list """
+    """ Return an embed with a specific list sorted"""
     objs.sort(key=lambda obj: obj.name)
     objs_ids = "\n".join(str(obj.id) for obj in objs)
     objs_names = "\n".join(obj.name for obj in objs)
