@@ -1,6 +1,6 @@
 from discord.ext.commands import Bot
 # from tinydb import TinyDB
-from info_team.commands import InfoCommands
+from info.guild import InfoGuildCommands
 # from my_calendar.display_commands import EventDisplayCommands
 # from my_calendar.action_commands import EventActionCommands
 
@@ -13,8 +13,8 @@ class MyBot(Bot):
         super().__init__(command_prefix="#")
         self.label = '-'
         if info is True:  # add Info team commands
-            self.add_cog(InfoCommands(self))
-            self.label += ' Info Team -'
+            self.add_cog(InfoGuildCommands(self))
+            self.label += ' Info Guild and components -'
         if event is True:  # add Event commands
             # self.add_cog(EventDisplayCommands(self))
             # self.add_cog(EventActionCommands(self))

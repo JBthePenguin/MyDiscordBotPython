@@ -1,11 +1,12 @@
+from discord import ChannelType
 from discord.ext.commands import Cog, command
 from .settings import confs
 from .format import info_in_shell, list_in_embed
-from .checkers import param_command
+from .checkers import param_command, list_content
 
 
 class InfoCommands(Cog, name='Commands Info Team'):
-    """ Class Category of commands to obtain infos on a team (guild) """
+    """ Class Category of commands to obtain infos for a team (guild) """
 
     def __init__(self, bot):
         self.bot = bot
@@ -24,8 +25,12 @@ class InfoCommands(Cog, name='Commands Info Team'):
     async def members(self, ctx):
         """ Send an embed with a sorted list of all members """
         guild = ctx.message.channel.guild
-        await ctx.send(embed=list_in_embed(
-            guild.members, guild.name, guild.icon_url, 'Members'))
+        members = list_content(guild.members, guild.name, 'member')
+        if isinstance(members, str):
+            await ctx.send(members)
+        else:
+            await ctx.send(embed=list_in_embed(
+                members, guild.name, guild.icon_url, 'Members'))
 
     @command(
         name=confs['rol']['name'],
@@ -33,8 +38,12 @@ class InfoCommands(Cog, name='Commands Info Team'):
     async def roles(self, ctx):
         """ Send an embed with the list of all roles """
         guild = ctx.message.channel.guild
-        await ctx.send(embed=list_in_embed(
-            guild.roles, guild.name, guild.icon_url, "Roles"))
+        roles = list_content(guild.roles, guild.name, 'role')
+        if isinstance(roles, str):
+            await ctx.send(roles)
+        else:
+            await ctx.send(embed=list_in_embed(
+                roles, guild.name, guild.icon_url, "Roles"))
 
     @command(
         name=confs['cat']['name'],
@@ -42,9 +51,12 @@ class InfoCommands(Cog, name='Commands Info Team'):
     async def categories(self, ctx):
         """ Send an embed with the list of all channel's categories """
         guild = ctx.message.channel.guild
-        await ctx.send(embed=list_in_embed(
-            guild.categories, guild.name, guild.icon_url,
-            "Channel's categories"))
+        cats = list_content(guild.categories, guild.name, 'channel category')
+        if isinstance(cats, str):
+            await ctx.send(cats)
+        else:
+            await ctx.send(embed=list_in_embed(
+                cats, guild.name, guild.icon_url, "Channel's categories"))
 
     @command(
         name=confs['chan']['name'], help=confs['chan']['help'],
@@ -52,10 +64,44 @@ class InfoCommands(Cog, name='Commands Info Team'):
     async def channels(self, ctx):
         """ Send an embed with the list of all channels (no send category) """
         guild = ctx.message.channel.guild
-        channels = [  # remove categories in guild.channels
-            chan for chan in guild.channels if chan not in guild.categories]
-        await ctx.send(embed=list_in_embed(
-            channels, guild.name, guild.icon_url, "Channels"))
+        channels = list_content(
+            [c for c in guild.channels if c.type != ChannelType.category],
+            guild.name, 'channel')
+        if isinstance(channels, str):
+            await ctx.send(channels)
+        else:
+            await ctx.send(embed=list_in_embed(
+                channels, guild.name, guild.icon_url, "Channels"))
+
+    @command(
+        name=confs['t_chan']['name'], help=confs['t_chan']['help'],
+        ignore_extra=False)
+    async def text_channels(self, ctx):
+        """ Send an embed with the list of all text channels """
+        guild = ctx.message.channel.guild
+        t_channels = list_content(
+            [c for c in guild.channels if c.type == ChannelType.text],
+            guild.name, 'text channel')
+        if isinstance(t_channels, str):
+            await ctx.send(t_channels)
+        else:
+            await ctx.send(embed=list_in_embed(
+                t_channels, guild.name, guild.icon_url, "Text Channels"))
+
+    @command(
+        name=confs['v_chan']['name'], help=confs['v_chan']['help'],
+        ignore_extra=False)
+    async def voice_channels(self, ctx):
+        """ Send an embed with the list of all voice channels """
+        guild = ctx.message.channel.guild
+        v_channels = list_content(
+            [c for c in guild.channels if c.type == ChannelType.voice],
+            guild.name, 'voice channel')
+        if isinstance(v_channels, str):
+            await ctx.send(v_channels)
+        else:
+            await ctx.send(embed=list_in_embed(
+                v_channels, guild.name, guild.icon_url, "Voice Channels"))
 
     # # commands with params
     @command(
@@ -92,12 +138,12 @@ class InfoCommands(Cog, name='Commands Info Team'):
         """ Send a message with the list of members
         who have view permission for a specific channel """
         guild = ctx.message.channel.guild
-        channels = [  # remove categories in guild.channels
-            chan for chan in guild.channels if chan not in guild.categories]
+        channels = [  # remove category to the channels list
+            c for c in guild.channels if c.type != ChannelType.category]
         channel = param_command(channels, chan_name_or_id, 'Channel')
-        ##### pb with vocal chan
         if isinstance(channel, str):  # no channel with this name or id
             await ctx.send(channel)
         else:
+            ##### pb with vocal chan
             await ctx.send(embed=list_in_embed(
                 channel.members, channel.name, '', 'Auth Members'))
