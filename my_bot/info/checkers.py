@@ -18,7 +18,7 @@ def param_command(objs, obj_name_or_id, obj_type):
     return obj
 
 
-def list_content(objs, location, obj_type):
+def empty_content(objs, location, obj_type):
     """ Check if a list is empty, return list or empty list message """
     if not objs:
         return error_msgs['empty_list'].format(location, obj_type)

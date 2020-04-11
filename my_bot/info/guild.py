@@ -2,7 +2,7 @@ from discord import ChannelType
 from discord.ext.commands import Cog, command
 from .settings import confs_guild as confs
 from .format import info_in_shell, list_in_embed, emojis_in_embed
-from .checkers import list_content
+from .checkers import empty_content
 
 
 class InfoGuildCommands(Cog, name='Commands Info Guild'):
@@ -20,7 +20,7 @@ class InfoGuildCommands(Cog, name='Commands Info Guild'):
 
     async def respond(self, sender, name, icon_url, objs, confs_key):
         """ send a list in embed, if empty a message that indicate it"""
-        objs_checked = list_content(objs, name, confs[confs_key]['obj_type'])
+        objs_checked = empty_content(objs, name, confs[confs_key]['obj_type'])
         if isinstance(objs_checked, str):
             await sender(objs_checked)
         else:

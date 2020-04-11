@@ -1,11 +1,11 @@
 from discord import Embed, ChannelType
 from .settings import confs_guild as confs
-from .checkers import list_content
+from .checkers import empty_content
 
 
 def print_list(title, name, objs, confs_key):
     """ Print a list in shell with a title """
-    objs_checked = list_content(objs, name, confs[confs_key]['obj_type'])
+    objs_checked = empty_content(objs, name, confs[confs_key]['obj_type'])
     if isinstance(objs_checked, str):
         print('\n' + objs_checked)
     else:
@@ -63,18 +63,21 @@ def info_in_shell(guild):
 def list_in_embed(objs, author_name, icon_url, title):
     """ Return an embed with a specific list sorted"""
     objs.sort(key=lambda obj: obj.name)
-    objs_ids = "\n".join(str(obj.id) for obj in objs)
-    objs_names = "\n".join(obj.name for obj in objs)
+    ids = "\n".join(str(obj.id) for obj in objs)
+    names = "\n".join(obj.name for obj in objs)
     embed = Embed(title=title, color=0x161616)
     embed.set_author(name=author_name, icon_url=icon_url)
-    embed.add_field(name='ID', value=objs_ids, inline=True)
-    embed.add_field(name='Name', value=objs_names, inline=True)
+    embed.add_field(name='ID', value=ids, inline=True)
+    embed.add_field(name='Name', value=names, inline=True)
     return embed
 
 
 def emojis_in_embed(emojis, author_name, icon_url, title):
     """ Return an embed with a tuple of emojis """
     embed = Embed(title=title, color=0x161616)
+    symbols = "\n\n".join(str(emoji) for emoji in emojis)
+    names = "\n\n".join(emoji.name for emoji in emojis)
     embed.set_author(name=author_name, icon_url=icon_url)
-    embed.add_field(name='\u200b', value=" ".join(str(obj) for obj in emojis))
+    embed.add_field(name='\u200b', value=symbols, inline=True)
+    embed.add_field(name='\u200b', value=names, inline=True)
     return embed

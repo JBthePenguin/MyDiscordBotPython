@@ -7,3 +7,5 @@ db.json
 my_bot/__pycache__/
 
 my_bot/*/__pycache__/
+
+my_bot/*/*/__pycache__/

@@ -52,6 +52,5 @@ class InfoCommands(Cog, name='Commands Info Team'):
         if isinstance(channel, str):  # no channel with this name or id
             await ctx.send(channel)
         else:
-            ##### pb with vocal chan
             await ctx.send(embed=list_in_embed(
                 channel.members, channel.name, '', 'Auth Members'))

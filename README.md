@@ -28,3 +28,17 @@ $ source env/bin/activate
 # or
 (env)$ python my_bot -e
 ```
+
+### Tests
+Inside my_bot
+```shell
+(env)$ cd my_bot
+```
+- Run all tests
+```shell
+(env)$ python -m unittest -v
+```
+- Run test for a specific module (ex: info)
+```shell
+(env)$ python -m unittest info.test -v
+```
