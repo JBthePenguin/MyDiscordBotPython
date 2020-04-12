@@ -1,11 +1,11 @@
 from discord import Embed, ChannelType
-from .settings import confs_guild as confs
-from .checkers import empty_content
+from .config import confs_guild as confs
+#  from .checking import empty_content
 
 
-def print_list(title, name, objs, confs_key):
+def print_list(title, name, objs_checked, confs_key):
     """ Print a list in shell with a title """
-    objs_checked = empty_content(objs, name, confs[confs_key]['obj_type'])
+    # objs_checked = empty_content(objs, name, confs[confs_key]['obj_type'])
     if isinstance(objs_checked, str):
         print('\n' + objs_checked)
     else:

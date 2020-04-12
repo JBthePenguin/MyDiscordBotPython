@@ -1,8 +1,8 @@
 from unittest import TestCase
-from ..checkers import empty_content
+from ..checking import empty_content
 
 
-class CheckersTest(TestCase):
+class CheckerTest(TestCase):
     """ Test case for Checkers """
 
     def setUp(self):

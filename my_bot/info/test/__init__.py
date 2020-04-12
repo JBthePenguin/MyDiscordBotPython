@@ -1,2 +1,2 @@
-from .checkers import CheckersTest
-from .format import FormatTest
+from .t_checking import CheckerTest
+from .t_shaping import ShaperTest

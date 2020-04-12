@@ -30,15 +30,19 @@ $ source env/bin/activate
 ```
 
 ### Tests
-Inside my_bot
-```shell
-(env)$ cd my_bot
-```
-- Run all tests
+- All tests
 ```shell
 (env)$ python -m unittest -v
 ```
-- Run test for a specific module (ex: info)
+- Test for a specific module (ex: info)
 ```shell
-(env)$ python -m unittest info.test -v
+(env)$ python -m unittest -v my_bot.info.test
+```
+- Test for a specific TestCase (ex: CheckerTest)
+```shell
+(env)$ python -m unittest -v my_bot.info.test.CheckerTest
+```
+- Only one specific test (ex: test_empty_content)
+```shell
+(env)$ python -m unittest -v my_bot.info.test.CheckerTest.test_empty_content
 ```

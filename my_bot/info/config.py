@@ -1,47 +1,61 @@
+class ConfGuildCommands():
+    """ Configuration for guild commands """
+
+    def __init__(self, name, help):
+        """ Init configuration with name and message """
+        self.name = name
+        self.help = help
+
+
+conf_shl = ConfGuildCommands('shell', 'Display infos in shell -> #shell')
+conf_own = ConfGuildCommands('owner', "The Owner-> #owner")
+conf_mem = ConfGuildCommands('mems', "All members -> #mems")
+conf_rol = ConfGuildCommands('roles', "All roles -> #roles")
+conf_cat = ConfGuildCommands('cats', "All channel's categories -> #cats")
+conf_cha = ConfGuildCommands('chans', 'All channels -> #chans')
+conf_tcha = ConfGuildCommands('tchans', 'All text channels -> #tchans')
+conf_vcha = ConfGuildCommands('vchans', 'All voice channels -> #vchans')
+conf_pcha = ConfGuildCommands('pchans', 'All private channels -> #pchans')
+conf_gcha = ConfGuildCommands('gchans', 'All group channels -> #gchans')
+conf_ncha = ConfGuildCommands('nchans', 'All news channels -> #nchans')
+conf_scha = ConfGuildCommands('schans', 'All store channels -> #schans')
+conf_emo = ConfGuildCommands('emos', 'All emojis -> #emos')
+
+
+
+
 # Configurations of commands -> {key: {'name': name, 'help': help text}}
-def conf_dict(name, help, title, obj_type):
+def conf_dict(title, obj_type):
     """ return a dict with the name of a command and his help text,
     for the response the embed's title and obj_type for empty list msg """
-    return {'name': name, 'help': help, 'title': title, 'obj_type': obj_type}
+    return {'title': title, 'obj_type': obj_type}
 
 
 confs_guild = {
-    'shl': conf_dict('shell', 'Display infos in shell -> #shell', '', ''),
+    'shl': conf_dict('shell', 'Display infos in shell -> #shell'),
     'own': conf_dict(
-        'owner', "The Owner-> #owner",
         'Owner', 'owner'),
     'mem': conf_dict(
-        'mems', "All members -> #mems",
         'Members', 'member'),
     'rol': conf_dict(
-        'roles', "All roles -> #roles",
         'Roles', 'role'),
     'cat': conf_dict(
-        'cats', "All channel's categories -> #cats",
         'Channel Categories', 'channel category'),
     'cha': conf_dict(
-        'chans', 'All channels -> #chans',
         'Channels', 'channel'),
     'tcha': conf_dict(
-        'tchans', 'All text channels -> #tchans',
         'Text Channels', 'text channel'),
     'vcha': conf_dict(
-        'vchans', 'All voice channels -> #vchans',
         'Voice Channels', 'voice channel'),
     'pcha': conf_dict(
-        'pchans', 'All private channels -> #pchans',
         'Private Channels', 'private channel'),
     'gcha': conf_dict(
-        'gchans', 'All group channels -> #gchans',
         'Group Channels', 'group channel'),
     'ncha': conf_dict(
-        'nchans', 'All news channels -> #nchans',
         'News Channels', 'news channel'),
     'scha': conf_dict(
-        'schans', 'All store channels -> #schans',
         'Store Channels', 'store channel'),
     'emo': conf_dict(
-        'emos', 'All emojis -> #emos',
         'Emojis', 'emoji'), }
 
 # confs_components = {
@@ -54,8 +68,3 @@ confs_guild = {
 #     'chamem': conf_dict(
 #         'chan_mems',
 #         'Auth Members on chan-> #chan_mems "chan name or id"')}
-
-# Error messages -> {name: message, ...}
-error_msgs = {
-    'no_exist': "{}: {} not exist",  # {} -> obj field, value
-    'empty_list': "{}: No {}", }  # {} -> location, obj type

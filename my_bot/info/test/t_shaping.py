@@ -1,6 +1,6 @@
 from unittest import TestCase
 from discord import Embed
-from ..format import list_in_embed
+from ..shaping import list_in_embed
 
 
 class Obj():
@@ -9,7 +9,7 @@ class Obj():
         self.name = name
 
 
-class FormatTest(TestCase):
+class ShaperTest(TestCase):
     """ Test case for format """
 
     def setUp(self):
