@@ -2,6 +2,40 @@ from discord import Embed, ChannelType
 # from .config import confs_guild as confs
 #  from .checking import empty_content
 
+class GuildEmbed(Embed):
+    """ Embed for Guild """
+
+    def __init__(self, name, icon_url):
+        """ Init an embed with color, author name and icon_url """
+        super().__init__(color=0x161616)
+        self.set_author(name=name, icon_url=icon_url)
+
+    def add_title_objs(self, conf_embed, objs):
+        """ add title, add fields id and name, add each obj sorted by name"""
+        if not objs:  # no obj
+            self.title = f"No {conf_embed.obj_type}"
+        else:
+            self.title = conf_embed.title
+            if conf_embed.obj_type == 'emoji':  # for emoji
+                self.add_emojis(objs)
+            else:
+                objs.sort(key=lambda obj: obj.name)
+                ids = "\n".join([str(obj.id) for obj in objs])
+                names = "\n".join([obj.name for obj in objs])
+                self.add_field(name='ID', value=ids, inline=True)
+                self.add_field(name='Name', value=names, inline=True)
+
+    def add_emojis(self, emojis):
+        """ Return an embed with a tuple of emojis """
+        half_n_emo = len(emojis) // 2
+        first_emos = [emo for emo in emojis[half_n_emo:]]
+        second_emos = [emo for emo in emojis[:half_n_emo]]
+        first_field = "\n\n".join([
+            f'{str(emoji)} {emoji.name}' for emoji in first_emos])
+        second_field = "\n\n".join([
+            f'{str(emoji)} {emoji.name}' for emoji in second_emos])
+        self.add_field(name='\u200b', value=first_field, inline=True)
+        self.add_field(name='\u200b', value=second_field, inline=True)
 
 
 def print_list(title, name, objs_checked, confs_key):
@@ -59,32 +93,3 @@ def info_in_shell(guild):
             print_list('## GROUP CHANNELS ', chans_cat[0].name, g_ch, 'gcha')
             print_list('## NEWS CHANNELS ', chans_cat[0].name, n_ch, 'ncha')
             print_list('## STORE CHANNELS ', chans_cat[0].name, s_ch, 'scha')
-
-
-class GuildEmbed(Embed):
-    """ Embed for Guild """
-
-    def __init__(self, name, icon_url):
-        """ Init an embed with color, author name and icon_url """
-        super().__init__(color=0x161616)
-        self.set_author(name=name, icon_url=icon_url)
-
-    def add_list(self, objs):
-        """ add fields id and name and insert each obj """
-        ids = "\n".join(str(obj.id) for obj in objs)
-        names = "\n".join(obj.name for obj in objs)
-        # embed = Embed(title=title, color=0x161616)
-        # embed.set_author(name=author_name, icon_url=icon_url)
-        self.add_field(name='ID', value=ids, inline=True)
-        self.add_field(name='Name', value=names, inline=True)
-        # return embed
-
-    def emojis_in_embed(self, emojis, author_name, icon_url, title):
-        """ Return an embed with a tuple of emojis """
-        embed = Embed(title=title, color=0x161616)
-        symbols = "\n\n".join(str(emoji) for emoji in emojis)
-        names = "\n\n".join(emoji.name for emoji in emojis)
-        embed.set_author(name=author_name, icon_url=icon_url)
-        embed.add_field(name='\u200b', value=symbols, inline=True)
-        embed.add_field(name='\u200b', value=names, inline=True)
-        return embed
