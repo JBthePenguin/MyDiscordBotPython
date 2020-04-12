@@ -2,7 +2,7 @@ class ConfGuildCommands():
     """ Configuration for guild commands """
 
     def __init__(self, name, help):
-        """ Init configuration with name and message """
+        """ Init configuration with name and help message """
         self.name = name
         self.help = help
 
@@ -25,38 +25,10 @@ conf_emo = ConfGuildCommands('emos', 'All emojis -> #emos')
 
 
 # Configurations of commands -> {key: {'name': name, 'help': help text}}
-def conf_dict(title, obj_type):
-    """ return a dict with the name of a command and his help text,
-    for the response the embed's title and obj_type for empty list msg """
-    return {'title': title, 'obj_type': obj_type}
-
-
-confs_guild = {
-    'shl': conf_dict('shell', 'Display infos in shell -> #shell'),
-    'own': conf_dict(
-        'Owner', 'owner'),
-    'mem': conf_dict(
-        'Members', 'member'),
-    'rol': conf_dict(
-        'Roles', 'role'),
-    'cat': conf_dict(
-        'Channel Categories', 'channel category'),
-    'cha': conf_dict(
-        'Channels', 'channel'),
-    'tcha': conf_dict(
-        'Text Channels', 'text channel'),
-    'vcha': conf_dict(
-        'Voice Channels', 'voice channel'),
-    'pcha': conf_dict(
-        'Private Channels', 'private channel'),
-    'gcha': conf_dict(
-        'Group Channels', 'group channel'),
-    'ncha': conf_dict(
-        'News Channels', 'news channel'),
-    'scha': conf_dict(
-        'Store Channels', 'store channel'),
-    'emo': conf_dict(
-        'Emojis', 'emoji'), }
+# def conf_dict(title, obj_type):
+#     """ return a dict with the name of a command and his help text,
+#     for the response the embed's title and obj_type for empty list msg """
+#     return {'title': title, 'obj_type': obj_type}
 
 # confs_components = {
 #     'rolmem': conf_dict(
