@@ -2,6 +2,7 @@ from discord import Embed, ChannelType
 # from .config import confs_guild as confs
 #  from .checking import empty_content
 
+
 class GuildEmbed(Embed):
     """ Embed for Guild """
 

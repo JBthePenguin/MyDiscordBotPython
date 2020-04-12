@@ -10,7 +10,7 @@ class ConfigGuildEmbed():
 class ConfGuildCommand():
     """ Configuration for guild commands """
 
-    def __init__(self, name, embed_title, embed_obj_type):
+    def __init__(self, name, help, embed_title, embed_obj_type):
         """ Init with name, help message and config embed"""
         self.name = name
         self.help = help
