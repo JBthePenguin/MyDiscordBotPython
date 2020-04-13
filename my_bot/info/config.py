@@ -38,6 +38,8 @@ class ConfGuildCommand():
 
 
 # owner, members, roles, channel's categories, channels
+com_gld = ConfGuildCommand(
+    'guild', "Guild's stats -> #guild", ConfGuildTitle('', ''))
 com_own = ConfGuildCommand('owner', "The Owner-> #owner", title_own)
 com_mem = ConfGuildCommand('mems', "All members -> #mems", title_mem)
 com_rol = ConfGuildCommand('roles', "All roles -> #roles", title_rol)

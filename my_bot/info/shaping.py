@@ -13,6 +13,37 @@ class GuildEmbed(Embed):
         super().__init__(color=0x161616)
         self.set_author(name=name, icon_url=icon_url)
 
+    def add_stat(self, title, objs):
+        """ add a field, set name with default title
+        and set value with the number of objs """
+        self.add_field(name=title.default, value=str(len(objs)), inline=True)
+
+    def add_title_stats(self, guild):
+        """ add title with owner name,
+        add fields for guild's stats (number of members, roles,...) """
+        self.title = f"id: {guild.id}"
+        self.add_stat(title_mem, guild.members)
+        self.add_stat(title_rol, guild.roles)
+        self.add_stat(title_emo, guild.emojis)
+        self.add_stat(title_cat, guild.categories)
+        self.add_field(name='\u200b', value='\u200b', inline=True)
+        self.add_stat(title_cha, guild.channels)
+        self.add_stat(title_tcha, guild.text_channels)
+        self.add_stat(title_vcha, guild.voice_channels)
+        self.add_stat(
+            title_pcha,
+            [c for c in guild.channels if c.type == ChannelType.private])
+        self.add_stat(
+            title_gcha,
+            [c for c in guild.channels if c.type == ChannelType.group])
+        self.add_stat(
+            title_ncha,
+            [c for c in guild.channels if c.type == ChannelType.news])
+        self.add_stat(
+            title_scha,
+            [c for c in guild.channels if c.type == ChannelType.store])
+        self.set_footer(text=f"{title_own.default}: {guild.owner.name}")
+
     def add_title_objs(self, conf_embed, objs):
         """ add title, add fields id and name, add each obj sorted by name"""
         if objs:
