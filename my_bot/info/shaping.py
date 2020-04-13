@@ -73,6 +73,45 @@ class GuildShell():
             else:
                 i += 1
 
+    def add_type_chans(self, chans, title):
+        """ add channels with a specific type(title) """
+        if chans:
+            self.infos += f"### {title.default}\n"
+            chans.sort(key=lambda chan: chan.name)
+            for chan in chans:
+                self.infos += f"- {chan.id} - {chan.name}\n"
+
+    def add_cats_chans(self, chans_cats):
+        """ add channels by category and type """
+        if chans_cats:
+            self.infos += f"\n\n########## CHANNELS BY CATEGORIES ##########\n"
+            for chans_cat in chans_cats:
+                if chans_cat[0] is None:
+                    self.infos += f"\n##### {title_cat.no_obj} #####\n"
+                else:
+                    self.infos += f"\n##### {chans_cat[0].name} #####\n"
+                if not chans_cat[1]:
+                    self.infos += f"- {title_cha.no_obj}\n"
+                else:
+                    self.add_type_chans(
+                        [c for c in chans_cat[1] if (
+                            c.type == ChannelType.text)], title_tcha)
+                    self.add_type_chans(
+                        [c for c in chans_cat[1] if (
+                            c.type == ChannelType.voice)], title_vcha)
+                    self.add_type_chans(
+                        [c for c in chans_cat[1] if (
+                            c.type == ChannelType.private)], title_pcha)
+                    self.add_type_chans(
+                        [c for c in chans_cat[1] if (
+                            c.type == ChannelType.group)], title_gcha)
+                    self.add_type_chans(
+                        [c for c in chans_cat[1] if (
+                            c.type == ChannelType.news)], title_ncha)
+                    self.add_type_chans(
+                        [c for c in chans_cat[1] if (
+                            c.type == ChannelType.store)], title_scha)
+
     def add_infos(self):
         """ Construct a string with all guild's infos """
         # guild and owner
@@ -102,9 +141,5 @@ class GuildShell():
             [c for c in self.guild.channels if c.type == ChannelType.store])
         # Emojis
         self.add_list(title_emo, self.guild.emojis)
-
-
-# for chans_cat in guild.by_category():
-# if chans_cat[0] is None:
-# if not chans_cat[1]:
-# for channel in chans_cat[1]:
+        # Channels by Category
+        self.add_cats_chans(self.guild.by_category())

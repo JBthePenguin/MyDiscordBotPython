@@ -1,6 +1,6 @@
 # Configuration title : default and no object
 class ConfGuildTitle():
-    """ Configuration for guild or component title """
+    """ Configuration for guild's component title """
 
     def __init__(self, title, obj_type):
         """ Init with title and obj type """
