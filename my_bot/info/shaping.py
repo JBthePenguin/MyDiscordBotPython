@@ -1,23 +1,25 @@
 from discord import Embed, ChannelType
-# from .config import confs_guild as confs
-#  from .checking import empty_content
+from .config import (
+    title_gld, title_own, title_mem, title_rol, title_cat, title_cha,
+    title_tcha, title_vcha, title_pcha, title_gcha, title_ncha, title_scha,
+    title_emo)
 
 
 class GuildEmbed(Embed):
     """ Embed for Guild """
 
     def __init__(self, name, icon_url):
-        """ Init an embed with color, author name and icon_url """
+        """ Init an embed with color, guild name and icon_url """
         super().__init__(color=0x161616)
         self.set_author(name=name, icon_url=icon_url)
 
     def add_title_objs(self, conf_embed, objs):
         """ add title, add fields id and name, add each obj sorted by name"""
         if not objs:  # no obj
-            self.title = f"No {conf_embed.obj_type}"
+            self.title = conf_embed.no_obj
         else:
-            self.title = conf_embed.title
-            if conf_embed.obj_type == 'emoji':  # for emoji
+            self.title = conf_embed.default
+            if self.title == 'Emojis':  # for emoji
                 self.add_emojis(objs)
             else:
                 objs.sort(key=lambda obj: obj.name)
@@ -27,7 +29,7 @@ class GuildEmbed(Embed):
                 self.add_field(name='Name', value=names, inline=True)
 
     def add_emojis(self, emojis):
-        """ Return an embed with a tuple of emojis """
+        """ add emojis(tuple) symbol and name, separate in 2 fields """
         half_n_emo = len(emojis) // 2
         first_emos = [emo for emo in emojis[half_n_emo:]]
         second_emos = [emo for emo in emojis[:half_n_emo]]
@@ -39,58 +41,70 @@ class GuildEmbed(Embed):
         self.add_field(name='\u200b', value=second_field, inline=True)
 
 
-def print_list(title, name, objs_checked, confs_key):
-    """ Print a list in shell with a title """
-    # objs_checked = empty_content(objs, name, confs[confs_key]['obj_type'])
-    if isinstance(objs_checked, str):
-        print('\n' + objs_checked)
-    else:
-        print(title)
-        objs_checked.sort(key=lambda obj: obj.name)
-        for obj in objs_checked:
-            print("id: {} - {}".format(obj.id, obj.name))
+class GuildShell():
+    """ String for guild """
+
+    def __init__(self, guild):
+        """ Init a string for infos with guild id and name """
+        self.guild = guild
+        self.infos = ''
+
+    def add_list(self, title, objs):
+        """ add a list with a title to infos string """
+        if not objs:
+            self.infos += f"\n########## {title.no_obj} ##########\n"
+        else:
+            self.infos += f"\n########## {title.default} ##########\n"
+            if title.default == 'Emojis':
+                self.add_emojis(objs)
+            else:
+                objs.sort(key=lambda obj: obj.name)
+                for obj in objs:
+                    self.infos += f"- {obj.id} - {obj.name}\n"
+
+    def add_emojis(self, emojis):
+        """ add a tuple of emojis """
+        i = 0
+        for emoji in emojis:
+            self.infos += f"- {str(emoji)} {emoji.name} "
+            if i == 2:
+                self.infos += "\n"
+                i = 0
+            else:
+                i += 1
+
+    def add_infos(self):
+        """ Construct a string with all guild's infos """
+        # guild and owner
+        self.add_list(title_gld, [self.guild])
+        self.add_list(title_own, [self.guild.owner])
+        # members, roles, channel's categories, channels
+        self.add_list(title_mem, self.guild.members)
+        self.add_list(title_rol, self.guild.roles)
+        self.add_list(title_cat, self.guild.categories)
+        self.add_list(
+            title_cha,
+            [c for c in self.guild.channels if c.type != ChannelType.category])
+        # text, voice, private, group, news and store channels
+        self.add_list(title_tcha, self.guild.text_channels)
+        self.add_list(title_vcha, self.guild.voice_channels)
+        self.add_list(
+            title_pcha,
+            [c for c in self.guild.channels if c.type == ChannelType.private])
+        self.add_list(
+            title_gcha,
+            [c for c in self.guild.channels if c.type == ChannelType.group])
+        self.add_list(
+            title_ncha,
+            [c for c in self.guild.channels if c.type == ChannelType.news])
+        self.add_list(
+            title_scha,
+            [c for c in self.guild.channels if c.type == ChannelType.store])
+        # Emojis
+        self.add_list(title_emo, self.guild.emojis)
 
 
-def info_in_shell(guild):
-    """ Display infos (id, name) in shell for a specific guild
-    - members -roles - channels by category and type"""
-    print("\n############## GUILD #######\nid: {} - {}".format(
-        guild.id, guild.name))
-    print("### Owner ###\nid: {} - {}".format(
-        guild.owner.id, guild.owner.name))
-    print_list('\n########## MEMBERS #####', guild.name, guild.members, 'mem')
-    print_list('\n########## ROLES #####', guild.name, guild.roles, 'rol')
-    print('\n########## CHANNELS BY CATEGORY #####')
-    if not guild.by_category():
-        print('\n{}: no category, no channel'.format(guild.name))
-    else:
-        for chans_cat in guild.by_category():
-            print('\n###### CATEGORY ###')
-            if chans_cat[0] is None:
-                print("No category")
-            else:
-                print("id: {} - {}".format(chans_cat[0].id, chans_cat[0].name))
-            print('#### CHANNELS ##')
-            if not chans_cat[1]:
-                print('No Channel')
-            else:
-                t_ch, v_ch, p_ch, g_ch, n_ch, s_ch = [], [], [], [], [], []
-            for channel in chans_cat[1]:
-                if channel.type == ChannelType.text:
-                    t_ch.append(channel)
-                elif channel.type == ChannelType.voice:
-                    v_ch.append(channel)
-                elif channel.type == ChannelType.private:
-                    p_ch.append(channel)
-                elif channel.type == ChannelType.group:
-                    g_ch.append(channel)
-                elif channel.type == ChannelType.news:
-                    n_ch.append(channel)
-                elif channel.type == ChannelType.store:
-                    s_ch.append(channel)
-            print_list('## TEXT CHANNELS ', chans_cat[0].name, t_ch, 'tcha')
-            print_list('## VOICE CHANNELS ', chans_cat[0].name, v_ch, 'vcha')
-            print_list('## PRIVATE CHANNELS ', chans_cat[0].name, p_ch, 'pcha')
-            print_list('## GROUP CHANNELS ', chans_cat[0].name, g_ch, 'gcha')
-            print_list('## NEWS CHANNELS ', chans_cat[0].name, n_ch, 'ncha')
-            print_list('## STORE CHANNELS ', chans_cat[0].name, s_ch, 'scha')
+# for chans_cat in guild.by_category():
+# if chans_cat[0] is None:
+# if not chans_cat[1]:
+# for channel in chans_cat[1]:
