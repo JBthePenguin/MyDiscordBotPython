@@ -1,8 +1,8 @@
 from discord import ChannelType
 from discord.ext.commands import Cog, command
 from .config import (
-    com_shl, com_own, com_mem, com_rol, com_cat, com_cha, com_tcha,
-    com_vcha, com_pcha, com_gcha, com_ncha, com_scha, com_emo)
+    com_own, com_mem, com_rol, com_cat, com_cha, com_tcha, com_vcha, com_pcha,
+    com_gcha, com_ncha, com_scha, com_emo, com_shl)
 from .shaping import GuildEmbed, GuildShell
 
 

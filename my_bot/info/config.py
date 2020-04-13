@@ -37,9 +37,7 @@ class ConfGuildCommand():
         self.conf_embed = conf_embed
 
 
-# shell, owner, members, roles, channel's categories, channels
-com_shl = ConfGuildCommand(
-    'shell', 'Infos in shell -> #shell', ConfGuildTitle('', ''))
+# owner, members, roles, channel's categories, channels
 com_own = ConfGuildCommand('owner', "The Owner-> #owner", title_own)
 com_mem = ConfGuildCommand('mems', "All members -> #mems", title_mem)
 com_rol = ConfGuildCommand('roles', "All roles -> #roles", title_rol)
@@ -59,9 +57,10 @@ com_ncha = ConfGuildCommand(
     'nchans', 'All news channels -> #nchans', title_ncha)
 com_scha = ConfGuildCommand(
     'schans', 'All store channels -> #schans', title_scha)
-# emojis
+# emojis, shell
 com_emo = ConfGuildCommand('emos', 'All emojis -> #emos', title_emo)
-
+com_shl = ConfGuildCommand(
+    'shell', 'Infos in shell -> #shell', ConfGuildTitle('', ''))
 
 
 

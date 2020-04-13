@@ -15,9 +15,7 @@ class GuildEmbed(Embed):
 
     def add_title_objs(self, conf_embed, objs):
         """ add title, add fields id and name, add each obj sorted by name"""
-        if not objs:  # no obj
-            self.title = conf_embed.no_obj
-        else:
+        if objs:
             self.title = conf_embed.default
             if self.title == 'Emojis':  # for emoji
                 self.add_emojis(objs)
@@ -27,6 +25,9 @@ class GuildEmbed(Embed):
                 names = "\n".join([obj.name for obj in objs])
                 self.add_field(name='ID', value=ids, inline=True)
                 self.add_field(name='Name', value=names, inline=True)
+            self.set_footer(text=f"Total: {str(len(objs))}")
+        else:  # no obj
+            self.title = conf_embed.no_obj
 
     def add_emojis(self, emojis):
         """ add emojis(tuple) symbol and name, separate in 2 fields """
@@ -51,16 +52,20 @@ class GuildShell():
 
     def add_list(self, title, objs):
         """ add a list with a title to infos string """
-        if not objs:
-            self.infos += f"\n########## {title.no_obj} ##########\n"
-        else:
-            self.infos += f"\n########## {title.default} ##########\n"
+        if objs:
+            if (title.default == 'Guild') or (title.default == 'Owner'):
+                n_objs = ''
+            else:
+                n_objs = str(len(objs))
+            self.infos += f"\n########## {n_objs} {title.default} ##########\n"
             if title.default == 'Emojis':
                 self.add_emojis(objs)
             else:
                 objs.sort(key=lambda obj: obj.name)
                 for obj in objs:
                     self.infos += f"- {obj.id} - {obj.name}\n"
+        else:
+            self.infos += f"\n########## {title.no_obj} ##########\n"
 
     def add_emojis(self, emojis):
         """ add a tuple of emojis """
@@ -76,7 +81,7 @@ class GuildShell():
     def add_type_chans(self, chans, title):
         """ add channels with a specific type(title) """
         if chans:
-            self.infos += f"### {title.default}\n"
+            self.infos += f"### {str(len(chans))} {title.default}\n"
             chans.sort(key=lambda chan: chan.name)
             for chan in chans:
                 self.infos += f"- {chan.id} - {chan.name}\n"
@@ -90,9 +95,7 @@ class GuildShell():
                     self.infos += f"\n##### {title_cat.no_obj} #####\n"
                 else:
                     self.infos += f"\n##### {chans_cat[0].name} #####\n"
-                if not chans_cat[1]:
-                    self.infos += f"- {title_cha.no_obj}\n"
-                else:
+                if chans_cat[1]:
                     self.add_type_chans(
                         [c for c in chans_cat[1] if (
                             c.type == ChannelType.text)], title_tcha)
@@ -111,6 +114,8 @@ class GuildShell():
                     self.add_type_chans(
                         [c for c in chans_cat[1] if (
                             c.type == ChannelType.store)], title_scha)
+                else:
+                    self.infos += f"- {title_cha.no_obj}\n"
 
     def add_infos(self):
         """ Construct a string with all guild's infos """
