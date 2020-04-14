@@ -1,2 +1,1 @@
-from .t_checking import CheckerTest
-from .t_shaping import ShaperTest
+from .t_shaping import GuildEmbedTest
