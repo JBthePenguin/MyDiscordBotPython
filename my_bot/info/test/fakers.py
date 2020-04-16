@@ -1,6 +1,6 @@
 from unittest.mock import MagicMock
-from discord import Guild, User, Member, Role, TextChannel
-from discord.enums import ChannelType
+from discord import Guild, User, Member, Role, TextChannel, VoiceChannel
+from discord.permissions import Permissions, PermissionOverwrite
 from discord.ext.commands import Context
 import itertools
 
@@ -15,7 +15,7 @@ class FakeUser(User):
         """ init a user with id, name, discriminator, avatar
         and MagicMock for state """
         user_data = {
-            'id': next(discord_id), 'username': name,
+            'id': next(discord_id), 'username': name, 'bot': False,
             'discriminator': name, 'avatar': str(discord_id)}
         super().__init__(data=user_data, state=MagicMock())
 
@@ -32,8 +32,10 @@ class FakeMember(Member):
     def name_id_update(self, user):
         " update id, name, avatar, discriminator using user's properties"
         u = self._user
-        modified = (user.id, user.name, user.avatar, user.discriminator)
-        u.id, u.name, u.avatar, u.discriminator = modified
+        modified = (
+            user.id, user.name, user.bot,
+            user.avatar, user.discriminator)
+        u.id, u.name, u.bot, u.avatar, u.discriminator = modified
 
 
 class FakeRole(Role):
@@ -42,19 +44,47 @@ class FakeRole(Role):
     def __init__(self, id, name, guild, position):
         """ init a role with id, name, guild, position
         and MagicMock for state """
-        role_data = {'id': id, 'name': name, 'position': position}
+        # permissions = Permissions.all().value
+        role_data = {
+            'id': id, 'name': name, 'position': position,
+            }
         super().__init__(data=role_data, guild=guild, state=MagicMock())
 
 
 class FakeTextChannel(TextChannel):
     """ Class to fake a text channel """
 
-    def __init__(self, name, guild, type, position):
+    def __init__(self, name, guild, type, position, roles):
+        """ init a role with name, a guild, a type (text->0 news->5)
+        and MagicMock for state """
+        permission_overwrites = []
+        for role in roles:
+            permission_overwrites.append(
+                {
+                    "id": role.id, "type": 'role',
+                    'allow': Permissions.all().value, 'deny': False})
+        channel_data = {
+            'id': next(discord_id), 'name': name, 'type': type,
+            'position': position,
+            'permission_overwrites': permission_overwrites}
+        super().__init__(data=channel_data, guild=guild, state=MagicMock())
+
+
+class FakeVoiceChannel(VoiceChannel):
+    """ Class to fake a voice channel """
+
+    def __init__(self, name, guild, position, roles):
         """ init a role with a user, a list of roles, a guild
         and MagicMock for state """
+        permission_overwrites = []
+        for role in roles:
+            permission_overwrites.append(
+                {
+                    "id": role.id, "type": 'role',
+                    'allow': Permissions.all().value, 'deny': False})
         channel_data = {
-            'id': next(discord_id), 'name': name,
-            'type': type, 'position': position}
+            'id': next(discord_id), 'name': name, 'position': position,
+            'permission_overwrites': permission_overwrites}
         super().__init__(data=channel_data, guild=guild, state=MagicMock())
 
 
@@ -103,12 +133,26 @@ class FakeGuild(Guild):
         self.emojis = guild.get('emojis', [])
         # add Channels:
         for name_type_pos in guild.get('channels', []):
+            if name_type_pos[3] == 'all':
+                roles = [self.default_role]
+            else:
+                roles = []
+                for role_name in name_type_pos[3]:
+                    role = self.get_role(name_id_roles[role_name])
+                    roles.append(role)
             if name_type_pos[1] == 'TextChannel':
+                channel = FakeTextChannel(
+                    guild=self, name=name_type_pos[0],
+                    type=0, position=name_type_pos[2], roles=roles)
+                self._add_channel(channel)
+            elif name_type_pos[1] == 'News':
                 self._add_channel(FakeTextChannel(
                     guild=self, name=name_type_pos[0],
-                    type=0, position=name_type_pos[2]))
-            # elif c_type == ChannelType.voice.value:
-            #     self._add_channel(VoiceChannel(guild=self, data=c, state=self._state))
+                    type=5, position=name_type_pos[2], roles=roles))
+            elif name_type_pos[1] == 'VoiceChannel':
+                self._add_channel(FakeVoiceChannel(
+                    guild=self, name=name_type_pos[0],
+                    position=name_type_pos[2], roles=roles))
             # elif c_type == ChannelType.category.value:
             #     self._add_channel(CategoryChannel(guild=self, data=c, state=self._state))
             # elif c_type == ChannelType.store.value:
