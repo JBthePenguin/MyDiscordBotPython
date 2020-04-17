@@ -39,19 +39,20 @@ class GuildEmbedTest(TestCase):
         owner = FakeUser(username='Bill')
         roles = [('admin', 2, True), ('master', 1, False)]
         members = [
-            (owner, ['admin']),
+            (owner, []),
             (FakeUser(username='Joe'), ['admin']),
             (FakeUser(username='Al'), ['master']),
             (FakeUser(username='John'), []),
             (FakeUser(username='Jean-Pierre'), []), ]
         channels = [
-            ('saloon', 'TextChannel', 3, 'all'), ('public', 'News', 0, 'all'),
-            ('sheriff office', 'TextChannel', 1, []),
-            ('school', 'TextChannel', 1, ['master']),
-            ('souk', 'VoiceChannel', 0, 'all')]
+            ('saloon', 'TextChannel', 3, '@everyone', []),
+            ('public', 'News', 0, '@everyone', []),
+            ('sheriff office', 'TextChannel', 1, [], ['Jean-Pierre']),
+            ('school', 'TextChannel', 1, ['master'], []),
+            ('souk', 'VoiceChannel', 0, '@everyone', [])]
         fake_guild = FakeGuild(
-            name="Fake guild", members=members, roles=roles,
-            channels=channels, owner_id=0)
+            name="Fake guild", roles=roles, members=members,
+            channels=channels)
         # print(fake_guild.owner.roles)
         # print('\n')
         # print(fake_guild.id, fake_guild.name)
@@ -61,7 +62,7 @@ class GuildEmbedTest(TestCase):
             print(member.id, member.name, member.roles)
         for channel in fake_guild.channels:
             print(channel.name, channel.type, len(channel.members))
-        # print('Owner:', fake_guild.owner.name)
+        print('Owner:', fake_guild.owner.name)
         # embed = GuildEmbed(self.embed_name, self.embed_icon_url)
         # embed.add_title_stats(fake_guild)
         # print(embed.to_dict())
