@@ -1,6 +1,7 @@
 from unittest import TestCase
 from discord import Embed
-from .fakers import FakeUser, FakeGuild, FakeMember
+from discord.enums import ChannelType
+from .fakers import FakeUser, FakeGuild
 from .results import GuildEmbedTestResult
 from ..shaping import GuildEmbed
 from ..config import title_mem
@@ -44,31 +45,38 @@ class GuildEmbedTest(TestCase):
             (FakeUser(username='Al'), ['master']),
             (FakeUser(username='John'), []),
             (FakeUser(username='Jean-Pierre'), []), ]
+        categories = [(None, 'public', 1), ('public', 'new', 1)]
         channels = [
-            ('saloon', 'TextChannel', 3, '@everyone', []),
-            ('public', 'News', 0, '@everyone', []),
-            ('sheriff office', 'TextChannel', 1, [], ['Jean-Pierre']),
-            ('school', 'TextChannel', 1, ['master'], []),
-            ('souk', 'VoiceChannel', 0, '@everyone', [])]
+            ('public', 'saloon', ChannelType.text.value, 3, '@everyone', []),
+            ('public', 'info point', ChannelType.news.value, 0, '@everyone', []),
+            (None, 'sheriff office', ChannelType.text.value, 1, [], ['Jean-Pierre']),
+            (None, 'school', ChannelType.text.value, 1, ['master'], []),
+            ('new', 'souk', ChannelType.voice.value, 0, '@everyone', []),
+            ('new', 'shop', ChannelType.store.value, 0, '@everyone', [])]
         fake_guild = FakeGuild(
             name="Fake guild", roles=roles, members=members,
-            channels=channels)
+            categories=categories, channels=channels)
         # print(fake_guild.owner.roles)
         # print('\n')
         # print(fake_guild.id, fake_guild.name)
         # print('roles:', fake_guild.roles)
         # print(fake_guild.default_role)
-        for member in fake_guild.members:
-            print(member.id, member.name, member.roles)
+        # for cat in fake_guild.categories:
+        #     print(cat.category_id, cat.name)
+        # print(fake_guild.by_category())
+        # for member in fake_guild.members:
+        #     print(member.id, member.name, member.roles)
         for channel in fake_guild.channels:
-            print(channel.name, channel.type, len(channel.members))
-        print('Owner:', fake_guild.owner.name)
+            if channel.type.value == 4:
+                print(channel.name, channel.type, channel.channels)
+            elif channel.type.value == ChannelType.store.value:
+                print(channel.category_id, channel.name, channel.type)
+            else:
+                print(channel.category_id, channel.name, channel.type, len(channel.members))
+        # print('Owner:', fake_guild.owner.name)
         # embed = GuildEmbed(self.embed_name, self.embed_icon_url)
         # embed.add_title_stats(fake_guild)
         # print(embed.to_dict())
-
-
-
 # class MyTest(aiounittest.AsyncTestCase):
 #
 #     async def test_add_title_stats(self):
