@@ -36,32 +36,35 @@ class GuildEmbedTest(TestCase):
     def test_add_title_stats(self):
         """ assert after add_title_stats if fields are added
         with the good title and the corresponding number of ojs for value """
-        owner = FakeUser(name='Bill')
-        roles = [('admin', 2), ('master', 1)]
+        owner = FakeUser(username='Bill')
+        roles = [('admin', 2, True), ('master', 1, False)]
         members = [
-            (owner, ['admin', 'master']),
-            (FakeUser(name='Joe'), ['admin', 'master']),
-            (FakeUser(name='Al'), ['master']), (FakeUser(name='John'), []),
-            (FakeUser(name='Jean-Pierre'), []), ]
+            (owner, ['admin']),
+            (FakeUser(username='Joe'), ['admin']),
+            (FakeUser(username='Al'), ['master']),
+            (FakeUser(username='John'), []),
+            (FakeUser(username='Jean-Pierre'), []), ]
         channels = [
             ('saloon', 'TextChannel', 3, 'all'), ('public', 'News', 0, 'all'),
-            ('sheriff office', 'TextChannel', 1, ['admin']),
+            ('sheriff office', 'TextChannel', 1, []),
+            ('school', 'TextChannel', 1, ['master']),
             ('souk', 'VoiceChannel', 0, 'all')]
         fake_guild = FakeGuild(
             name="Fake guild", members=members, roles=roles,
             channels=channels, owner_id=0)
+        # print(fake_guild.owner.roles)
         # print('\n')
         # print(fake_guild.id, fake_guild.name)
         # print('roles:', fake_guild.roles)
         # print(fake_guild.default_role)
-        # for member in fake_guild.members:
-        #     print(member.id, member.name, member.roles)
-        # for channel in fake_guild.channels:
-        #     print(channel.name, channel.type, len(channel.members))
+        for member in fake_guild.members:
+            print(member.id, member.name, member.roles)
+        for channel in fake_guild.channels:
+            print(channel.name, channel.type, len(channel.members))
         # print('Owner:', fake_guild.owner.name)
-        embed = GuildEmbed(self.embed_name, self.embed_icon_url)
-        embed.add_title_stats(fake_guild)
-        print(embed.to_dict())
+        # embed = GuildEmbed(self.embed_name, self.embed_icon_url)
+        # embed.add_title_stats(fake_guild)
+        # print(embed.to_dict())
 
 
 

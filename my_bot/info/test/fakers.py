@@ -11,12 +11,12 @@ discord_id = itertools.count(0)
 class FakeUser(User):
     """ Class to fake a user """
 
-    def __init__(self, name):
-        """ init a user with id, name, discriminator, avatar
+    def __init__(self, username):
+        """ init with an id, a username, a bot, a discriminator, an avatar
         and MagicMock for state """
         user_data = {
-            'id': next(discord_id), 'username': name, 'bot': False,
-            'discriminator': name, 'avatar': str(discord_id)}
+            'id': next(discord_id), 'username': username, 'bot': False,
+            'discriminator': username, 'avatar': str(discord_id)}
         super().__init__(data=user_data, state=MagicMock())
 
 
@@ -24,13 +24,13 @@ class FakeMember(Member):
     """ Class to fake a member """
 
     def __init__(self, user, guild, roles):
-        """ init a member with a user, a list of roles (id), a guild
+        """ init with a user, a guild, a list of roles (id)
         and MagicMock for state """
         mem_data = {'user': user, 'roles': roles}
         super().__init__(data=mem_data, guild=guild, state=MagicMock())
 
     def name_id_update(self, user):
-        " update id, name, avatar, discriminator using user's properties"
+        " update id, name, bot, avatar, discriminator using user's properties"
         u = self._user
         modified = (
             user.id, user.name, user.bot,
@@ -41,50 +41,70 @@ class FakeMember(Member):
 class FakeRole(Role):
     """ Class to fake a role """
 
-    def __init__(self, id, name, guild, position):
-        """ init a role with id, name, guild, position
-        and MagicMock for state """
-        # permissions = Permissions.all().value
-        role_data = {
-            'id': id, 'name': name, 'position': position,
-            }
+    def __init__(self, id, name, guild, position, permissions):
+        """ init with an id, a name, a guild, a position,
+        permissions (true -> add all permissions -> same as owner)
+        and MagicMock for state. *** @everyone have same id than guild *** """
+        role_data = {'id': id, 'name': name, 'position': position}
+        if permissions is True:
+            print('yo')
+            role_data['permissions'] = Permissions.all().value
         super().__init__(data=role_data, guild=guild, state=MagicMock())
+
+
+class FakePermissionOverwrites(list):
+    """ class to fake a permission overwrites list """
+
+    def __init__(self, roles, members):
+        """ init with read and send messages permissions for specific
+        roles and members, *** used for argument in init FakeChannel ***
+        -> [{'id': role or member id, 'type': 'role' or 'member',
+        'allow': value, 'deny': value}, ...]  """
+        super().__init__()
+        permission = PermissionOverwrite(
+            read_messages=True, send_messages=True).pair()
+        allow = permission[0].value
+        deny = permission[1].value
+        for r in roles:
+            self.append(
+                {"id": r.id, "type": 'role', 'allow': allow, 'deny': deny})
+        for m in members:
+            self.append(
+                {"id": m.id, "type": 'member', 'allow': allow, 'deny': deny})
+
+
+class FakeChannelData(dict):
+    """ class to fake a channel data dict """
+
+    def __init__(self, name, position, roles, members):
+        """ init with keys id, name, position
+        and permission_overwrites if there is role or member """
+        super().__init__()
+        self['id'] = next(discord_id)
+        self['name'] = name
+        self['position'] = position
+        if roles or members:
+            self['permission_overwrites'] = FakePermissionOverwrites(
+                roles, members)
 
 
 class FakeTextChannel(TextChannel):
     """ Class to fake a text channel """
 
-    def __init__(self, name, guild, type, position, roles):
-        """ init a role with name, a guild, a type (text->0 news->5)
-        and MagicMock for state """
-        permission_overwrites = []
-        for role in roles:
-            permission_overwrites.append(
-                {
-                    "id": role.id, "type": 'role',
-                    'allow': Permissions.all().value, 'deny': False})
-        channel_data = {
-            'id': next(discord_id), 'name': name, 'type': type,
-            'position': position,
-            'permission_overwrites': permission_overwrites}
+    def __init__(self, name, guild, type, position, roles=[], members=[]):
+        """ init with a FakeChannelData (add 'type' = (text->0 news->5)),
+        a guild, and MagicMock for state """
+        channel_data = FakeChannelData(name, position, roles, members)
+        channel_data['type'] = type
         super().__init__(data=channel_data, guild=guild, state=MagicMock())
 
 
 class FakeVoiceChannel(VoiceChannel):
     """ Class to fake a voice channel """
 
-    def __init__(self, name, guild, position, roles):
-        """ init a role with a user, a list of roles, a guild
-        and MagicMock for state """
-        permission_overwrites = []
-        for role in roles:
-            permission_overwrites.append(
-                {
-                    "id": role.id, "type": 'role',
-                    'allow': Permissions.all().value, 'deny': False})
-        channel_data = {
-            'id': next(discord_id), 'name': name, 'position': position,
-            'permission_overwrites': permission_overwrites}
+    def __init__(self, name, guild, position, roles=[], members=[]):
+        """ init with a FakeChannelData, a guild and MagicMock for state """
+        channel_data = FakeChannelData(name, position, roles, members)
         super().__init__(data=channel_data, guild=guild, state=MagicMock())
 
 
@@ -92,17 +112,19 @@ class FakeGuild(Guild):
     """ Class to fake a guild """
 
     def __init__(self, name, members, roles, channels, owner_id):
-        """ init a guild with id, name,
+        """ init with id, name,
         list of tuple for members (FakeUser, roles(list of name)),
-        list of tuple for roles (name, position), a owner id
-        and MagicMock for state """
+        list of tuple for roles (name, position, permissions(bool)),
+        list of tuple for channels (name, type, position, roles, members),
+        a owner id and MagicMock for state """
         guild_data = {
             'id': next(discord_id), 'name': name, 'members': members,
             'channels': channels, 'roles': roles, 'owner_id': owner_id}
         super().__init__(data=guild_data, state=MagicMock())
 
     def _from_data(self, guild):
-        """ override _from_data method to init just necessary properties
+        """ override _from_data method (called at the end of Guild init)
+        to customize init with properties
         -id -name -description -roles -members -owner -emojis -channels """
         self.id = int(guild['id'])
         self.name = guild.get('name')
@@ -110,14 +132,15 @@ class FakeGuild(Guild):
         self._roles = {}
         # add default role @everyone with the same id than the guild
         default_role = FakeRole(
-            id=self.id, name='@everyone', guild=self, position=0)
+            id=self.id, name='@everyone', guild=self, position=0,
+            permissions=False)
         self._roles[default_role.id] = default_role
         # add roles
         name_id_roles = {}
         for name_pos in guild.get('roles', []):
             role = FakeRole(
                 id=next(discord_id), name=name_pos[0], guild=self,
-                position=name_pos[1])
+                position=name_pos[1], permissions=name_pos[2])
             self._roles[role.id] = role
             name_id_roles[role.name] = role.id
         # add members with roles
