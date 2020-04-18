@@ -1,15 +1,9 @@
 from unittest import TestCase
 from discord import Embed
-from discord.enums import ChannelType
 from .fakers import FULL_GUILD
 from .results import GuildEmbedTestResult
 from ..shaping import GuildEmbed
 from ..config import title_mem
-
-# class Obj():
-#     def __init__(self, id, name):
-#         self.id = id
-#         self.name = name
 
 
 class GuildEmbedTest(TestCase):
@@ -30,19 +24,44 @@ class GuildEmbedTest(TestCase):
 
     def test_add_stat(self):
         """ assert after add_stat if a field is added
-        with a title (name) and the number of ojs """
+        with good name and number of ojs """
         embed = GuildEmbed(self.embed_name, self.embed_icon_url)
         embed.add_stat(title_mem, ['a', 'b', 'c', 'd', 'e'])
         self.assertListEqual(embed.to_dict()['fields'], self.result.add_stat)
 
     def test_add_title_stats(self):
-        """ assert after add_title_stats if fields are added
-        with the good title and the corresponding number of ojs for value """
+        """ assert after add_title_stats if there is the good title and footer,
+        if fields are added with the good name
+        and the corresponding number of ojs for value """
         embed = GuildEmbed(self.embed_name, self.embed_icon_url)
         embed.add_title_stats(FULL_GUILD)
+        self.assertEqual(
+            embed.to_dict()['title'], self.result.add_title_stats['title'])
         self.assertListEqual(
-            embed.to_dict()['fields'], self.result.add_title_stats)
+            embed.to_dict()['fields'], self.result.add_title_stats['fields'])
+        self.assertDictEqual(
+            embed.to_dict()['footer'], self.result.add_title_stats['footer'])
 
+    def test_add_title_objs(self):
+        """ assert after add_title_objs if there is the good title and footer,
+        if fields with names 'id' 'name' are added
+        and for each value, the lists of ids and names sorted by name """
+        embed = GuildEmbed(self.embed_name, self.embed_icon_url)
+        embed.add_title_objs(title_mem, FULL_GUILD.members)
+        self.assertEqual(
+            embed.to_dict()['title'], self.result.add_title_objs['title'])
+        self.assertListEqual(
+            embed.to_dict()['fields'], self.result.add_title_objs['fields'])
+        self.assertDictEqual(
+            embed.to_dict()['footer'], self.result.add_title_objs['footer'])
+
+    def test_add_emojis(self):
+        """ assert after add_emojis if 2 fields without names are added
+        and for each value, the list of emojis separated in 2 parts
+        with str() repr and name """
+        embed = GuildEmbed(self.embed_name, self.embed_icon_url)
+        embed.add_emojis(FULL_GUILD.emojis)
+        self.assertListEqual(embed.to_dict()['fields'], self.result.add_emojis)
 # class MyTest(aiounittest.AsyncTestCase):
 #
 #     async def test_add_title_stats(self):
