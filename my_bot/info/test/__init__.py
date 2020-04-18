@@ -1,1 +1,1 @@
-from .t_shaping import GuildEmbedTest
+from .t_shaping import GuildEmbedTest, GuildShellTest

@@ -55,3 +55,15 @@ class GuildEmbedTestResult():
             {
                 'inline': True, 'name': '\u200b',
                 'value': '<:cool:18> cool\n\n<:good:19> good'}]
+
+
+class GuildShellTestResult():
+    """ class with GuildShellTest expected result   """
+
+    @property
+    def add_list(self):
+        """ return the result expected for test_add_list """
+        return '\n'.join([
+            '\n########## 6 Members ##########',
+            '- 1 - Al', '- 3 - Billy', '- 0 - Jean-Pierre', '- 2 - Joe',
+            '- 4 - John', '- 5 - Mike\n'])

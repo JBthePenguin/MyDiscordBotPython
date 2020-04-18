@@ -1,8 +1,8 @@
 from unittest import TestCase
-from discord import Embed
+from discord import Embed, Guild
 from .fakers import FULL_GUILD
-from .results import GuildEmbedTestResult
-from ..shaping import GuildEmbed
+from .results import GuildEmbedTestResult, GuildShellTestResult
+from ..shaping import GuildEmbed, GuildShell
 from ..config import title_mem
 
 
@@ -10,7 +10,8 @@ class GuildEmbedTest(TestCase):
     """ Test case for class GuildEmbed """
 
     def setUp(self):
-        """ Init tests with a GuildEmbed object  """
+        """ Init tests with name and icon url to used with a GuildEmbed object
+        and expected results """
         self.embed_name = 'Guild Embed Test'
         self.embed_icon_url = "https://url.com/icon.png"
         self.result = GuildEmbedTestResult()
@@ -54,6 +55,10 @@ class GuildEmbedTest(TestCase):
             embed.to_dict()['fields'], self.result.add_title_objs['fields'])
         self.assertDictEqual(
             embed.to_dict()['footer'], self.result.add_title_objs['footer'])
+        # with an empty list
+        embed = GuildEmbed(self.embed_name, self.embed_icon_url)
+        embed.add_title_objs(title_mem, [])
+        self.assertEqual(embed.to_dict()['title'], 'No member')
 
     def test_add_emojis(self):
         """ assert after add_emojis if 2 fields without names are added
@@ -62,6 +67,34 @@ class GuildEmbedTest(TestCase):
         embed = GuildEmbed(self.embed_name, self.embed_icon_url)
         embed.add_emojis(FULL_GUILD.emojis)
         self.assertListEqual(embed.to_dict()['fields'], self.result.add_emojis)
+
+
+class GuildShellTest(TestCase):
+    """ Test case for class GuildShell """
+
+    def setUp(self):
+        """ Init tests with the expected results """
+        self.result = GuildShellTestResult()
+
+    def test_init(self):
+        """ assert after init if property infos is instance str and
+        if property guild is instance Guild """
+        guild_shell = GuildShell(FULL_GUILD)
+        self.assertIsInstance(guild_shell.infos, str)
+        self.assertIsInstance(guild_shell.guild, Guild)
+
+    def test_add_list(self):
+        """ assert after add_list if the good title
+        and the sorted list of infos are added to the string """
+        guild_shell = GuildShell(FULL_GUILD)
+        guild_shell.add_list(title_mem, guild_shell.guild.members)
+        self.assertEqual(guild_shell.infos, self.result.add_list)
+        # with empty list
+        guild_shell = GuildShell(FULL_GUILD)
+        guild_shell.add_list(title_mem, [])
+        self.assertEqual(
+            guild_shell.infos, '\n########## No member ##########\n')
+
 # class MyTest(aiounittest.AsyncTestCase):
 #
 #     async def test_add_title_stats(self):
