@@ -26,16 +26,13 @@ class GuildEmbed(Embed):
         self.add_stat(title_rol, guild.roles)
         self.add_stat(title_emo, guild.emojis)
         self.add_stat(title_cat, guild.categories)
-        self.add_field(name='\u200b', value='\u200b', inline=True)
-        self.add_stat(title_cha, guild.channels)
-        self.add_stat(title_tcha, guild.text_channels)
+        self.add_stat(
+            title_cha,
+            [c for c in guild.channels if c.type != ChannelType.category])
+        self.add_stat(
+            title_tcha,
+            [c for c in guild.text_channels if not c.is_news()])
         self.add_stat(title_vcha, guild.voice_channels)
-        self.add_stat(
-            title_pcha,
-            [c for c in guild.channels if c.type == ChannelType.private])
-        self.add_stat(
-            title_gcha,
-            [c for c in guild.channels if c.type == ChannelType.group])
         self.add_stat(
             title_ncha,
             [c for c in guild.channels if c.type == ChannelType.news])

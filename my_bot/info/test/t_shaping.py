@@ -1,7 +1,7 @@
 from unittest import TestCase
 from discord import Embed
 from discord.enums import ChannelType
-from .fakers import FakeUser, FakeGuild
+from .fakers import FULL_GUILD
 from .results import GuildEmbedTestResult
 from ..shaping import GuildEmbed
 from ..config import title_mem
@@ -22,66 +22,27 @@ class GuildEmbedTest(TestCase):
         self.result = GuildEmbedTestResult()
 
     def test_init(self):
-        """ assert after init is instance Embed and the dict result """
+        """ assert after init is instance Embed and
+        if the dict result have the author name and icon_url"""
         embed = GuildEmbed(self.embed_name, self.embed_icon_url)
         self.assertIsInstance(embed, Embed)
         self.assertDictEqual(embed.to_dict(), self.result.init_method)
 
     def test_add_stat(self):
         """ assert after add_stat if a field is added
-        with a title and the number of ojs """
+        with a title (name) and the number of ojs """
         embed = GuildEmbed(self.embed_name, self.embed_icon_url)
         embed.add_stat(title_mem, ['a', 'b', 'c', 'd', 'e'])
-        self.assertDictEqual(embed.to_dict(), self.result.add_stat)
+        self.assertListEqual(embed.to_dict()['fields'], self.result.add_stat)
 
     def test_add_title_stats(self):
         """ assert after add_title_stats if fields are added
         with the good title and the corresponding number of ojs for value """
-        owner = FakeUser(username='Bill')
-        roles = [('admin', 2, True), ('master', 1, False)]
-        members = [
-            (owner, []),
-            (FakeUser(username='Joe'), ['admin']),
-            (FakeUser(username='Al'), ['master']),
-            (FakeUser(username='John'), []),
-            (FakeUser(username='Jean-Pierre'), []), ]
-        categories = [
-            (None, 'public', 1, [], []),
-            ('public', 'new', 1, [], [])]
-        channels = [
-            ('public', 'saloon', ChannelType.text.value, 3, '@everyone', []),
-            ('public', 'info point', ChannelType.news.value, 0, '@everyone', []),
-            (None, 'sheriff office', ChannelType.text.value, 1, [], ['Jean-Pierre']),
-            (None, 'school', ChannelType.text.value, 1, ['master'], []),
-            ('new', 'souk', ChannelType.voice.value, 0, '@everyone', []),
-            ('new', 'shop', ChannelType.store.value, 0, '@everyone', [])]
-        emojis = ['cool']
-        fake_guild = FakeGuild(
-            name="Fake guild", roles=roles, members=members,
-            categories=categories, channels=channels, emojis=emojis)
-        # print(fake_guild.owner.roles)
-        # print('\n')
-        # print(fake_guild.id, fake_guild.name)
-        # print('roles:', fake_guild.roles)
-        # print(fake_guild.default_role)
-        # for cat in fake_guild.categories:
-        #     print(cat.category_id, cat.name)
-        # print(fake_guild.by_category())
-        # for member in fake_guild.members:
-        #     print(member.id, member.name, member.roles)
-        for channel in fake_guild.channels:
-            if channel.type.value == 4:
-                print(channel.name, channel.type, channel.channels)
-            elif channel.type.value == ChannelType.store.value:
-                print(channel.category_id, channel.name, channel.type)
-            else:
-                print(channel.category_id, channel.name, channel.type, len(channel.members))
-        for emoji in fake_guild.emojis:
-            print(str(emoji))
-        # print('Owner:', fake_guild.owner.name)
-        # embed = GuildEmbed(self.embed_name, self.embed_icon_url)
-        # embed.add_title_stats(fake_guild)
-        # print(embed.to_dict())
+        embed = GuildEmbed(self.embed_name, self.embed_icon_url)
+        embed.add_title_stats(FULL_GUILD)
+        self.assertListEqual(
+            embed.to_dict()['fields'], self.result.add_title_stats)
+
 # class MyTest(aiounittest.AsyncTestCase):
 #
 #     async def test_add_title_stats(self):
