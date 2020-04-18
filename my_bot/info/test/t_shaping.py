@@ -3,7 +3,7 @@ from discord import Embed, Guild
 from .fakers import FULL_GUILD
 from .results import GuildEmbedTestResult, GuildShellTestResult
 from ..shaping import GuildEmbed, GuildShell
-from ..config import title_mem
+from ..config import title_mem, title_vcha, title_gld, title_own
 
 
 class GuildEmbedTest(TestCase):
@@ -86,25 +86,56 @@ class GuildShellTest(TestCase):
     def test_add_list(self):
         """ assert after add_list if the good title
         and the sorted list of infos are added to the string """
+        # with guild
+        guild_shell = GuildShell(FULL_GUILD)
+        guild_shell.add_list(title_gld, [guild_shell.guild])
+        self.assertEqual(guild_shell.infos, self.result.add_list['guild'])
+        # with owner
+        guild_shell = GuildShell(FULL_GUILD)
+        guild_shell.add_list(title_own, [guild_shell.guild.owner])
+        self.assertEqual(guild_shell.infos, self.result.add_list['owner'])
+        # with objs
         guild_shell = GuildShell(FULL_GUILD)
         guild_shell.add_list(title_mem, guild_shell.guild.members)
-        self.assertEqual(guild_shell.infos, self.result.add_list)
+        self.assertEqual(guild_shell.infos, self.result.add_list['objs'])
         # with empty list
         guild_shell = GuildShell(FULL_GUILD)
         guild_shell.add_list(title_mem, [])
         self.assertEqual(
             guild_shell.infos, '\n########## No member ##########\n')
 
-# class MyTest(aiounittest.AsyncTestCase):
-#
-#     async def test_add_title_stats(self):
-#         """ assert after add_title_stats if fields are added
-#         with the good title and the corresponding number of ojs for value """
-#         fake_guild = FakeGuild(data=guild_data)
-#         channel = fake_guild.create_text_channel('cool-channel')
-#         print(channel.id)
-#         print(fake_guild.channels)
-        # fake_context = FakeContext(guild=fake_guild)
-        # fake_context.send("rtt")
-        # fake_context.send.assert_called_once()
-        # print(fake_context.guild.owner)
+    def test_add_emojis(self):
+        """ assert after add_emojis if the list of emojis
+        with str() repr and name are added to the string, 3 by line """
+        guild_shell = GuildShell(FULL_GUILD)
+        guild_shell.add_emojis(guild_shell.guild.emojis)
+        self.assertEqual(guild_shell.infos, self.result.add_emojis)
+
+    def test_add_type_chans(self):
+        """ assert after add_type_chans if the good title
+        and the sorted list of channels (voice for this test) """
+        guild_shell = GuildShell(FULL_GUILD)
+        guild_shell.add_type_chans(
+            guild_shell.guild.voice_channels, title_vcha)
+        self.assertEqual(guild_shell.infos, self.result.add_type_chans)
+        # with empty list
+        guild_shell = GuildShell(FULL_GUILD)
+        guild_shell.add_type_chans([], title_vcha)
+        self.assertEqual(guild_shell.infos, '')
+
+    def test_add_cats_chans(self):
+        """ assert after add_cats_chans if the good titles
+        and the sorted list of channels sorted by category, type and name """
+        guild_shell = GuildShell(FULL_GUILD)
+        guild_shell.add_cats_chans(guild_shell.guild.by_category())
+        self.assertEqual(guild_shell.infos, self.result.add_cats_chans)
+        # with empty list
+        guild_shell = GuildShell(FULL_GUILD)
+        guild_shell.add_cats_chans([])
+        self.assertEqual(guild_shell.infos, '')
+
+    def test_add_infos(self):
+        """ assert after add_infos if all infos are added correctly """
+        guild_shell = GuildShell(FULL_GUILD)
+        guild_shell.add_infos()
+        self.assertEqual(guild_shell.infos, self.result.add_infos)

@@ -1,8 +1,7 @@
 from discord import Embed, ChannelType
 from .config import (
     title_gld, title_own, title_mem, title_rol, title_cat, title_cha,
-    title_tcha, title_vcha, title_pcha, title_gcha, title_ncha, title_scha,
-    title_emo)
+    title_tcha, title_vcha, title_ncha, title_scha, title_emo)
 
 
 class GuildEmbed(Embed):
@@ -96,7 +95,7 @@ class GuildShell():
             self.infos += f"\n########## {title.no_obj} ##########\n"
 
     def add_emojis(self, emojis):
-        """ add a tuple of emojis """
+        """ add a tuple of emojis (3 by line)"""
         i = 0
         for emoji in emojis:
             self.infos += f"- {str(emoji)} {emoji.name} "
@@ -117,7 +116,7 @@ class GuildShell():
     def add_cats_chans(self, chans_cats):
         """ add channels by category and type """
         if chans_cats:
-            self.infos += f"\n\n########## CHANNELS BY CATEGORIES ##########\n"
+            self.infos += "\n\n########## CHANNELS BY CATEGORIES ##########\n"
             for chans_cat in chans_cats:
                 if chans_cat[0] is None:
                     self.infos += f"\n##### {title_cat.no_obj} #####\n"
@@ -130,12 +129,6 @@ class GuildShell():
                     self.add_type_chans(
                         [c for c in chans_cat[1] if (
                             c.type == ChannelType.voice)], title_vcha)
-                    self.add_type_chans(
-                        [c for c in chans_cat[1] if (
-                            c.type == ChannelType.private)], title_pcha)
-                    self.add_type_chans(
-                        [c for c in chans_cat[1] if (
-                            c.type == ChannelType.group)], title_gcha)
                     self.add_type_chans(
                         [c for c in chans_cat[1] if (
                             c.type == ChannelType.news)], title_ncha)
@@ -158,14 +151,10 @@ class GuildShell():
             title_cha,
             [c for c in self.guild.channels if c.type != ChannelType.category])
         # text, voice, private, group, news and store channels
-        self.add_list(title_tcha, self.guild.text_channels)
+        self.add_list(
+            title_tcha,
+            [c for c in self.guild.text_channels if not c.is_news()])
         self.add_list(title_vcha, self.guild.voice_channels)
-        self.add_list(
-            title_pcha,
-            [c for c in self.guild.channels if c.type == ChannelType.private])
-        self.add_list(
-            title_gcha,
-            [c for c in self.guild.channels if c.type == ChannelType.group])
         self.add_list(
             title_ncha,
             [c for c in self.guild.channels if c.type == ChannelType.news])
