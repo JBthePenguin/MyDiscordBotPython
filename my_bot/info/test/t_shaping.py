@@ -45,7 +45,9 @@ class GuildEmbedTest(TestCase):
             (FakeUser(username='Al'), ['master']),
             (FakeUser(username='John'), []),
             (FakeUser(username='Jean-Pierre'), []), ]
-        categories = [(None, 'public', 1), ('public', 'new', 1)]
+        categories = [
+            (None, 'public', 1, [], []),
+            ('public', 'new', 1, [], [])]
         channels = [
             ('public', 'saloon', ChannelType.text.value, 3, '@everyone', []),
             ('public', 'info point', ChannelType.news.value, 0, '@everyone', []),
@@ -53,9 +55,10 @@ class GuildEmbedTest(TestCase):
             (None, 'school', ChannelType.text.value, 1, ['master'], []),
             ('new', 'souk', ChannelType.voice.value, 0, '@everyone', []),
             ('new', 'shop', ChannelType.store.value, 0, '@everyone', [])]
+        emojis = ['cool']
         fake_guild = FakeGuild(
             name="Fake guild", roles=roles, members=members,
-            categories=categories, channels=channels)
+            categories=categories, channels=channels, emojis=emojis)
         # print(fake_guild.owner.roles)
         # print('\n')
         # print(fake_guild.id, fake_guild.name)
@@ -73,6 +76,8 @@ class GuildEmbedTest(TestCase):
                 print(channel.category_id, channel.name, channel.type)
             else:
                 print(channel.category_id, channel.name, channel.type, len(channel.members))
+        for emoji in fake_guild.emojis:
+            print(str(emoji))
         # print('Owner:', fake_guild.owner.name)
         # embed = GuildEmbed(self.embed_name, self.embed_icon_url)
         # embed.add_title_stats(fake_guild)

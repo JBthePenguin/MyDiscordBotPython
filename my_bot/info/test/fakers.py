@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock
 from discord import (
     Guild, User, Member, Role, CategoryChannel, TextChannel, VoiceChannel,
-    StoreChannel)
+    StoreChannel, Emoji)
 from discord.permissions import Permissions, PermissionOverwrite
 from discord.enums import ChannelType
 from discord.ext.commands import Context
@@ -95,9 +95,10 @@ class FakeChannelData(dict):
 class FakeCategoryChannel(CategoryChannel):
     """ Class to fake a categry channel """
 
-    def __init__(self, parent_id, name, guild, position):
+    def __init__(self, parent_id, name, guild, position, roles, members):
         """ init with a FakeChannelData, a guild and MagicMock for state """
-        channel_data = FakeChannelData(parent_id, name, position, [], [])
+        channel_data = FakeChannelData(
+            parent_id, name, position, roles, members)
         super().__init__(data=channel_data, guild=guild, state=MagicMock())
 
 
@@ -133,11 +134,23 @@ class FakeStoreChannel(StoreChannel):
         super().__init__(data=channel_data, guild=guild, state=MagicMock())
 
 
+class FakeEmoji(Emoji):
+    """ Class to fake a emoji """
+
+    def __init__(self, name, guild):
+        """ init with a id, a name, two boolean require_colons, managed (True)
+        and MagicMock for state """
+        emoji_data = {
+            'id': next(discord_id), 'name': name,
+            'require_colons': True, 'managed': True}
+        super().__init__(data=emoji_data, guild=guild, state=MagicMock())
+
+
 class FakeGuild(Guild):
     """ Class to fake a guild """
 
     def __init__(
-            self, name, roles, members, categories, channels,
+            self, name, roles, members, categories, channels, emojis,
             description=None):
         """ init with id, name, description(default=None), list of tuple for:
         - members (FakeUser, list of roles's name),
@@ -146,11 +159,29 @@ class FakeGuild(Guild):
         - channels (category name or None, name, type, position,
             roles and members names lists to overwrite permission
                 or '@everyone' for roles to allow all members),
+        a list of emojis' names.
         *** first FakeUser in the members list will be the owner *** """
         guild_data = {
             'id': next(discord_id), 'name': name, 'roles': roles,
-            'members': members, 'categories': categories, 'channels': channels}
+            'members': members, 'categories': categories, 'channels': channels,
+            'emojis': emojis}
         super().__init__(data=guild_data, state=MagicMock())
+
+    def get_c_members_roles(self, name_id_roles, roles, members):
+        """ with lists of names, return list for roles ids and members ids,
+        that used to init FakeChannel with permission overwrites """
+        # roles
+        if roles == '@everyone':
+            c_roles = [self.default_role.id]
+        else:
+            c_roles = []
+            for role_name in roles:
+                c_roles.append(name_id_roles[role_name])
+        # members
+        c_members = []
+        for member_name in members:
+            c_members.append(self.get_member_named(member_name).id)
+        return c_roles, c_members
 
     def _from_data(self, guild):
         """ override _from_data method (called at the end of Guild init)
@@ -186,27 +217,22 @@ class FakeGuild(Guild):
         # add owner (the first in members list)
         self.owner_id = self.members[0].id
         # categories channels
-        # todo ---> add roles members to category
         name_id_categories = {None: None}  # used to add channels
         for tup_category in guild.get('categories'):
+            # roles and members ids lists to permission overwrite
+            c_roles, c_members = self.get_c_members_roles(
+                name_id_roles, tup_category[3], tup_category[4])
             category = FakeCategoryChannel(
-                parent_id=name_id_categories[tup_category[0]],
-                name=tup_category[1], guild=self, position=tup_category[2])
+                guild=self, parent_id=name_id_categories[tup_category[0]],
+                name=tup_category[1], position=tup_category[2],
+                roles=c_roles, members=c_members)
             self._add_channel(category)
             name_id_categories[category.name] = category.id
         # channels
         for tup_channel in guild.get('channels'):
-            # roles list to permission overwrite
-            if tup_channel[4] == '@everyone':
-                c_roles = [self.default_role.id]
-            else:
-                c_roles = []
-                for role_name in tup_channel[4]:
-                    c_roles.append(name_id_roles[role_name])
-            # members list to permission overwrite
-            c_members = []
-            for member_name in tup_channel[5]:
-                c_members.append(self.get_member_named(member_name).id)
+            # roles and members ids lists to permission overwrite
+            c_roles, c_members = self.get_c_members_roles(
+                name_id_roles, tup_channel[4], tup_channel[5])
             # Create Channel
             if tup_channel[2] in (  # text or news
                     ChannelType.text.value, ChannelType.news.value):
@@ -226,7 +252,8 @@ class FakeGuild(Guild):
                     roles=c_roles, members=c_members)
             self._add_channel(channel)
         # add emojis
-        self.emojis = guild.get('emojis', [])
+        self.emojis = tuple(
+            FakeEmoji(name, self) for name in guild.get('emojis'))
 
 
 class FakeContext(MagicMock):
