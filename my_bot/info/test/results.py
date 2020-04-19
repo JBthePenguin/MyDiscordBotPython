@@ -1,3 +1,6 @@
+from ..shaping import GuildEmbed
+
+
 class GuildEmbedTestResult():
     """ class with GuildEmbedTest expected result   """
 
@@ -160,3 +163,17 @@ class GuildShellTestResult():
             self.add_emojis])
         result += self.add_cats_chans
         return result
+
+
+class InfoGuildCommandsTestResult():
+    """ class with InfoGuildCommandsTest expected result   """
+
+    @property
+    def guild(self):
+        """ return the result expected for guild (embed dict)"""
+        embed_dict = GuildEmbedTestResult().add_title_stats
+        icon_url = 'https://cdn.discordapp.com/icons/6/icon.png.webp?size=1024'
+        embed_dict['author'] = {'name': 'Full guild', 'icon_url': icon_url}
+        embed_dict['color'] = 1447446
+        embed_dict['type'] = 'rich'
+        return embed_dict

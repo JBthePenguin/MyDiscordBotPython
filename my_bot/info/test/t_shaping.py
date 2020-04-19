@@ -3,7 +3,7 @@ from discord import Embed, Guild
 from .fakers import FULL_GUILD
 from .results import GuildEmbedTestResult, GuildShellTestResult
 from ..shaping import GuildEmbed, GuildShell
-from ..config import title_mem, title_vcha, title_gld, title_own
+from ..config import GUILD_TITLES as titles
 
 
 class GuildEmbedTest(TestCase):
@@ -27,7 +27,7 @@ class GuildEmbedTest(TestCase):
         """ assert after add_stat if a field is added
         with good name and number of ojs """
         embed = GuildEmbed(self.embed_name, self.embed_icon_url)
-        embed.add_stat(title_mem, ['a', 'b', 'c', 'd', 'e'])
+        embed.add_stat(titles.mem, ['a', 'b', 'c', 'd', 'e'])
         self.assertListEqual(embed.to_dict()['fields'], self.result.add_stat)
 
     def test_add_title_stats(self):
@@ -48,7 +48,7 @@ class GuildEmbedTest(TestCase):
         if fields with names 'id' 'name' are added
         and for each value, the lists of ids and names sorted by name """
         embed = GuildEmbed(self.embed_name, self.embed_icon_url)
-        embed.add_title_objs(title_mem, FULL_GUILD.members)
+        embed.add_title_objs(titles.mem, FULL_GUILD.members)
         self.assertEqual(
             embed.to_dict()['title'], self.result.add_title_objs['title'])
         self.assertListEqual(
@@ -57,7 +57,7 @@ class GuildEmbedTest(TestCase):
             embed.to_dict()['footer'], self.result.add_title_objs['footer'])
         # with an empty list
         embed = GuildEmbed(self.embed_name, self.embed_icon_url)
-        embed.add_title_objs(title_mem, [])
+        embed.add_title_objs(titles.mem, [])
         self.assertEqual(embed.to_dict()['title'], 'No member')
 
     def test_add_emojis(self):
@@ -88,19 +88,19 @@ class GuildShellTest(TestCase):
         and the sorted list of infos are added to the string """
         # with guild
         guild_shell = GuildShell(FULL_GUILD)
-        guild_shell.add_list(title_gld, [guild_shell.guild])
+        guild_shell.add_list(titles.gld, [guild_shell.guild])
         self.assertEqual(guild_shell.infos, self.result.add_list['guild'])
         # with owner
         guild_shell = GuildShell(FULL_GUILD)
-        guild_shell.add_list(title_own, [guild_shell.guild.owner])
+        guild_shell.add_list(titles.own, [guild_shell.guild.owner])
         self.assertEqual(guild_shell.infos, self.result.add_list['owner'])
         # with objs
         guild_shell = GuildShell(FULL_GUILD)
-        guild_shell.add_list(title_mem, guild_shell.guild.members)
+        guild_shell.add_list(titles.mem, guild_shell.guild.members)
         self.assertEqual(guild_shell.infos, self.result.add_list['objs'])
         # with empty list
         guild_shell = GuildShell(FULL_GUILD)
-        guild_shell.add_list(title_mem, [])
+        guild_shell.add_list(titles.mem, [])
         self.assertEqual(
             guild_shell.infos, '\n########## No member ##########\n')
 
@@ -116,11 +116,11 @@ class GuildShellTest(TestCase):
         and the sorted list of channels (voice for this test) """
         guild_shell = GuildShell(FULL_GUILD)
         guild_shell.add_type_chans(
-            guild_shell.guild.voice_channels, title_vcha)
+            guild_shell.guild.voice_channels, titles.vcha)
         self.assertEqual(guild_shell.infos, self.result.add_type_chans)
         # with empty list
         guild_shell = GuildShell(FULL_GUILD)
-        guild_shell.add_type_chans([], title_vcha)
+        guild_shell.add_type_chans([], titles.vcha)
         self.assertEqual(guild_shell.infos, '')
 
     def test_add_cats_chans(self):

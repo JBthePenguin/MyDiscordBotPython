@@ -1,10 +1,11 @@
 from unittest.mock import MagicMock
+from asyncio import coroutine
 from discord import (
     Guild, User, Member, Role, CategoryChannel, TextChannel, VoiceChannel,
     StoreChannel, Emoji)
 from discord.permissions import Permissions, PermissionOverwrite
 from discord.enums import ChannelType
-from discord.ext.commands import Context
+from discord.ext.commands import Bot, Context
 import itertools
 
 
@@ -186,11 +187,13 @@ class FakeGuild(Guild):
     def _from_data(self, guild):
         """ override _from_data method (called at the end of Guild init)
         to set properties with our custom datas ->
-        -id -name -description -roles -members -owner -emojis -channels """
-        # id - name - description
+        -id -name -description -icon -roles -members
+        -owner -emojis -channels """
+        # id - name - description - icon
         self.id = int(guild['id'])
         self.name = guild.get('name')
         self.description = guild.get('description')
+        self.icon = "icon.png"
         # roles
         self._roles = {}
         # add default role @everyone with the same id than the guild
@@ -256,10 +259,20 @@ class FakeGuild(Guild):
             FakeEmoji(name, self) for name in guild.get('emojis'))
 
 
-class FakeContext(MagicMock):
-    """ Mock for a context with a fake guild """
+class FakeBot(Bot):
+    """ Class to fake a Bot """
 
-    spec_set = Context(message=MagicMock(), prefix=MagicMock())
+    def __init__(self):
+        """ init with command_prefix """
+        super().__init__(command_prefix='#')
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+
+class FakeContext(Context):
+    """ Class to fake a Context """
+
+    def __init__(self, guild):
+        """ init with MagicMock for message and prefix, add guild
+        and Mock the send method """
+        super().__init__(message=MagicMock(), prefix=MagicMock())
+        self.guild = guild
+        self.send = MagicMock(side_effect=coroutine(lambda embed: ''))
