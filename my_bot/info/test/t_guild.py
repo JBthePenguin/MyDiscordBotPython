@@ -14,9 +14,14 @@ class InfoGuildCommandsTest(AsyncTestCase):
         self.result = InfoGuildCommandsTestResult()
 
     def test_init(self):
-        """ assert after init is instance Cog """
-        # cog = InfoGuildCommands(BOT)
+        """ assert after init is instance Cog, the number of commands
+        and if they have good name and help """
         self.assertIsInstance(self.cog, Cog)
+        commands = self.cog.get_commands()
+        self.assertEqual(len(commands), 12)
+        c_tuples = [(c.name, c.help) for c in commands]
+        for i in range(len(commands)):
+            self.assertTupleEqual(c_tuples[i], self.result.init_method[i])
 
     async def test_guild(self):
         """ assert after guild command if send method is called once

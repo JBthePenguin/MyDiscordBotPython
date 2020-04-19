@@ -167,10 +167,26 @@ class GuildShellTestResult():
 
 class InfoGuildCommandsTestResult():
     """ class with InfoGuildCommandsTest expected result   """
+    @property
+    def init_method(self):
+        """ return the result expected for test_init - [(name, help), ...] """
+        return [
+            ('guild', "Guild's stats -> #guild"),
+            ('owner', 'The Owner-> #owner'),
+            ('mems', 'All members -> #mems'),
+            ('roles', 'All roles -> #roles'),
+            ('cats', "All channel's categories -> #cats"),
+            ('chans', 'All channels -> #chans'),
+            ('tchans', 'All text channels -> #tchans'),
+            ('vchans', 'All voice channels -> #vchans'),
+            ('nchans', 'All news channels -> #nchans'),
+            ('schans', 'All store channels -> #schans'),
+            ('emos', 'All emojis -> #emos'),
+            ('shell', 'Infos in shell -> #shell')]
 
     @property
     def guild(self):
-        """ return the result expected for guild (embed dict)"""
+        """ return the result expected for test_guild (embed dict)"""
         embed_dict = GuildEmbedTestResult().add_title_stats
         icon_url = 'https://cdn.discordapp.com/icons/6/icon.png.webp?size=1024'
         embed_dict['author'] = {'name': 'Full guild', 'icon_url': icon_url}
