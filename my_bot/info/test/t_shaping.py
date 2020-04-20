@@ -15,6 +15,7 @@ class GuildEmbedTest(TestCase):
         self.embed_name = 'Guild Embed Test'
         self.embed_icon_url = "https://url.com/icon.png"
         self.result = GuildEmbedTestResult()
+        self.maxDiff = None
 
     def test_init(self):
         """ assert after init is instance Embed and

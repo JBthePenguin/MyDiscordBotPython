@@ -63,7 +63,8 @@ class InfoGuildCommands(Cog, name='Commands Info Guild'):
         """ Send an embed with a list of all text channels """
         await ctx.send(embed=self.make_objs_embed(
             ctx.guild.name, ctx.guild.icon_url,
-            coms.tcha.conf_embed, ctx.guild.text_channels))
+            coms.tcha.conf_embed,
+            [c for c in ctx.guild.text_channels if not c.is_news()]))
 
     @command(name=coms.vcha.name, help=coms.vcha.help, ignore_extra=False)
     async def voice_channels(self, ctx):
