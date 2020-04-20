@@ -1,6 +1,8 @@
 from aiounittest import AsyncTestCase
 from discord.ext.commands import Cog
 from ..guild import InfoGuildCommands
+from ..shaping import GuildEmbed
+from ..config import GUILD_COMMANDS as coms
 from .fakers import BOT, CONTEXT
 from .results import InfoGuildCommandsTestResult
 
@@ -33,3 +35,11 @@ class InfoGuildCommandsTest(AsyncTestCase):
         # print(kwargs['embed'].to_dict())
         # print('\n')
         # print(self.result.guild.to_dict())
+
+    def test_make_objs_embed(self):
+        """ assert if make_objs_embed return the good embed """
+        embed = self.cog.make_objs_embed(
+            'Guild Embed Test', 'https://url.com/icon.png',
+            coms.mem.conf_embed, CONTEXT.guild.members)
+        self.assertIsInstance(embed, GuildEmbed)
+        self.assertDictEqual(embed.to_dict(), self.result.make_objs_embed)

@@ -1,6 +1,3 @@
-from ..shaping import GuildEmbed
-
-
 class GuildEmbedTestResult():
     """ class with GuildEmbedTest expected result   """
 
@@ -192,4 +189,18 @@ class InfoGuildCommandsTestResult():
         embed_dict['author'] = {'name': 'Full guild', 'icon_url': icon_url}
         embed_dict['color'] = 1447446
         embed_dict['type'] = 'rich'
+        return embed_dict
+
+    @property
+    def make_objs_embed(self):
+        """ return the result expected for test_make_objs_embed (embed dict)"""
+        embed_dict = GuildEmbedTestResult().init_method
+        embed_dict.update(GuildEmbedTestResult().add_title_objs)
+        sort_embed_dict = {}
+        sort_embed_dict['footer'] = embed_dict['footer']
+        sort_embed_dict['author'] = embed_dict['author']
+        sort_embed_dict['fields'] = embed_dict['fields']
+        sort_embed_dict['color'] = embed_dict['color']
+        sort_embed_dict['type'] = embed_dict['type']
+        sort_embed_dict['title'] = embed_dict['title']
         return embed_dict
