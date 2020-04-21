@@ -1,4 +1,5 @@
 from aiounittest import AsyncTestCase
+from unittest.mock import Mock, patch
 from discord.ext.commands import Cog
 from ..guild import InfoGuildCommands
 from ..shaping import GuildEmbed
@@ -87,3 +88,19 @@ class InfoGuildCommandsTest(AsyncTestCase):
         """ assert send method after store_channels command """
         await self.assert_send_method(
             self.cog.store_channels, self.result.store_channels)
+
+    async def test_emojis(self):
+        """ assert send method after emojis command """
+        await self.assert_send_method(
+            self.cog.emojis, self.result.emojis)
+
+    async def test_shell_info(self):
+        """ reset mock called count and args, and assert if
+        print function and the context send method is called once
+        with the good string """
+        CONTEXT.send.reset_mock()
+        mock_print = Mock()
+        with patch("builtins.print", mock_print):
+            await self.cog.shell_info.callback(self.cog, CONTEXT)
+            mock_print.assert_called_once_with(self.result.shell_info)
+            CONTEXT.send.assert_called_once_with("Infos displayed in shell")

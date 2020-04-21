@@ -100,3 +100,4 @@ class InfoGuildCommands(Cog, name='Commands Info Guild'):
         guild_shell = GuildShell(ctx.guild)
         guild_shell.add_infos()
         print(guild_shell.infos)
+        await ctx.send("Infos displayed in shell")

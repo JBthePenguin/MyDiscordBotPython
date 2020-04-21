@@ -320,3 +320,18 @@ class InfoGuildCommandsTestResult():
             'footer': {'text': 'Total: 1'}}
         embed_dict.update(self.base_result)
         return embed_dict
+
+    @property
+    def emojis(self):
+        """ return the result expected for test_emojis (embed dict)"""
+        embed_dict = {
+            'title': 'Emojis',
+            'fields': GuildEmbedTestResult().add_emojis,
+            'footer': {'text': 'Total: 4'}}
+        embed_dict.update(self.base_result)
+        return embed_dict
+
+    @property
+    def shell_info(self):
+        """ return the result expected for test_shell_info (string)"""
+        return GuildShellTestResult().add_infos
