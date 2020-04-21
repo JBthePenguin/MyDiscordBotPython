@@ -277,12 +277,46 @@ class InfoGuildCommandsTestResult():
         embed_dict = {
             'title': 'Text Channels',
             'fields': [
-                {
-                    'inline': True, 'name': 'ID',
-                    'value': '17\n16\n11'},
+                {'inline': True, 'name': 'ID', 'value': '17\n16\n11'},
                 {
                     'inline': True, 'name': 'Name',
                     'value': 'boss office\nmeeting room\nreception'}],
             'footer': {'text': 'Total: 3'}}
+        embed_dict.update(self.base_result)
+        return embed_dict
+
+    @property
+    def voice_channels(self):
+        """ return the result expected for test_voice_channels (embed dict)"""
+        embed_dict = {
+            'title': 'Voice Channels',
+            'fields': [
+                {'inline': True, 'name': 'ID', 'value': '14\n15'},
+                {'inline': True, 'name': 'Name', 'value': 'snack\nstudio'}],
+            'footer': {'text': 'Total: 2'}}
+        embed_dict.update(self.base_result)
+        return embed_dict
+
+    @property
+    def news_channels(self):
+        """ return the result expected for test_news_channels (embed dict)"""
+        embed_dict = {
+            'title': 'News Channels',
+            'fields': [
+                {'inline': True, 'name': 'ID', 'value': '12'},
+                {'inline': True, 'name': 'Name', 'value': 'info point'}],
+            'footer': {'text': 'Total: 1'}}
+        embed_dict.update(self.base_result)
+        return embed_dict
+
+    @property
+    def store_channels(self):
+        """ return the result expected for test_store_channels (embed dict)"""
+        embed_dict = {
+            'title': 'Store Channels',
+            'fields': [
+                {'inline': True, 'name': 'ID', 'value': '13'},
+                {'inline': True, 'name': 'Name', 'value': 'shop'}],
+            'footer': {'text': 'Total: 1'}}
         embed_dict.update(self.base_result)
         return embed_dict

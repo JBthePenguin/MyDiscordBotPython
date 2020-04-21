@@ -26,20 +26,18 @@ class InfoGuildCommandsTest(AsyncTestCase):
         for i in range(len(commands)):
             self.assertTupleEqual(c_tuples[i], self.result.init_method[i])
 
-    def assert_send_method(self, result):
-        """ assert if send method is called once,
-        if the good embed is sended and reset mock called count and args"""
+    async def assert_send_method(self, method, result):
+        """ reset mock called count and args, and assert if
+        send method is called once and if the good embed is sended """
+        CONTEXT.send.reset_mock()
+        await method.callback(self.cog, CONTEXT)
         CONTEXT.send.assert_called_once()
         args, kwargs = CONTEXT.send.call_args
         self.assertDictEqual(kwargs['embed'].to_dict(), result)
-        # print('\n')
-        # print(kwargs['embed'].to_dict())
 
     async def test_guild(self):
         """ assert send method after guild command """
-        CONTEXT.send.reset_mock()
-        await self.cog.guild.callback(self.cog, CONTEXT)
-        self.assert_send_method(self.result.guild)
+        await self.assert_send_method(self.cog.guild, self.result.guild)
 
     def test_make_objs_embed(self):
         """ assert if make_objs_embed return the good embed """
@@ -51,36 +49,41 @@ class InfoGuildCommandsTest(AsyncTestCase):
 
     async def test_owner(self):
         """ assert send method after owner command """
-        CONTEXT.send.reset_mock()
-        await self.cog.owner.callback(self.cog, CONTEXT)
-        self.assert_send_method(self.result.owner)
+        await self.assert_send_method(self.cog.owner, self.result.owner)
 
     async def test_members(self):
         """ assert send method after members command """
-        CONTEXT.send.reset_mock()
-        await self.cog.members.callback(self.cog, CONTEXT)
-        self.assert_send_method(self.result.members)
+        await self.assert_send_method(self.cog.members, self.result.members)
 
     async def test_roles(self):
         """ assert send method after roles command """
-        CONTEXT.send.reset_mock()
-        await self.cog.roles.callback(self.cog, CONTEXT)
-        self.assert_send_method(self.result.roles)
+        await self.assert_send_method(self.cog.roles, self.result.roles)
 
     async def test_categories(self):
         """ assert send method after categories command """
-        CONTEXT.send.reset_mock()
-        await self.cog.categories.callback(self.cog, CONTEXT)
-        self.assert_send_method(self.result.categories)
+        await self.assert_send_method(
+            self.cog.categories, self.result.categories)
 
     async def test_channels(self):
         """ assert send method after channels command """
-        CONTEXT.send.reset_mock()
-        await self.cog.channels.callback(self.cog, CONTEXT)
-        self.assert_send_method(self.result.channels)
+        await self.assert_send_method(self.cog.channels, self.result.channels)
 
     async def test_text_channels(self):
         """ assert send method after text_channels command """
-        CONTEXT.send.reset_mock()
-        await self.cog.text_channels.callback(self.cog, CONTEXT)
-        self.assert_send_method(self.result.text_channels)
+        await self.assert_send_method(
+            self.cog.text_channels, self.result.text_channels)
+
+    async def test_voice_channels(self):
+        """ assert send method after voice_channels command """
+        await self.assert_send_method(
+            self.cog.voice_channels, self.result.voice_channels)
+
+    async def test_news_channels(self):
+        """ assert send method after news_channels command """
+        await self.assert_send_method(
+            self.cog.news_channels, self.result.news_channels)
+
+    async def test_store_channels(self):
+        """ assert send method after store_channels command """
+        await self.assert_send_method(
+            self.cog.store_channels, self.result.store_channels)
