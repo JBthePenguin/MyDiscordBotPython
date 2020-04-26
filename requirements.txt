@@ -5,7 +5,3 @@ python-dotenv
 aiounittest
 
 tinydb
-
-validator-collection
-
-pytz
