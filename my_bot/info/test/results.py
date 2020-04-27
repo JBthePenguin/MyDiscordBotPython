@@ -335,3 +335,29 @@ class InfoGuildCommandsTestResult():
     def shell_info(self):
         """ return the result expected for test_shell_info (string)"""
         return GuildShellTestResult().add_infos
+
+
+class ComponentEmbedTestResult():
+    """ class with ComponentEmbedTest expected result   """
+
+    @property
+    def init_method(self):
+        """ return the result expected for test_init"""
+        return {
+            'title': "Name",
+            'description': "Desription",
+            'author': {
+                'name': '3',
+                'icon_url': 'https://url.com/icon.png'},
+            'color': 1447446,
+            'type': 'rich'}
+
+
+class InfoComponentsCommandsTestResult():
+    """ class with InfoComponentsCommandsTest expected result   """
+
+    @property
+    def init_method(self):
+        """ return the result expected for test_init - [(name, help), ...] """
+        return [
+            ('mem', "Infos of a member -> #mem id_or_name"), ]

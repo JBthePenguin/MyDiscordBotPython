@@ -1,8 +1,9 @@
 from unittest import TestCase
 from discord import Embed, Guild
 from .fakers import FULL_GUILD
-from .results import GuildEmbedTestResult, GuildShellTestResult
-from ..shaping import GuildEmbed, GuildShell
+from .results import (
+    GuildEmbedTestResult, GuildShellTestResult, ComponentEmbedTestResult)
+from ..shaping import GuildEmbed, GuildShell, ComponentEmbed
 from ..config import GUILD_TITLES as titles
 
 
@@ -140,3 +141,20 @@ class GuildShellTest(TestCase):
         guild_shell = GuildShell(FULL_GUILD)
         guild_shell.add_infos()
         self.assertEqual(guild_shell.infos, self.result.add_infos)
+
+
+class ComponentEmbedTest(TestCase):
+    """ Test case for class ComponentEmbed """
+
+    def setUp(self):
+        """ Init tests with expected results """
+        self.result = ComponentEmbedTestResult()
+        self.maxDiff = None
+
+    def test_init(self):
+        """ assert after init is instance Embed and
+        if the dict result have id name desription color icon_url"""
+        embed = ComponentEmbed(
+            '3', 'Name', "Desription", 1447446, 'https://url.com/icon.png')
+        self.assertIsInstance(embed, Embed)
+        self.assertDictEqual(embed.to_dict(), self.result.init_method)

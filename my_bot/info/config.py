@@ -91,8 +91,7 @@ class ConfComponentsCommands():
     def __init__(self):
         """" Init with configuration for each command """
         # member
-        self.mem = ConfCommand(
-            'mem', "Infos of a member -> #mem 'member_id_or_name'")
+        self.mem = ConfCommand('mem', "Infos of a member -> #mem id_or_name")
 
 
 COMPONENTS_COMMANDS = ConfComponentsCommands()

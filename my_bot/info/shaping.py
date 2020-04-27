@@ -163,3 +163,13 @@ class GuildShell():
         self.add_list(titles.emo, self.guild.emojis)
         # Channels by Category
         self.add_cats_chans(self.guild.by_category())
+
+
+class ComponentEmbed(Embed):
+    """ Embed for a component """
+
+    def __init__(self, id, name, description, color, icon_url):
+        """ Init an embed with name for title, description, color,
+        id for author name and icon_url """
+        super().__init__(title=name, description=description, color=color)
+        self.set_author(name=id, icon_url=icon_url)
