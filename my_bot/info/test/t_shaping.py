@@ -155,6 +155,6 @@ class ComponentEmbedTest(TestCase):
         """ assert after init is instance Embed and
         if the dict result have id name desription color icon_url"""
         embed = ComponentEmbed(
-            '3', 'Name', "Desription", 1447446, 'https://url.com/icon.png')
+            '3', 'Name', 1447446, 'https://url.com/icon.png')
         self.assertIsInstance(embed, Embed)
         self.assertDictEqual(embed.to_dict(), self.result.init_method)

@@ -4,7 +4,7 @@ from discord import (
     Guild, User, Member, Role, CategoryChannel, TextChannel, VoiceChannel,
     StoreChannel, Emoji)
 from discord.permissions import Permissions, PermissionOverwrite
-from discord.enums import ChannelType
+from discord.enums import ChannelType, DefaultAvatar
 from discord.ext.commands import Bot, Context
 import itertools
 
@@ -20,7 +20,7 @@ class FakeUser(User):
         and MagicMock for state """
         user_data = {
             'id': next(discord_id), 'username': username, 'bot': False,
-            'discriminator': username, 'avatar': str(discord_id)}
+            'discriminator': username, 'avatar': str(DefaultAvatar)}
         super().__init__(data=user_data, state=MagicMock())
 
 
@@ -41,6 +41,10 @@ class FakeMember(Member):
             user.id, user.name, user.bot,
             user.avatar, user.discriminator)
         u.id, u.name, u.bot, u.avatar, u.discriminator = modified
+
+    @property
+    def avatar_url(self):
+        return 'https://url.com/avatar.png'
 
 
 class FakeRole(Role):

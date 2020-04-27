@@ -345,7 +345,6 @@ class ComponentEmbedTestResult():
         """ return the result expected for test_init"""
         return {
             'title': "Name",
-            'description': "Desription",
             'author': {
                 'name': '3',
                 'icon_url': 'https://url.com/icon.png'},
@@ -361,3 +360,18 @@ class InfoComponentsCommandsTestResult():
         """ return the result expected for test_init - [(name, help), ...] """
         return [
             ('mem', "Infos of a member -> #mem id_or_name"), ]
+
+    @property
+    def member(self):
+        """ return the result expected for test_member - embed or not found """
+        return {
+            'id': {
+                'author': {
+                    'name': '1', 'icon_url': 'https://url.com/avatar.png'},
+                'color': 0, 'type': 'rich', 'title': 'Al'},
+            'name': {
+                'author': {
+                    'name': '2', 'icon_url': 'https://url.com/avatar.png'},
+                'color': 0, 'type': 'rich', 'title': 'Joe'},
+            'no_id': 'Member with id 12 not founded.',
+            'no_name': 'Member with name Walter not founded.'}

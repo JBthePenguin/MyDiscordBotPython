@@ -33,9 +33,8 @@ class InfoComponentsCommands(Cog, name='Commands Info Components'):
             id_or_name, ctx.guild.get_member, ctx.guild.get_member_named)
         if isinstance(member, str):
             # no member founded
-            ctx.send(f"Member {member}")
+            await ctx.send(f"Member {member}")
         else:
             embed = ComponentEmbed(
-                member.id, member.nick, member.description,
-                member.color, member.avatar_url)
-            ctx.send(embed=embed)
+                member.id, member.name, member.color, member.avatar_url)
+            await ctx.send(embed=embed)

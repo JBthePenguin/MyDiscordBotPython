@@ -1,7 +1,7 @@
 from aiounittest import AsyncTestCase
 from discord.ext.commands import Cog
 from ..components import InfoComponentsCommands
-from .fakers import BOT, FULL_GUILD
+from .fakers import BOT, FULL_GUILD, CONTEXT
 from .results import InfoComponentsCommandsTestResult
 
 
@@ -46,3 +46,39 @@ class InfoComponentsCommandsTest(AsyncTestCase):
         obj = self.cog.check_parameter(
             'Polo', FULL_GUILD.get_member, FULL_GUILD.get_member_named)
         self.assertEqual(obj, "with name Polo not founded.")
+
+    async def assert_send_method(self, method, result, id_name, not_exist):
+        """ reset mock called count and args, and assert if
+        send method is called once and if the good embed or
+        the not exist message is sended
+        *** test with exist id and name, with not exist id and name *** """
+        # id exist
+        CONTEXT.send.reset_mock()
+        await method.callback(self.cog, CONTEXT, id_name[0])
+        CONTEXT.send.assert_called_once()
+        args, kwargs = CONTEXT.send.call_args
+        self.assertDictEqual(kwargs['embed'].to_dict(), result['id'])
+        # name exist
+        CONTEXT.send.reset_mock()
+        await method.callback(self.cog, CONTEXT, id_name[1])
+        CONTEXT.send.assert_called_once()
+        args, kwargs = CONTEXT.send.call_args
+        self.assertDictEqual(kwargs['embed'].to_dict(), result['name'])
+        # id not exist
+        CONTEXT.send.reset_mock()
+        await method.callback(self.cog, CONTEXT, not_exist[0])
+        CONTEXT.send.assert_called_once()
+        args, kwargs = CONTEXT.send.call_args
+        self.assertEqual(args[0], result['no_id'])
+        # name not exist
+        CONTEXT.send.reset_mock()
+        await method.callback(self.cog, CONTEXT, not_exist[1])
+        CONTEXT.send.assert_called_once()
+        args, kwargs = CONTEXT.send.call_args
+        self.assertEqual(args[0], result['no_name'])
+
+    async def test_member(self):
+        """ assert send method after member command """
+        await self.assert_send_method(
+            self.cog.member, self.result.member,
+            ("1", "Joe"), ("12", "Walter"))

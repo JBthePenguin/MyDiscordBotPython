@@ -168,8 +168,8 @@ class GuildShell():
 class ComponentEmbed(Embed):
     """ Embed for a component """
 
-    def __init__(self, id, name, description, color, icon_url):
-        """ Init an embed with name for title, description, color,
+    def __init__(self, id, name, color, icon_url):
+        """ Init an embed with name for title, color,
         id for author name and icon_url """
-        super().__init__(title=name, description=description, color=color)
+        super().__init__(title=name, color=color)
         self.set_author(name=id, icon_url=icon_url)
