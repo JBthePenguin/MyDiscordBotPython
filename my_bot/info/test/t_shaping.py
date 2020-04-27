@@ -158,3 +158,11 @@ class ComponentEmbedTest(TestCase):
             3, 'Name', 1447446, 'https://url.com/icon.png')
         self.assertIsInstance(embed, Embed)
         self.assertDictEqual(embed.to_dict(), self.result.init_method)
+
+    def test_add_member_infos(self):
+        """ assert if after add_member_infos if infos are added correctly
+        - bot or human - status - roloes- auth channels - footer """
+        embed = ComponentEmbed(
+            3, 'Name', 1447446, 'https://url.com/icon.png')
+        embed.add_member_infos(FULL_GUILD.get_member(2))
+        self.assertDictEqual(embed.to_dict(), self.result.add_member_infos)

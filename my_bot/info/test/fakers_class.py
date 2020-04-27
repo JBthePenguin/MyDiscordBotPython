@@ -7,6 +7,7 @@ from discord.permissions import Permissions, PermissionOverwrite
 from discord.enums import ChannelType, DefaultAvatar
 from discord.ext.commands import Bot, Context
 import itertools
+from datetime import datetime
 
 
 discord_id = itertools.count(0)
@@ -30,7 +31,9 @@ class FakeMember(Member):
     def __init__(self, user, guild, roles):
         """ init with a user, a guild, a list of roles ids
         and MagicMock for state """
-        mem_data = {'user': user, 'roles': roles}
+        mem_data = {
+            'user': user, 'roles': roles,
+            'joined_at': "2020-04-27T13:00:00.000000+00:00"}
         super().__init__(data=mem_data, guild=guild, state=MagicMock())
 
     def name_id_update(self, user):

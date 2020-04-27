@@ -200,5 +200,6 @@ class ComponentEmbed(Embed):
             name="Channels allowed to view", value=auth_channels_str,
             inline=False)
         # footer and timestamp
-        self.set_footer(text="Member since")
-        self.timestamp = member.joined_at
+        if member.joined_at is not None:
+            self.set_footer(text="Member since")
+            self.timestamp = member.joined_at

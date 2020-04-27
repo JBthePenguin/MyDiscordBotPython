@@ -351,6 +351,23 @@ class ComponentEmbedTestResult():
             'color': 1447446,
             'type': 'rich'}
 
+    @property
+    def add_member_infos(self):
+        """ return the result expected for test_add_member_infos """
+        embed_dict = {
+            'footer': {'text': 'Member since'},
+            'fields': [
+                {
+                    'inline': False, 'name': 'Roles',
+                    'value': '@everyone - staff'},
+                {
+                    'inline': False, 'name': 'Channels allowed to view',
+                    'value': 'info point - meeting room - reception - shop - snack - studio'}],
+            'timestamp': '2020-04-27T13:00:00+00:00',
+            'description': 'A human actually offline.'}
+        embed_dict.update(self.init_method)
+        return embed_dict
+
 
 class InfoComponentsCommandsTestResult():
     """ class with InfoComponentsCommandsTest expected result   """
