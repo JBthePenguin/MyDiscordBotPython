@@ -10,19 +10,20 @@ class InfoComponentsCommands(Cog, name='Commands Info Components'):
         self.bot = bot
 
     def check_parameter(self, param, get_by_id, get_by_name):
-        """ check id first and if not exist check name """
-        # id
+        """ check if an obj with id or name exist
+        return obj or a not founded message """
         try:
             id = int(param)
         except ValueError:
             # name
             obj = get_by_name(param)
             if obj is None:
-                return "founded with name"
+                return f"with name {param} not founded."
         else:
+            # id
             obj = get_by_id(id)
             if obj is None:
-                return "founded with id"
+                return f"with id {param} not founded."
         return obj
 
     @command(name=coms.mem.name, help=coms.mem.help, ignore_extra=False)
@@ -32,7 +33,7 @@ class InfoComponentsCommands(Cog, name='Commands Info Components'):
             id_or_name, ctx.guild.get_member, ctx.guild.get_member_named)
         if isinstance(member, str):
             # no member founded
-            ctx.send(f"No member {member} {id_or_name}.")
+            ctx.send(f"Member {member}")
         else:
             embed = ComponentEmbed(
                 member.id, member.nick, member.description,
