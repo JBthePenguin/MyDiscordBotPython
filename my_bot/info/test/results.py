@@ -346,7 +346,7 @@ class ComponentEmbedTestResult():
         return {
             'title': "Name",
             'author': {
-                'name': '3',
+                'name': 'id: 3',
                 'icon_url': 'https://url.com/icon.png'},
             'color': 1447446,
             'type': 'rich'}
@@ -367,11 +367,11 @@ class InfoComponentsCommandsTestResult():
         return {
             'id': {
                 'author': {
-                    'name': '1', 'icon_url': 'https://url.com/avatar.png'},
+                    'name': 'id: 1', 'icon_url': 'https://url.com/avatar.png'},
                 'color': 0, 'type': 'rich', 'title': 'Al'},
             'name': {
                 'author': {
-                    'name': '2', 'icon_url': 'https://url.com/avatar.png'},
+                    'name': 'id: 2', 'icon_url': 'https://url.com/avatar.png'},
                 'color': 0, 'type': 'rich', 'title': 'Joe'},
             'no_id': 'Member with id 12 not founded.',
             'no_name': 'Member with name Walter not founded.'}

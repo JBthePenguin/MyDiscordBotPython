@@ -172,4 +172,33 @@ class ComponentEmbed(Embed):
         """ Init an embed with name for title, color,
         id for author name and icon_url """
         super().__init__(title=name, color=color)
-        self.set_author(name=id, icon_url=icon_url)
+        self.set_author(name=f"id: {str(id)}", icon_url=icon_url)
+
+    def add_member_infos(self, member):
+        """ add infos for a specific member
+        - description -> is bot or human, status
+        -fields -> roles and auth channels
+        -footer text -> member since; timestamp -> joined_at"""
+        # desription -> bot or human and status
+        if member.bot:
+            description = 'A bot '
+        else:
+            description = 'A human '
+        description += f"actually {str(member.status)}."
+        self.description = description
+        # roles
+        roles = " - ".join([role.name for role in member.roles])
+        self.add_field(name="Roles", value=roles, inline=False)
+        # auth channels authorized channels
+        auth_channels = []
+        for channel in member.guild.channels:
+            if member.permissions_in(channel).view_channel:
+                auth_channels.append(channel.name)
+        auth_channels.sort()
+        auth_channels_str = " - ".join(auth_channels)
+        self.add_field(
+            name="Channels allowed to view", value=auth_channels_str,
+            inline=False)
+        # footer and timestamp
+        self.set_footer(text="Member since")
+        self.timestamp = member.joined_at
