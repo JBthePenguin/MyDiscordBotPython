@@ -3,7 +3,7 @@ from unittest.mock import Mock, patch
 from discord.ext.commands import Cog
 from ..guild import InfoGuildCommands
 from ..shaping import GuildEmbed
-from ..config import GUILD_COMMANDS as coms
+from ..config import GUILD_TITLES as titles
 from .fakers import BOT, CONTEXT
 from .results import InfoGuildCommandsTestResult
 
@@ -44,7 +44,7 @@ class InfoGuildCommandsTest(AsyncTestCase):
         """ assert if make_objs_embed return the good embed """
         embed = self.cog.make_objs_embed(
             'Guild Embed Test', 'https://url.com/icon.png',
-            coms.mem.conf_embed, CONTEXT.guild.members)
+            titles.mem, CONTEXT.guild.members)
         self.assertIsInstance(embed, GuildEmbed)
         self.assertDictEqual(embed.to_dict(), self.result.make_objs_embed)
 

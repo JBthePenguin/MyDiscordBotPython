@@ -8,11 +8,24 @@ class ConfTitle():
         self.no_obj = f"No {obj_type}"
 
 
+# Configuration Command -> name, help message
+class ConfCommand():
+    """ Configuration for a command """
+
+    def __init__(self, name, help):
+        """ Init with name, help message """
+        self.name = name
+        self.help = help
+
+
+#
+# GUILD TITLES AND COMMANDS
+#
 class ConfGuildTitles():
-    """ All titles used in shaping.py  """
+    """ All titles used in shaping.py for guild commands """
 
     def __init__(self):
-        """" Init with title for each component """
+        """" Init with title for each component (singular and plural)"""
         # guild, owner, members, roles, channel's categories, channels
         self.gld = ConfTitle('Guild', 'guild')
         self.own = ConfTitle('Owner', 'owner')
@@ -32,52 +45,57 @@ class ConfGuildTitles():
 GUILD_TITLES = ConfGuildTitles()
 
 
-# Configuration Command -> name, help message, conf_embed
-class ConfCommand():
-    """ Configuration for a guild command """
-
-    def __init__(self, name, help, conf_embed):
-        """ Init with name, help message and config embed (ConfTitle)"""
-        self.name = name
-        self.help = help
-        self.conf_embed = conf_embed
-
-
 class ConfGuildCommands():
     """ Configuration for all guild commands used in guild.py  """
 
     def __init__(self):
         """" Init with configuration for each command """
         # guild, owner, members, roles, channel's categories, channels
-        self.gld = ConfCommand(
-            'guild', "Guild's stats -> #guild", GUILD_TITLES.gld)
-        self.own = ConfCommand(
-            'owner', "The Owner-> #owner", GUILD_TITLES.own)
-        self.mem = ConfCommand(
-            'mems', "All members -> #mems", GUILD_TITLES.mem)
-        self.rol = ConfCommand(
-            'roles', "All roles -> #roles", GUILD_TITLES.rol)
-        self.cat = ConfCommand(
-            'cats', "All channel's categories -> #cats", GUILD_TITLES.cat)
-        self.cha = ConfCommand(
-            'chans', 'All channels -> #chans', GUILD_TITLES.cha)
+        self.gld = ConfCommand('guild', "Guild's stats -> #guild")
+        self.own = ConfCommand('owner', "The Owner-> #owner")
+        self.mem = ConfCommand('mems', "All members -> #mems")
+        self.rol = ConfCommand('roles', "All roles -> #roles")
+        self.cat = ConfCommand('cats', "All channel's categories -> #cats")
+        self.cha = ConfCommand('chans', 'All channels -> #chans')
         # text, voice, private, group, news and store channels
-        self.tcha = ConfCommand(
-            'tchans', 'All text channels -> #tchans', GUILD_TITLES.tcha)
-        self.vcha = ConfCommand(
-            'vchans', 'All voice channels -> #vchans', GUILD_TITLES.vcha)
-        self.ncha = ConfCommand(
-            'nchans', 'All news channels -> #nchans', GUILD_TITLES.ncha)
-        self.scha = ConfCommand(
-            'schans', 'All store channels -> #schans', GUILD_TITLES.scha)
+        self.tcha = ConfCommand('tchans', 'All text channels -> #tchans')
+        self.vcha = ConfCommand('vchans', 'All voice channels -> #vchans')
+        self.ncha = ConfCommand('nchans', 'All news channels -> #nchans')
+        self.scha = ConfCommand('schans', 'All store channels -> #schans')
         # emojis, shell
-        self.emo = ConfCommand(
-            'emos', 'All emojis -> #emos', GUILD_TITLES.emo)
-        self.shl = ConfCommand(
-            'shell', 'Infos in shell -> #shell', ConfTitle('', ''))
+        self.emo = ConfCommand('emos', 'All emojis -> #emos')
+        self.shl = ConfCommand('shell', 'Infos in shell -> #shell')
 
 
 GUILD_COMMANDS = ConfGuildCommands()
+
+
+#
+# COMPONENTS TITLES AND COMMANDS
+#
+class ConfComponentsTitles():
+    """ All titles used in shaping.py for components commands """
+
+    def __init__(self):
+        """" Init with title for each component (singular and plural)"""
+        # members
+        self.mem = ConfTitle('Member', 'member')
+
+
+COMPONENTS_TITLES = ConfComponentsTitles()
+
+
+class ConfComponentsCommands():
+    """ Configuration for all components commands used in components.py  """
+
+    def __init__(self):
+        """" Init with configuration for each command """
+        # member
+        self.mem = ConfCommand(
+            'mem', "Infos of a member -> #mem 'member_id_or_name'")
+
+
+COMPONENTS_COMMANDS = ConfComponentsCommands()
 # Configurations of commands -> {key: {'name': name, 'help': help text}}
 # def conf_dict(title, obj_type):
 #     """ return a dict with the name of a command and his help text,
