@@ -1,4 +1,10 @@
-### Clone and Virtual environment
+## MyDiscordBotPython
+
+***IN PROGRESS***
+
+### Install
+
+#### Clone and Virtual environment
 ```shell
 $ git clone https://github.com/JBthePenguin/MyDiscordBotPython.git
 $ cd MyDiscordBotPython
@@ -6,12 +12,12 @@ $ virtualenv -p python3 env
 $ source env/bin/activate
 ```
 
-### Requirements
-- [discord.py](https://discordpy.readthedocs.io/en/latest/), [python-dotenv](https://github.com/theskumar/python-dotenv), [aiounittest](https://github.com/kwarunek/aiounittest), [tinydb](https://tinydb.readthedocs.io/en/latest/)
+#### Requirements and Discord token
+- [discord.py](https://discordpy.readthedocs.io/en/latest/) - [python-dotenv](https://github.com/theskumar/python-dotenv) - [aiounittest](https://github.com/kwarunek/aiounittest) - [tinydb](https://tinydb.readthedocs.io/en/latest/)
 ```shell
 (env)$ pip install -r requirements.txt
 ```
-- Discord token: create a *.env* file and replace *HereYourToken* with your personnal discord bot token
+- create a *.env* file and replace *HereYourToken* with your personnal discord bot token
 ```shell
 (env)$ echo "DISCORD_TOKEN=HereYourToken" > .env
 ```
@@ -53,4 +59,4 @@ $ source env/bin/activate
 ```
 
 ### Screenshots
-kl
+![Info Guild Commmands](screenshots/infoguildcommands.png)
