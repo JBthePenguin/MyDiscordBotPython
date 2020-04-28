@@ -51,3 +51,6 @@ $ source env/bin/activate
 ```shell
 (env)$ python -m unittest -v my_bot.info.test.InfoGuildCommandsTest.test_members
 ```
+
+### Screenshots
+kl
