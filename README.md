@@ -43,11 +43,11 @@ $ source env/bin/activate
 ```shell
 (env)$ python -m unittest -v my_bot.info.test
 ```
-- Test for a specific TestCase (ex: CheckerTest)
+- Test for a specific TestCase (ex: InfoGuildCommandsTest)
 ```shell
-(env)$ python -m unittest -v my_bot.info.test.CheckerTest
+(env)$ python -m unittest -v my_bot.info.test.InfoGuildCommandsTest
 ```
-- Only one specific test (ex: test_empty_content)
+- Only one specific test (ex: test_members)
 ```shell
-(env)$ python -m unittest -v my_bot.info.test.CheckerTest.test_empty_content
+(env)$ python -m unittest -v my_bot.info.test.InfoGuildCommandsTest.test_members
 ```

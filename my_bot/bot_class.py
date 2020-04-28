@@ -35,6 +35,7 @@ class MyBot(Bot):
         print('{}{} is connected to "{}"'.format(
             self.label, self.user.name, ' - '.join(guild_names)))
 
+    # Uncomment to send error in discord app, else error displayed in shell
     # async def on_command_error(self, ctx, error):
     #     """ send a message with the error """
     #     await ctx.send(str(error))

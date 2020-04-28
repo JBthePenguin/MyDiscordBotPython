@@ -79,7 +79,7 @@ class InfoGuildCommands(Cog, name='Commands Info Guild'):
         """ Send an embed with a list of all news channels """
         await ctx.send(embed=self.make_objs_embed(
             ctx.guild.name, ctx.guild.icon_url, titles.ncha,
-            [c for c in ctx.guild.channels if c.type == ChannelType.news]))
+            [c for c in ctx.guild.text_channels if c.is_news()]))
 
     @command(name=coms.scha.name, help=coms.scha.help, ignore_extra=False)
     async def store_channels(self, ctx):
