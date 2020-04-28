@@ -95,19 +95,3 @@ class ConfComponentsCommands():
 
 
 COMPONENTS_COMMANDS = ConfComponentsCommands()
-# Configurations of commands -> {key: {'name': name, 'help': help text}}
-# def conf_dict(title, obj_type):
-#     """ return a dict with the name of a command and his help text,
-#     for the response the embed's title and obj_type for empty list msg """
-#     return {'title': title, 'obj_type': obj_type}
-
-# confs_components = {
-#     'rolmem': conf_dict(
-#         'role_mems',
-#         'Members with a role-> #role_mems "role name or id"'),
-#     'catcha': conf_dict(
-#         'cat_chans',
-#         'Channels with a category-> #cat_chans "cat name or id"'),
-#     'chamem': conf_dict(
-#         'chan_mems',
-#         'Auth Members on chan-> #chan_mems "chan name or id"')}
