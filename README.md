@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/JBthePenguin/MyDiscordBotPython.svg?branch=master)](https://travis-ci.com/github/JBthePenguin/MyDiscordBotPython)
 ## MyDiscordBotPython
 
 ***IN PROGRESS***
