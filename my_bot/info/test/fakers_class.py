@@ -205,14 +205,14 @@ class FakeGuild(Guild):
         self._roles = {}
         # add default role @everyone with the same id than the guild
         default_role = FakeRole(
-            id=self.id, name='@everyone', guild=self, position=0,
+            role_id=self.id, name='@everyone', guild=self, position=0,
             permissions=False)
         self._roles[default_role.id] = default_role
         # add roles
         name_id_roles = {}  # used to add members and channels
         for tup_role in guild.get('roles'):
             role = FakeRole(
-                id=next(discord_id), name=tup_role[0], guild=self,
+                role_id=next(discord_id), name=tup_role[0], guild=self,
                 position=tup_role[1], permissions=tup_role[2])
             self._roles[role.id] = role
             name_id_roles[role.name] = role.id
