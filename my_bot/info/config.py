@@ -1,9 +1,9 @@
 # Configuration title : default and no object
 class ConfTitle():
-    """ Configuration for a guild's component title in embed and shell """
+    """ Configuration for a guild's component title in embed and shell. """
 
     def __init__(self, title, obj_type):
-        """ Init with a default title and a no obj message """
+        """ Init with a default title and a no obj message. """
         self.default = title
         self.no_obj = f"No {obj_type}"
 
