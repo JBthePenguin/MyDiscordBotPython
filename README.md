@@ -1,9 +1,11 @@
-[![Build Status](https://travis-ci.com/JBthePenguin/MyDiscordBotPython.svg?branch=master)](https://travis-ci.com/github/JBthePenguin/MyDiscordBotPython)
+[![Build Status](https://travis-ci.com/JBthePenguin/MyDiscordBotPython.svg?branch=master)](https://travis-ci.com/github/JBthePenguin/MyDiscordBotPython) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5f71a237b819419dbb16e46aac038657)](https://www.codacy.com/manual/JBthePenguin/MyDiscordBotPython?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=JBthePenguin/MyDiscordBotPython&amp;utm_campaign=Badge_Grade) [![python](https://img.shields.io/badge/python-3.7.5-red.svg)](https://www.python.org/downloads/) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) ![GitHub top language](https://img.shields.io/github/languages/top/JBthePenguin/MyDiscordBotPython) ![GitHub repo size](https://img.shields.io/github/repo-size/JBthePenguin/MyDiscordBotPython)
 ## MyDiscordBotPython
 
 ***IN PROGRESS***
 
 ### Install
+
+***Python 3.7.5 or higher is required***
 
 #### Clone and Virtual environment
 ```shell
