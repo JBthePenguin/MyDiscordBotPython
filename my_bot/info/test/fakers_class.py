@@ -248,7 +248,7 @@ class FakeGuild(Guild):
                     ChannelType.text.value, ChannelType.news.value):
                 channel = FakeTextChannel(
                     guild=self, parent_id=name_id_categories[tup_channel[0]],
-                    name=tup_channel[1], type=tup_channel[2],
+                    name=tup_channel[1], c_type=tup_channel[2],
                     position=tup_channel[3], roles=c_roles, members=c_members)
             elif tup_channel[2] == ChannelType.voice.value:  # voice
                 channel = FakeVoiceChannel(
