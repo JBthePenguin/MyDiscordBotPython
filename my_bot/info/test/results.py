@@ -373,7 +373,9 @@ class ComponentEmbedTestResult():
                     'value': '@everyone - staff'},
                 {
                     'inline': False, 'name': 'Channels allowed to view',
-                    'value': 'info point - meeting room - reception - shop - snack - studio'}],
+                    'value': ''.join([
+                        'info point - meeting room - reception - shop - ',
+                        'snack - studio'])}],
             'timestamp': '2020-04-27T13:00:00+00:00',
             'description': 'A human actually offline.'}
         embed_dict.update(self.init_method)
@@ -421,7 +423,9 @@ class InfoComponentsCommandsTestResult():
                     'value': '@everyone - staff'},
                 {
                     'inline': False, 'name': 'Channels allowed to view',
-                    'value': 'info point - meeting room - reception - shop - snack - studio'}],
+                    'value': ''.join([
+                        'info point - meeting room - reception - shop - ',
+                        'snack - studio'])}],
             'title': 'Joe'}
         name_result.update(base_result)
         return {

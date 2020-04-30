@@ -12,11 +12,8 @@ from .results import InfoGuildCommandsTestResult, MakeObjsEmbedTestResult
 class MakeObjsEmbedTest(TestCase):
     """Test Case for make_objs_embed function.
     *** test with members of FakeGuild ***"""
-
-    def setUp(self):
-        """Init tests with expected results."""
-        self.result = MakeObjsEmbedTestResult()
-        self.maxDiff = None
+    result = MakeObjsEmbedTestResult()
+    maxDiff = None
 
     def assert_list(self, m_list, result):
         """Assert if make_objs_embed return the good embed."""
@@ -37,12 +34,13 @@ class MakeObjsEmbedTest(TestCase):
 
 class InfoGuildCommandsTest(AsyncTestCase):
     """Async Test case for cog InfoGuildCommands."""
+    cog = InfoGuildCommands(BOT)
+    result = InfoGuildCommandsTestResult()
+    maxDiff = None
 
     def setUp(self):
-        """Init tests with cog and expected results."""
-        self.cog = InfoGuildCommands(BOT)
-        self.result = InfoGuildCommandsTestResult()
-        self.maxDiff = None
+        """Init tests with a reset mock called count and args."""
+        CONTEXT.send.reset_mock()
 
     def test_init(self):
         """Assert after init is instance Cog, the number of commands,
@@ -55,9 +53,7 @@ class InfoGuildCommandsTest(AsyncTestCase):
             self.assertTupleEqual(c_tuples[i], self.result.init_method[i])
 
     async def assert_send_method(self, method, result):
-        """Reset mock called count and args, assert if send method is called,
-        and if the good embed is sended."""
-        CONTEXT.send.reset_mock()
+        """Assert if send method is called and if the good embed is sended."""
         await method.callback(self.cog, CONTEXT)
         CONTEXT.send.assert_called_once()
         kwargs = CONTEXT.send.call_args[1]
@@ -114,9 +110,8 @@ class InfoGuildCommandsTest(AsyncTestCase):
             self.cog.emojis, self.result.emojis)
 
     async def test_shell_info(self):
-        """Reset mock called count and args, assert if print function,
+        """Mock print function, assert if it,
         and the context send method is called once with the good string."""
-        CONTEXT.send.reset_mock()
         mock_print = Mock()
         with patch("builtins.print", mock_print):
             await self.cog.shell_info.callback(self.cog, CONTEXT)

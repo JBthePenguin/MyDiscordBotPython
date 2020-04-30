@@ -9,65 +9,61 @@ from ..config import GUILD_TITLES as titles
 
 class GuildEmbedTest(TestCase):
     """Test case for class GuildEmbed."""
+    result = GuildEmbedTestResult()
+    maxDiff = None
 
     def setUp(self):
-        """Init tests with name and icon url to used with a GuildEmbed object,
-        and expected results."""
-        self.embed_name = 'Guild Embed Test'
-        self.embed_icon_url = "https://url.com/icon.png"
-        self.result = GuildEmbedTestResult()
-        self.maxDiff = None
+        """Init tests with an embed."""
+        self.embed = GuildEmbed('Guild Embed Test', "https://url.com/icon.png")
 
     def test_init(self):
         """Assert after init is instance Embed,
         and if the dict result have the author name and icon_url."""
-        embed = GuildEmbed(self.embed_name, self.embed_icon_url)
-        self.assertIsInstance(embed, Embed)
-        self.assertDictEqual(embed.to_dict(), self.result.init_method)
+        self.assertIsInstance(self.embed, Embed)
+        self.assertDictEqual(self.embed.to_dict(), self.result.init_method)
 
     def test_add_stat(self):
         """Assert after add_stat if a field is added,
         with good name and number of objs."""
-        embed = GuildEmbed(self.embed_name, self.embed_icon_url)
-        embed.add_stat(titles.mem, ['a', 'b', 'c', 'd', 'e'])
-        self.assertListEqual(embed.to_dict()['fields'], self.result.add_stat)
+        self.embed.add_stat(titles.mem, ['a', 'b', 'c', 'd', 'e'])
+        self.assertListEqual(
+            self.embed.to_dict()['fields'], self.result.add_stat)
+
+    def assert_add_title_foo(self, result):
+        """Assert if in embed there is the good title and footer,
+        if fields are added with the good name and value."""
+        embed_dict = self.embed.to_dict()
+        self.assertEqual(embed_dict['title'], result['title'])
+        self.assertListEqual(embed_dict['fields'], result['fields'])
+        self.assertDictEqual(embed_dict['footer'], result['footer'])
 
     def test_add_title_stats(self):
         """Assert after add_title_stats if there is the good title and footer,
         if fields are added with the good name and number of objs for value."""
-        embed = GuildEmbed(self.embed_name, self.embed_icon_url)
-        embed.add_title_stats(FULL_GUILD)
-        self.assertEqual(
-            embed.to_dict()['title'], self.result.add_title_stats['title'])
-        self.assertListEqual(
-            embed.to_dict()['fields'], self.result.add_title_stats['fields'])
-        self.assertDictEqual(
-            embed.to_dict()['footer'], self.result.add_title_stats['footer'])
+        self.embed.add_title_stats(FULL_GUILD)
+        self.assert_add_title_foo(self.result.add_title_stats)
 
     def test_add_title_objs(self):
         """Assert after add_title_objs if there is the good title and footer,
         if fields with names 'id' 'name' are added,
         and for each value, the lists of ids and names sorted by name."""
-        embed = GuildEmbed(self.embed_name, self.embed_icon_url)
-        embed.add_title_objs(titles.mem, FULL_GUILD.members)
-        self.assertEqual(
-            embed.to_dict()['title'], self.result.add_title_objs['title'])
-        self.assertListEqual(
-            embed.to_dict()['fields'], self.result.add_title_objs['fields'])
-        self.assertDictEqual(
-            embed.to_dict()['footer'], self.result.add_title_objs['footer'])
-        # with an empty list
-        embed = GuildEmbed(self.embed_name, self.embed_icon_url)
-        embed.add_title_objs(titles.mem, [])
-        self.assertEqual(embed.to_dict()['title'], 'No member')
+        self.embed.add_title_objs(titles.mem, FULL_GUILD.members)
+        self.assert_add_title_foo(self.result.add_title_objs)
+
+    def test_add_empty_objs(self):
+        """Assert after add empty objs if there is the good title and footer,
+        if fields with 'no member'.
+        *** test with members ***"""
+        self.embed.add_title_objs(titles.mem, [])
+        self.assertEqual(self.embed.to_dict()['title'], 'No member')
 
     def test_add_emojis(self):
         """Assert after add_emojis if 2 fields without names are added,
         and for each value, the list of emojis separated in 2 parts,
         with str() repr and name."""
-        embed = GuildEmbed(self.embed_name, self.embed_icon_url)
-        embed.add_emojis(FULL_GUILD.emojis)
-        self.assertListEqual(embed.to_dict()['fields'], self.result.add_emojis)
+        self.embed.add_emojis(FULL_GUILD.emojis)
+        self.assertListEqual(
+            self.embed.to_dict()['fields'], self.result.add_emojis)
 
 
 class GuildShellTest(TestCase):
@@ -75,7 +71,7 @@ class GuildShellTest(TestCase):
     result = GuildShellTestResult()
 
     def setUp(self):
-        """Init tests with the expected results."""
+        """Init tests with a guild_shell."""
         self.guild_shell = GuildShell(FULL_GUILD)
 
     def test_init(self):
@@ -144,8 +140,6 @@ class GuildShellTest(TestCase):
         """Assert after add cats_chans infos to string."""
         self.assert_add_cats_chans(
             self.guild_shell.guild.by_category(), self.result.add_cats_chans)
-        # guild_shell.add_cats_chans(guild_shell.guild.by_category())
-        # self.assertEqual(guild_shell.infos, self.result.add_cats_chans)
 
     def test_empty_cats_chans(self):
         """Assert after add empty cats_chans infos to string."""
@@ -153,7 +147,6 @@ class GuildShellTest(TestCase):
 
     def test_add_infos(self):
         """Assert after add_infos if all infos are added correctly."""
-        # guild_shell = GuildShell(FULL_GUILD)
         self.guild_shell.add_infos()
         self.assertEqual(self.guild_shell.infos, self.result.add_infos)
 
@@ -164,7 +157,7 @@ class ComponentEmbedTest(TestCase):
     maxDiff = None
 
     def setUp(self):
-        """Init tests with expected results."""
+        """Init tests with an embed."""
         self.embed = ComponentEmbed(
             3, 'Name', 1447446, 'https://url.com/icon.png')
 

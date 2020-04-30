@@ -10,41 +10,45 @@ class CheckParameterTest(TestCase):
     """Test Case for check_parameter function.
     *** test with member of FakeGuild ***"""
 
+    def assert_exist(self, param, result):
+        """Assert if the good obj is founded"""
+        obj = check_parameter(
+            param, FULL_GUILD.get_member, FULL_GUILD.get_member_named)
+        self.assertEqual(obj.id, result[0])
+        self.assertEqual(obj.name, result[1])
+
     def test_exist_id(self):
         """Assert if check_parameter return the good obj."""
-        obj = check_parameter(
-            '1', FULL_GUILD.get_member, FULL_GUILD.get_member_named)
-        self.assertEqual(obj.id, 1)
-        self.assertEqual(obj.name, 'Al')
+        self.assert_exist('1', (1, 'Al'))
 
     def test_exist_name(self):
         """Assert if check_parameter return the good obj."""
+        self.assert_exist('Joe', (2, 'Joe'))
+
+    def assert_non_exist(self, param, message):
+        """Assert if the good obj is founded"""
         obj = check_parameter(
-            'Joe', FULL_GUILD.get_member, FULL_GUILD.get_member_named)
-        self.assertEqual(obj.id, 2)
-        self.assertEqual(obj.name, 'Joe')
+            param, FULL_GUILD.get_member, FULL_GUILD.get_member_named)
+        self.assertEqual(obj, message)
 
     def test_non_exist_id(self):
         """Assert if check_parameter return 'with id param not founded'."""
-        obj = check_parameter(
-            '10', FULL_GUILD.get_member, FULL_GUILD.get_member_named)
-        self.assertEqual(obj, "with id 10 not founded.")
+        self.assert_non_exist('10', "with id 10 not founded.")
 
     def test_non_exist_name(self):
         """Assert if check_parameter return 'with name param not founded'."""
-        obj = check_parameter(
-            'Polo', FULL_GUILD.get_member, FULL_GUILD.get_member_named)
-        self.assertEqual(obj, "with name Polo not founded.")
+        self.assert_non_exist('Polo', "with name Polo not founded.")
 
 
 class InfoComponentsCommandsTest(AsyncTestCase):
     """Async Test case for cog InfoComponentsCommands."""
+    cog = InfoComponentsCommands(BOT)
+    result = InfoComponentsCommandsTestResult()
+    maxDiff = None
 
     def setUp(self):
-        """Init tests with cog and expected results."""
-        self.cog = InfoComponentsCommands(BOT)
-        self.result = InfoComponentsCommandsTestResult()
-        self.maxDiff = None
+        """Init tests with a reset mock called count and args."""
+        CONTEXT.send.reset_mock()
 
     def test_init(self):
         """Assert after init is instance Cog, the number of commands,
@@ -60,7 +64,7 @@ class InfoComponentsCommandsTest(AsyncTestCase):
         """"Reset mock called count and args, call method,
         assert if ctx.send is called once,
         and return the embed dict or the not founded message sended."""
-        CONTEXT.send.reset_mock()
+        # CONTEXT.send.reset_mock()
         await method.callback(self.cog, CONTEXT, param)
         CONTEXT.send.assert_called_once()
         args, kwargs = CONTEXT.send.call_args
