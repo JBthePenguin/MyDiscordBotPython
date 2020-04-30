@@ -33,7 +33,7 @@ class InfoGuildCommandsTest(AsyncTestCase):
         CONTEXT.send.reset_mock()
         await method.callback(self.cog, CONTEXT)
         CONTEXT.send.assert_called_once()
-        args, kwargs = CONTEXT.send.call_args
+        kwargs = CONTEXT.send.call_args[1]
         self.assertDictEqual(kwargs['embed'].to_dict(), result)
 
     async def test_guild(self):
