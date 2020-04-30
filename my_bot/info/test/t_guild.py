@@ -18,21 +18,21 @@ class MakeObjsEmbedTest(TestCase):
         self.result = MakeObjsEmbedTestResult()
         self.maxDiff = None
 
-    def test_empty_list(self):
-        """Assert if make_objs_embed return embed with no member."""
+    def assert_list(self, m_list, result):
+        """Assert if make_objs_embed return the good embed."""
         embed = make_objs_embed(
             'Guild Embed Test', 'https://url.com/icon.png',
-            titles.mem, [])
+            titles.mem, m_list)
         self.assertIsInstance(embed, GuildEmbed)
-        self.assertDictEqual(embed.to_dict(), self.result.empty_list)
+        self.assertDictEqual(embed.to_dict(), result)
+
+    def test_empty_list(self):
+        """Assert with an empty list."""
+        self.assert_list([], self.result.empty_list)
 
     def test_not_empty_list(self):
-        """Assert if make_objs_embed return embed with list of members."""
-        embed = make_objs_embed(
-            'Guild Embed Test', 'https://url.com/icon.png',
-            titles.mem, CONTEXT.guild.members)
-        self.assertIsInstance(embed, GuildEmbed)
-        self.assertDictEqual(embed.to_dict(), self.result.not_empty_list)
+        """Assert with a list of members."""
+        self.assert_list(CONTEXT.guild.members, self.result.not_empty_list)
 
 
 class InfoGuildCommandsTest(AsyncTestCase):

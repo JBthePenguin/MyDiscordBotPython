@@ -7,10 +7,10 @@ from info.components import InfoComponentsCommands
 
 
 class MyBot(Bot):
-    """ Custom Bot, subclass discord.ext.commands.Bot """
+    """Custom Bot, subclass discord.ext.commands.Bot ."""
 
     def __init__(self, info=True, event=True):
-        """ init discord.ext.commands.Bot and add desired commands """
+        """Init discord.ext.commands.Bot and add desired commands."""
         super().__init__(command_prefix="#")
         self.label = '-'
         if info is True:  # add Info commands
@@ -28,7 +28,7 @@ class MyBot(Bot):
         super().run(token)
 
     async def on_ready(self):
-        """ print in shell when bot is connected to guilds """
+        """Print in shell when bot is connected to guilds."""
         guild_names = []
         for guid in self.guilds:
             guild_names.append(guid.name)
@@ -37,5 +37,5 @@ class MyBot(Bot):
 
     # Uncomment to send error in discord app, else error displayed in shell
     # async def on_command_error(self, ctx, error):
-    #     """ send a message with the error """
+    #     """Send a message with the error."""
     #     await ctx.send(str(error))
