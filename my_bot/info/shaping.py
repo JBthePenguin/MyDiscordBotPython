@@ -3,21 +3,21 @@ from .config import GUILD_TITLES as titles
 
 
 class GuildEmbed(Embed):
-    """ Embed for Guild """
+    """Embed for a Guild."""
 
     def __init__(self, name, icon_url):
-        """ Init an embed with color, guild name and icon_url """
+        """Init an embed with color, guild name and icon_url."""
         super().__init__(color=0x161616)
         self.set_author(name=name, icon_url=icon_url)
 
     def add_stat(self, title, objs):
-        """ add a field, set name with default title
-        and set value with the number of objs """
+        """Add a field, set name with default title,
+        and value with the number of objs."""
         self.add_field(name=title.default, value=str(len(objs)), inline=True)
 
     def add_title_stats(self, guild):
-        """ add title with owner name,
-        add fields for guild's stats (number of members, roles,...) """
+        """Add title with owner name,
+        add fields for guild's stats (number of members, roles,...)."""
         self.title = f"id: {guild.id}"
         self.add_stat(titles.mem, guild.members)
         self.add_stat(titles.rol, guild.roles)
@@ -39,7 +39,7 @@ class GuildEmbed(Embed):
         self.set_footer(text=f"{titles.own.default}: {guild.owner.name}")
 
     def add_title_objs(self, conf_embed, objs):
-        """ add title, add fields id and name, add each obj sorted by name"""
+        """Add title, add fields id and name, add each obj sorted by name."""
         if objs:
             self.title = conf_embed.default
             if self.title == 'Emojis':  # for emoji
@@ -55,7 +55,7 @@ class GuildEmbed(Embed):
             self.title = conf_embed.no_obj
 
     def add_emojis(self, emojis):
-        """ add emojis(tuple) symbol and name, separate in 2 fields """
+        """Add emojis(tuple) symbol and name, separate in 2 fields."""
         half_n_emo = len(emojis) // 2
         first_emos = [emo for emo in emojis[half_n_emo:]]
         second_emos = [emo for emo in emojis[:half_n_emo]]
@@ -68,15 +68,15 @@ class GuildEmbed(Embed):
 
 
 class GuildShell():
-    """ String for guild """
+    """String for a Guild."""
 
     def __init__(self, guild):
-        """ Init a string for infos with guild id and name """
+        """Init a string for infos with guild id and name."""
         self.guild = guild
         self.infos = ''
 
     def add_list(self, title, objs):
-        """ add a list with a title to infos string """
+        """Add a list with a title to infos string."""
         if objs:
             if (title.default == 'Guild') or (title.default == 'Owner'):
                 n_objs = ''
@@ -93,7 +93,7 @@ class GuildShell():
             self.infos += f"\n########## {title.no_obj} ##########\n"
 
     def add_emojis(self, emojis):
-        """ add a tuple of emojis (3 by line)"""
+        """Add a tuple of emojis (3 by line)."""
         i = 0
         for emoji in emojis:
             self.infos += f"- {str(emoji)} {emoji.name} "
@@ -104,7 +104,7 @@ class GuildShell():
                 i += 1
 
     def add_type_chans(self, chans, title):
-        """ add channels with a specific type(title) """
+        """Add channels with a specific type(title)."""
         if chans:
             self.infos += f"### {str(len(chans))} {title.default}\n"
             chans.sort(key=lambda chan: chan.name)
@@ -112,7 +112,7 @@ class GuildShell():
                 self.infos += f"- {chan.id} - {chan.name}\n"
 
     def add_cats_chans(self, chans_cats):
-        """ add channels by category and type """
+        """Add channels by category and type."""
         if chans_cats:
             self.infos += "\n\n########## CHANNELS BY CATEGORIES ##########\n"
             for chans_cat in chans_cats:
@@ -137,7 +137,7 @@ class GuildShell():
                     self.infos += f"- {titles.cha.no_obj}\n"
 
     def add_infos(self):
-        """ Construct a string with all guild's infos """
+        """Construct a string with all guild's infos."""
         # guild and owner
         self.add_list(titles.gld, [self.guild])
         self.add_list(titles.own, [self.guild.owner])
@@ -166,19 +166,19 @@ class GuildShell():
 
 
 class ComponentEmbed(Embed):
-    """ Embed for a component """
+    """Embed for a Component."""
 
-    def __init__(self, id, name, color, icon_url):
-        """ Init an embed with name for title, color,
-        id for author name and icon_url """
+    def __init__(self, c_id, name, color, icon_url):
+        """Init an embed with name for title, color,
+        id for author name and icon_url."""
         super().__init__(title=name, color=color)
-        self.set_author(name=f"id: {str(id)}", icon_url=icon_url)
+        self.set_author(name=f"id: {str(c_id)}", icon_url=icon_url)
 
     def add_member_infos(self, member):
-        """ add infos for a specific member
-        - description -> is bot or human, status
-        -fields -> roles and auth channels
-        -footer text -> member since; timestamp -> joined_at"""
+        """Add infos for a specific member:
+        - description -> is bot or human, status.
+        -fields -> roles and auth channels.
+        -footer text -> member since; timestamp -> joined_at."""
         # desription -> bot or human and status
         if member.bot:
             description = 'A bot '

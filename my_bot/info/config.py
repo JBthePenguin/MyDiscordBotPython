@@ -12,10 +12,10 @@ class ConfTitle():
 class ConfCommand():
     """ Configuration for a command """
 
-    def __init__(self, name, help):
+    def __init__(self, name, help_text):
         """ Init with name, help message """
         self.name = name
-        self.help = help
+        self.help = help_text
 
 
 #

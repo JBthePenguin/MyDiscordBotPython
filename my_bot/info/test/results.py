@@ -162,8 +162,26 @@ class GuildShellTestResult():
         return result
 
 
+class MakeObjsEmbedTestResult():
+    """Class with MakeObjsEmbedTest expected result."""
+
+    @property
+    def empty_list(self):
+        """Return the result expected for test_empty_list"""
+        embed_dict = GuildEmbedTestResult().init_method
+        embed_dict['title'] = 'No member'
+        return embed_dict
+
+    @property
+    def not_empty_list(self):
+        """Return the result expected for test_not_empty_list (embed dict)."""
+        embed_dict = GuildEmbedTestResult().init_method
+        embed_dict.update(GuildEmbedTestResult().add_title_objs)
+        return embed_dict
+
+
 class InfoGuildCommandsTestResult():
-    """ class with InfoGuildCommandsTest expected result   """
+    """ class with InfoGuildCommandsTest expected result."""
 
     @property
     def base_result(self):
@@ -197,13 +215,6 @@ class InfoGuildCommandsTestResult():
         """ return the result expected for test_guild (embed dict)"""
         embed_dict = GuildEmbedTestResult().add_title_stats
         embed_dict.update(self.base_result)
-        return embed_dict
-
-    @property
-    def make_objs_embed(self):
-        """ return the result expected for test_make_objs_embed (embed dict)"""
-        embed_dict = GuildEmbedTestResult().init_method
-        embed_dict.update(GuildEmbedTestResult().add_title_objs)
         return embed_dict
 
     @property
