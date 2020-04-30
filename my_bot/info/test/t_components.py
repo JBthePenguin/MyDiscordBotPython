@@ -56,34 +56,32 @@ class InfoComponentsCommandsTest(AsyncTestCase):
         for i in range(len(commands)):
             self.assertTupleEqual(c_tuples[i], self.result.init_method[i])
 
+    async def assert_send_called(self, method, param, exist):
+        """"Reset mock called count and args, call method,
+        assert if ctx.send is called once,
+        and return the embed dict or the not founded message sended."""
+        CONTEXT.send.reset_mock()
+        await method.callback(self.cog, CONTEXT, param)
+        CONTEXT.send.assert_called_once()
+        args, kwargs = CONTEXT.send.call_args
+        if exist:
+            return kwargs['embed'].to_dict()
+        return args[0]
+
     async def assert_send_method(self, method, result, id_name, not_exist):
-        """Reset mock called count and args, assert if send method is called,
-        and if the good embed or the not exist message is sended.
+        """Assert if the good embed or the not exist message is sended.
         *** test with exist id and name, with not exist id and name ***"""
-        # id exist
-        CONTEXT.send.reset_mock()
-        await method.callback(self.cog, CONTEXT, id_name[0])
-        CONTEXT.send.assert_called_once()
-        args, kwargs = CONTEXT.send.call_args
-        self.assertDictEqual(kwargs['embed'].to_dict(), result['id'])
-        # name exist
-        CONTEXT.send.reset_mock()
-        await method.callback(self.cog, CONTEXT, id_name[1])
-        CONTEXT.send.assert_called_once()
-        args, kwargs = CONTEXT.send.call_args
-        self.assertDictEqual(kwargs['embed'].to_dict(), result['name'])
-        # id not exist
-        CONTEXT.send.reset_mock()
-        await method.callback(self.cog, CONTEXT, not_exist[0])
-        CONTEXT.send.assert_called_once()
-        args, kwargs = CONTEXT.send.call_args
-        self.assertEqual(args[0], result['no_id'])
-        # name not exist
-        CONTEXT.send.reset_mock()
-        await method.callback(self.cog, CONTEXT, not_exist[1])
-        CONTEXT.send.assert_called_once()
-        args, kwargs = CONTEXT.send.call_args
-        self.assertEqual(args[0], result['no_name'])
+        # id and name exist
+        values = [(id_name[0], result['id']), (id_name[1], result['name'])]
+        for v in values:
+            self.assertDictEqual(
+                await self.assert_send_called(method, v[0], True), v[1])
+        # id and name not exist
+        values = [
+            (not_exist[0], result['no_id']), (not_exist[1], result['no_name'])]
+        for v in values:
+            self.assertEqual(
+                await self.assert_send_called(method, v[0], False), v[1])
 
     async def test_member(self):
         """Assert send method after member command."""
