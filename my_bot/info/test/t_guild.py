@@ -1,11 +1,11 @@
 from unittest import TestCase
 from aiounittest import AsyncTestCase
 from unittest.mock import Mock, patch
-from discord.ext.commands import Cog
+from discord.ext.commands import Cog, Bot
 from ..guild import InfoGuildCommands, make_objs_embed
 from ..shaping import GuildEmbed
 from ..config import GUILD_TITLES as titles
-from .fakers import BOT, CONTEXT
+from .fakers import CONTEXT
 from .results import InfoGuildCommandsTestResult, MakeObjsEmbedTestResult
 
 
@@ -34,7 +34,7 @@ class MakeObjsEmbedTest(TestCase):
 
 class InfoGuildCommandsTest(AsyncTestCase):
     """Async Test case for cog InfoGuildCommands."""
-    cog = InfoGuildCommands(BOT)
+    cog = InfoGuildCommands(Bot(command_prefix='#'))
     result = InfoGuildCommandsTestResult()
     maxDiff = None
     ctx = CONTEXT

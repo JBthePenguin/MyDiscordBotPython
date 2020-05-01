@@ -1,19 +1,21 @@
 from unittest import TestCase
 from aiounittest import AsyncTestCase
-from discord.ext.commands import Cog
+from discord.ext.commands import Cog, Bot
 from ..components import InfoComponentsCommands, check_parameter
-from .fakers import BOT, FULL_GUILD, CONTEXT
+from .fakers import CONTEXT
 from .results import InfoComponentsCommandsTestResult
 
 
 class CheckParameterTest(TestCase):
     """Test Case for check_parameter function.
     *** test with member of FakeGuild ***"""
+    get_by_id = CONTEXT.guild.get_member
+    get_by_name = CONTEXT.guild.get_member_named
 
     def assert_check_return(self, param, result, exist):
         """Assert if the good obj if exist, or message if not, is returned."""
         obj = check_parameter(
-            param, FULL_GUILD.get_member, FULL_GUILD.get_member_named)
+            param, self.get_by_id, self.get_by_name)
         if exist:
             self.assertEqual(obj.id, result[0])
             self.assertEqual(obj.name, result[1])
@@ -39,7 +41,7 @@ class CheckParameterTest(TestCase):
 
 class InfoComponentsCommandsTest(AsyncTestCase):
     """Async Test case for cog InfoComponentsCommands."""
-    cog = InfoComponentsCommands(BOT)
+    cog = InfoComponentsCommands(Bot(command_prefix='#'))
     result = InfoComponentsCommandsTestResult()
     maxDiff = None
     ctx = CONTEXT

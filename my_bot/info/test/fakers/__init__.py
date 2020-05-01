@@ -1,5 +1,7 @@
 from discord.enums import ChannelType
-from .fakers_class import FakeUser, FakeGuild, FakeBot, FakeContext
+from .f_member import FakeUser
+from .f_guild import FakeGuild
+from .f_context import FakeContext
 
 # ROLES -> [(name, position, all permissions(bool)), ..]
 ROLES = [
@@ -42,9 +44,6 @@ EMOJIS = ['cool', 'good', 'bad', 'strong']
 FULL_GUILD = FakeGuild(
     name="Full guild", roles=ROLES, members=MEMBERS,
     categories=CHANNELS_CATEGORIES, channels=CHANNELS, emojis=EMOJIS)
-
-# BOT
-BOT = FakeBot()
 
 # CONTEXT
 CONTEXT = FakeContext(FULL_GUILD)
