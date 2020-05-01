@@ -7,19 +7,20 @@ from .f_permover import FakePermissionOverwrites
 class FakeChannelData(dict):
     """Class to fake a channel data dict."""
 
-    def __init__(self, parent_id, name, position, roles, members, c_type=None):
+    def __init__(self, **kwargs):
         """Init with keys id, name, position
         and permission_overwrites if there is role or member."""
         super().__init__()
+        self.update(kwargs)
+        del self['guild']
         self['id'] = next(DISCORD_ID)
-        self['parent_id'] = parent_id
-        self['name'] = name
-        self['position'] = position
-        if roles or members:
+        if self['roles'] or self['members']:
             self['permission_overwrites'] = FakePermissionOverwrites(
-                roles, members)
-        if c_type is not None:
-            self['type'] = c_type
+                self['roles'], self['members'])
+        try:
+            self['type'] = self.pop('c_type')
+        except KeyError:
+            pass
 
 
 class FakeCategoryChannel(CategoryChannel):
@@ -28,9 +29,7 @@ class FakeCategoryChannel(CategoryChannel):
     def __init__(self, **kwargs):
         """Init with a FakeChannelData, a guild and MagicMock for state."""
         super().__init__(
-            data=FakeChannelData(
-                kwargs['parent_id'], kwargs['name'], kwargs['position'],
-                kwargs['roles'], kwargs['members']),
+            data=FakeChannelData(**kwargs),
             guild=kwargs['guild'], state=MagicMock())
 
 
@@ -41,9 +40,7 @@ class FakeTextChannel(TextChannel):
         """Init with a FakeChannelData (add 'type' = (text->0 news->5)),
         a guild, and MagicMock for state"""
         super().__init__(
-            data=FakeChannelData(
-                kwargs['parent_id'], kwargs['name'], kwargs['position'],
-                kwargs['roles'], kwargs['members'], kwargs['c_type']),
+            data=FakeChannelData(**kwargs),
             guild=kwargs['guild'], state=MagicMock())
 
 
@@ -53,9 +50,7 @@ class FakeVoiceChannel(VoiceChannel):
     def __init__(self, **kwargs):
         """Init with a FakeChannelData, a guild and MagicMock for state."""
         super().__init__(
-            data=FakeChannelData(
-                kwargs['parent_id'], kwargs['name'], kwargs['position'],
-                kwargs['roles'], kwargs['members']),
+            data=FakeChannelData(**kwargs),
             guild=kwargs['guild'], state=MagicMock())
 
 
@@ -65,7 +60,5 @@ class FakeStoreChannel(StoreChannel):
     def __init__(self, **kwargs):
         """Init with a FakeChannelData, a guild and MagicMock for state."""
         super().__init__(
-            data=FakeChannelData(
-                kwargs['parent_id'], kwargs['name'], kwargs['position'],
-                kwargs['roles'], kwargs['members']),
+            data=FakeChannelData(**kwargs),
             guild=kwargs['guild'], state=MagicMock())
