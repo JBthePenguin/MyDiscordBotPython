@@ -37,10 +37,11 @@ class InfoGuildCommandsTest(AsyncTestCase):
     cog = InfoGuildCommands(BOT)
     result = InfoGuildCommandsTestResult()
     maxDiff = None
+    ctx = CONTEXT
 
     def setUp(self):
         """Init tests with a reset mock called count and args."""
-        CONTEXT.send.reset_mock()
+        self.ctx.send.reset_mock()
 
     def test_init(self):
         """Assert after init is instance Cog, the number of commands,
@@ -54,9 +55,9 @@ class InfoGuildCommandsTest(AsyncTestCase):
 
     async def assert_send_method(self, method, result):
         """Assert if send method is called and if the good embed is sended."""
-        await method.callback(self.cog, CONTEXT)
-        CONTEXT.send.assert_called_once()
-        kwargs = CONTEXT.send.call_args[1]
+        await method.callback(self.cog, self.ctx)
+        self.ctx.send.assert_called_once()
+        kwargs = self.ctx.send.call_args[1]
         self.assertDictEqual(kwargs['embed'].to_dict(), result)
 
     async def test_guild(self):
@@ -114,6 +115,6 @@ class InfoGuildCommandsTest(AsyncTestCase):
         and the context send method is called once with the good string."""
         mock_print = Mock()
         with patch("builtins.print", mock_print):
-            await self.cog.shell_info.callback(self.cog, CONTEXT)
+            await self.cog.shell_info.callback(self.cog, self.ctx)
             mock_print.assert_called_once_with(self.result.shell_info)
-            CONTEXT.send.assert_called_once_with("Infos displayed in shell")
+            self.ctx.send.assert_called_once_with("Infos displayed in shell")
