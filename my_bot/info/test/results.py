@@ -432,4 +432,4 @@ class InfoComponentsCommandsTestResult():
             'id': id_result,
             'name': name_result,
             'no_id': 'Member with id 12 not founded.',
-            'no_name': 'Member with name Walter not founded.'}
+            'no_name': 'Member with name Tom not founded.'}
