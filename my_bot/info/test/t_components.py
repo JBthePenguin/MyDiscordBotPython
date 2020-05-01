@@ -1,6 +1,6 @@
 from unittest import TestCase
 from aiounittest import AsyncTestCase
-from discord.ext.commands import Cog, Bot
+from discord.ext.commands import Bot
 from ..components import InfoComponentsCommands, check_parameter
 from .fakers import CONTEXT
 from .results import InfoComponentsCommandsTestResult
@@ -49,16 +49,6 @@ class InfoComponentsCommandsTest(AsyncTestCase):
     def setUp(self):
         """Init tests with a reset mock called count and args."""
         self.ctx.send.reset_mock()
-
-    def test_init(self):
-        """Assert after init is instance Cog, the number of commands,
-        and if they have good name and help."""
-        self.assertIsInstance(self.cog, Cog)
-        commands = self.cog.get_commands()
-        self.assertEqual(len(commands), 1)
-        c_tuples = [(c.name, c.help) for c in commands]
-        for i in range(len(commands)):
-            self.assertTupleEqual(c_tuples[i], self.result.init_method[i])
 
     async def assert_send_method(self, command, param, result, exist):
         """"Call the command, assert if ctx.send is called once,

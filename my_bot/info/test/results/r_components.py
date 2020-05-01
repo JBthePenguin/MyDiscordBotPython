@@ -2,12 +2,6 @@ class InfoComponentsCommandsTestResult():
     """Class with InfoComponentsCommandsTest expected result."""
 
     @property
-    def init_method(self):
-        """Return the result expected for test_init - [(name, help), ...]."""
-        return [
-            ('mem', "Infos of a member -> #mem id_or_name"), ]
-
-    @property
     def member(self):
         """Return the result expected for test_member - embed or not found."""
         base_result = {

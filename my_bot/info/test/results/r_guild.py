@@ -33,23 +33,6 @@ class InfoGuildCommandsTestResult():
             'type': 'rich'}
 
     @property
-    def init_method(self):
-        """Return the result expected for test_init - [(name, help), ...]."""
-        return [
-            ('guild', "Guild's stats -> #guild"),
-            ('owner', 'The Owner-> #owner'),
-            ('mems', 'All members -> #mems'),
-            ('roles', 'All roles -> #roles'),
-            ('cats', "All channel's categories -> #cats"),
-            ('chans', 'All channels -> #chans'),
-            ('tchans', 'All text channels -> #tchans'),
-            ('vchans', 'All voice channels -> #vchans'),
-            ('nchans', 'All news channels -> #nchans'),
-            ('schans', 'All store channels -> #schans'),
-            ('emos', 'All emojis -> #emos'),
-            ('shell', 'Infos in shell -> #shell')]
-
-    @property
     def guild(self):
         """Return the result expected for test_guild (embed dict)."""
         embed_dict = GuildEmbedTestResult().add_title_stats
