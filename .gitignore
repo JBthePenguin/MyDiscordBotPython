@@ -15,3 +15,7 @@ my_bot/*/__pycache__/
 my_bot/*/*/*.pyc
 
 my_bot/*/*/__pycache__/
+
+my_bot/*/*/*/*.pyc
+
+my_bot/*/*/*/__pycache__/
