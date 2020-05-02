@@ -1,8 +1,10 @@
-## MyDiscordBotPython [![Codacy Badge](https://api.codacy.com/project/badge/Grade/5f71a237b819419dbb16e46aac038657)](https://www.codacy.com/manual/JBthePenguin/MyDiscordBotPython?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=JBthePenguin/MyDiscordBotPython&amp;utm_campaign=Badge_Grade) ![GitHub top language](https://img.shields.io/github/languages/top/JBthePenguin/MyDiscordBotPython) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-black.svg)](https://www.gnu.org/licenses/gpl-3.0)
+## MyDiscordBotPython
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/5f71a237b819419dbb16e46aac038657)](https://www.codacy.com/manual/JBthePenguin/MyDiscordBotPython?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=JBthePenguin/MyDiscordBotPython&amp;utm_campaign=Badge_Grade) ![GitHub top language](https://img.shields.io/github/languages/top/JBthePenguin/MyDiscordBotPython) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-black.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 :exclamation::exclamation::exclamation:***IN PROGRESS***:exclamation::exclamation::exclamation:
 
-### Install [![python](https://img.shields.io/badge/python-3.7.5-yellow.svg)](https://www.python.org/downloads/) ![GitHub repo size](https://img.shields.io/github/repo-size/JBthePenguin/MyDiscordBotPython)
+### Install
+[![python](https://img.shields.io/badge/python-3.7.5-yellow.svg)](https://www.python.org/downloads/) ![GitHub repo size](https://img.shields.io/github/repo-size/JBthePenguin/MyDiscordBotPython)
 
 #### Clone and Virtual environment
 ```shell
@@ -42,7 +44,8 @@ You need to [create a Discord Bot account to get a token](https://discordpy.read
 (env)$ python my_bot -e
 ```
 
-### Tests [![Build Status](https://travis-ci.com/JBthePenguin/MyDiscordBotPython.svg?branch=master)](https://travis-ci.com/github/JBthePenguin/MyDiscordBotPython)
+### Tests
+[![Build Status](https://travis-ci.com/JBthePenguin/MyDiscordBotPython.svg?branch=master)](https://travis-ci.com/github/JBthePenguin/MyDiscordBotPython)
 -   All tests
 ```shell
 (env)$ python -m unittest -v

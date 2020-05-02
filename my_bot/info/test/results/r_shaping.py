@@ -194,3 +194,22 @@ class ComponentEmbedTestResult():
             'description': 'A human actually offline.'}
         embed_dict.update(self.init_method)
         return embed_dict
+
+    @property
+    def add_role_infos(self):
+        """Return the result expected for test_add_role_infos."""
+        embed_dict = {
+            # 'footer': {'text': 'Member since'},
+            'fields': [
+                {
+                    'inline': False, 'name': 'Members',
+                    'value': 'Joe - '},
+                {
+                    'inline': False, 'name': 'Channels allowed to view',
+                    'value': ''.join([
+                        'info point - meeting room - reception - shop - ',
+                        'snack - studio'])}],
+            # 'timestamp': '2020-04-27T13:00:00+00:00',
+            'description': 'position: 1'}
+        embed_dict.update(self.init_method)
+        return embed_dict

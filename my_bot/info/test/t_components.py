@@ -63,9 +63,9 @@ class InfoComponentsCommandsTest(AsyncTestCase):
             self.assertEqual(args[0], result)
 
     async def test_member_id_exist(self):
-        """Assert send method after member command with an exist id."""
+        """Assert send method after member command with an exist id (owner)."""
         await self.assert_send_method(
-            self.cog.member, '1', self.result.member['id'], True)
+            self.cog.member, '0', self.result.member['id'], True)
 
     async def test_member_name_exist(self):
         """Assert send method after member command with an exist name."""

@@ -174,28 +174,35 @@ class ComponentEmbed(Embed):
         super().__init__(title=name, color=color)
         self.set_author(name=f"id: {str(c_id)}", icon_url=icon_url)
 
-    def add_member_infos(self, member):
+    def add_member_infos(self, member, owner_id):
         """Add infos for a specific member:
         - description -> is bot or human, status.
         -fields -> roles and auth channels.
         -footer text -> member since; timestamp -> joined_at."""
-        # desription -> bot or human and status
+        # desription -> bot or human and status, if owner.
         if member.bot:
             description = 'A bot '
         else:
             description = 'A human '
         description += f"actually {str(member.status)}."
+        if member.id == owner_id:
+            description += " He's the owner."
         self.description = description
         # roles
         roles = " - ".join([role.name for role in member.roles])
         self.add_field(name="Roles", value=roles, inline=False)
-        # auth channels authorized channels
+        # auth channels (authorized to view)
         auth_channels = []
-        for channel in member.guild.channels:
+        for channel in [
+                c for c in member.guild.channels if (
+                    c.type != ChannelType.category)]:
             if member.permissions_in(channel).view_channel:
                 auth_channels.append(channel.name)
-        auth_channels.sort()
-        auth_channels_str = " - ".join(auth_channels)
+        if auth_channels:
+            auth_channels.sort()
+            auth_channels_str = " - ".join(auth_channels)
+        else:
+            auth_channels_str = "None"
         self.add_field(
             name="Channels allowed to view", value=auth_channels_str,
             inline=False)
@@ -203,3 +210,55 @@ class ComponentEmbed(Embed):
         if member.joined_at is not None:
             self.set_footer(text="Member since")
             self.timestamp = member.joined_at
+
+    def add_role_infos(self, role):
+        """Add infos for a specific role:
+        - description -> is bot or human, status.
+        -fields -> roles and auth channels.
+        -footer text -> member since; timestamp -> joined_at."""
+        # desription -> position.
+        self.description = f"position: {str(role.position)}"
+        # members
+        members = " - ".join([member.name for member in role.members])
+        self.add_field(name="Members", value=members, inline=False)
+        # auth channels (authorized to view)
+        channels = [c for c in role.guild.channels if (
+            c.type != ChannelType.category)]
+        if role.permissions.view_channel:
+            # for role with view permission on all channels
+            non_auth_chans = []
+            for channel in channels:
+                # check permission overwrites for the channel
+                permission = channel.overwrites_for(role)
+                if (permission.view_channel is not None) and (
+                        not permission.view_channel):
+                    # update the non auth channels list
+                    non_auth_chans.append(channel)
+            if non_auth_chans:
+                auth_channels = [
+                    c.name for c in channels if c not in non_auth_chans]
+                auth_channels.sort()
+                auth_channels_str = " - ".join(auth_channels)
+            else:
+                auth_channels_str = "All"
+        else:
+            # for role without view permission on all channels
+            auth_channels = []
+            for channel in channels:
+                # check permission overwrites for the channel
+                if channel.overwrites_for(role).view_channel:
+                    # update the non auth channels list
+                    auth_channels.append(channel.name)
+            if len(auth_channels) == len(channels):
+                auth_channels_str = "All"
+            elif auth_channels:
+                auth_channels.sort()
+                auth_channels_str = " - ".join(auth_channels)
+            else:
+                auth_channels_str = "None"
+        self.add_field(
+            name="Channels allowed to view", value=auth_channels_str,
+            inline=False)
+        # footer and timestamp
+        self.set_footer(text="Created on")
+        self.timestamp = role.created_at

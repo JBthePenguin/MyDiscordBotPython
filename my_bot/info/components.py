@@ -38,5 +38,5 @@ class InfoComponentsCommands(Cog, name='Commands Info Components'):
         else:
             embed = ComponentEmbed(
                 member.id, member.name, member.color, member.avatar_url)
-            embed.add_member_infos(member)
+            embed.add_member_infos(member, ctx.guild.owner_id)
             await ctx.send(embed=embed)

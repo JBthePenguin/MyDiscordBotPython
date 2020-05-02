@@ -169,7 +169,16 @@ class ComponentEmbedTest(TestCase):
 
     def test_add_member_infos(self):
         """Assert if after add_member_infos if infos are added correctly,
-        - bot or human - status - roloes- auth channels - footer."""
-        self.embed.add_member_infos(FULL_GUILD.get_member(2))
+        - bot or human (if owner) - status - roles- auth channels - footer."""
+        self.embed.add_member_infos(
+            FULL_GUILD.get_member(2), FULL_GUILD.owner_id)
         self.assertDictEqual(
             self.embed.to_dict(), self.result.add_member_infos)
+
+    def test_add_role_infos(self):
+        """Assert if after add_role_infos if infos are added correctly,
+        - position - members- auth channels - footer."""
+        self.embed.add_role_infos(FULL_GUILD.get_role(8))
+        print(self.embed.to_dict())
+        # self.assertDictEqual(
+        #     self.embed.to_dict(), self.result.add_role_infos)
