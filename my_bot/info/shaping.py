@@ -174,6 +174,19 @@ class ComponentEmbed(Embed):
         super().__init__(title=name, color=color)
         self.set_author(name=f"id: {str(c_id)}", icon_url=icon_url)
 
+    def add_list_in_field(self, objs, total_guild_objs, field_name):
+        """Add a field after making a str with a list of objs"""
+        # make the str value
+        if len(objs) == total_guild_objs:
+            objs_str = "All"
+        elif not objs:
+            objs_str = "None"
+        else:
+            objs.sort()
+            objs_str = " - ".join(objs)
+        # add field
+        self.add_field(name=field_name, value=objs_str, inline=False)
+
     def add_auth_channels(self, obj):
         """Add field 'Channels allowed to view', for a role or a member,
         with value 'All' or 'None' or a string with auth channels's name."""
@@ -204,17 +217,9 @@ class ComponentEmbed(Embed):
                 for channel in channels:
                     if channel.overwrites_for(obj).view_channel:
                         auth_channels.append(channel.name)
-        # make the str value and add field
-        if len(auth_channels) == len(channels):
-            auth_channels_str = "All"
-        elif not auth_channels:
-            auth_channels_str = "None"
-        else:
-            auth_channels.sort()
-            auth_channels_str = " - ".join(auth_channels)
-        self.add_field(
-            name="Channels allowed to view", value=auth_channels_str,
-            inline=False)
+        # add field
+        self.add_list_in_field(
+            auth_channels, len(channels), "Channels allowed to view")
 
     def add_member_infos(self, member, owner_id):
         """Add infos for a specific member:
@@ -231,8 +236,9 @@ class ComponentEmbed(Embed):
             description += " He's the owner."
         self.description = description
         # roles
-        roles = " - ".join([role.name for role in member.roles])
-        self.add_field(name="Roles", value=roles, inline=False)
+        self.add_list_in_field(
+            [role.name for role in member.roles],
+            len(member.guild.roles), "Roles")
         # auth channels (authorized to view)
         self.add_auth_channels(member)
         # footer and timestamp
@@ -248,12 +254,9 @@ class ComponentEmbed(Embed):
         # desription -> position.
         self.description = f"position: {str(role.position)}"
         # members
-        members = [member.name for member in role.members]
-        if len(members) == len(role.guild.members):
-            members_str = "All"
-        else:
-            members_str = " - ".join(members)
-        self.add_field(name="Members", value=members_str, inline=False)
+        self.add_list_in_field(
+            [member.name for member in role.members],
+            len(role.guild.members), "Members")
         # auth channels (authorized to view)
         self.add_auth_channels(role)
         # footer and timestamp

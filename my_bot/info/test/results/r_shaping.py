@@ -203,7 +203,7 @@ class ComponentEmbedTestResult():
             'fields': [
                 {
                     'inline': False, 'name': 'Members',
-                    'value': 'Joe - Billy'},
+                    'value': 'Billy - Joe'},
                 {
                     'inline': False, 'name': 'Channels allowed to view',
                     'value': 'snack - studio'}],
