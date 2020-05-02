@@ -1,4 +1,4 @@
-from discord import Embed, ChannelType
+from discord import Embed, ChannelType, Member, Role
 from .config import GUILD_TITLES as titles
 
 
@@ -174,6 +174,48 @@ class ComponentEmbed(Embed):
         super().__init__(title=name, color=color)
         self.set_author(name=f"id: {str(c_id)}", icon_url=icon_url)
 
+    def add_auth_channels(self, obj):
+        """Add field 'Channels allowed to view', for a role or a member,
+        with value 'All' or 'None' or a string with auth channels's name."""
+        channels = [
+            c for c in obj.guild.channels if c.type != ChannelType.category]
+        auth_channels = []
+        # check permission view for each channel to make auth_channels
+        if isinstance(obj, Member):
+            # for member
+            for channel in channels:
+                if obj.permissions_in(channel).view_channel:
+                    auth_channels.append(channel.name)
+        elif isinstance(obj, Role):
+            if obj.permissions.view_channel:
+                # for role with view permission on all channels
+                non_auth_chans = []
+                for channel in channels:
+                    # check permission overwrites for the channel
+                    permission = channel.overwrites_for(obj)
+                    if (permission.view_channel is not None) and (
+                            not permission.view_channel):
+                        # update the non auth channels list
+                        non_auth_chans.append(channel)
+                auth_channels = [
+                    c.name for c in channels if c not in non_auth_chans]
+            else:
+                # for role without view permission on all channels
+                for channel in channels:
+                    if channel.overwrites_for(obj).view_channel:
+                        auth_channels.append(channel.name)
+        # make the str value and add field
+        if len(auth_channels) == len(channels):
+            auth_channels_str = "All"
+        elif not auth_channels:
+            auth_channels_str = "None"
+        else:
+            auth_channels.sort()
+            auth_channels_str = " - ".join(auth_channels)
+        self.add_field(
+            name="Channels allowed to view", value=auth_channels_str,
+            inline=False)
+
     def add_member_infos(self, member, owner_id):
         """Add infos for a specific member:
         - description -> is bot or human, status.
@@ -192,22 +234,7 @@ class ComponentEmbed(Embed):
         roles = " - ".join([role.name for role in member.roles])
         self.add_field(name="Roles", value=roles, inline=False)
         # auth channels (authorized to view)
-        channels = [c for c in member.guild.channels if (
-            c.type != ChannelType.category)]
-        auth_channels = []
-        for channel in channels:
-            if member.permissions_in(channel).view_channel:
-                auth_channels.append(channel.name)
-        if len(auth_channels) == len(channels):
-            auth_channels_str = "All"
-        elif auth_channels:
-            auth_channels.sort()
-            auth_channels_str = " - ".join(auth_channels)
-        else:
-            auth_channels_str = "None"
-        self.add_field(
-            name="Channels allowed to view", value=auth_channels_str,
-            inline=False)
+        self.add_auth_channels(member)
         # footer and timestamp
         if member.joined_at is not None:
             self.set_footer(text="Member since")
@@ -228,43 +255,7 @@ class ComponentEmbed(Embed):
             members_str = " - ".join(members)
         self.add_field(name="Members", value=members_str, inline=False)
         # auth channels (authorized to view)
-        channels = [c for c in role.guild.channels if (
-            c.type != ChannelType.category)]
-        if role.permissions.view_channel:
-            # for role with view permission on all channels
-            non_auth_chans = []
-            for channel in channels:
-                # check permission overwrites for the channel
-                permission = channel.overwrites_for(role)
-                if (permission.view_channel is not None) and (
-                        not permission.view_channel):
-                    # update the non auth channels list
-                    non_auth_chans.append(channel)
-            if non_auth_chans:
-                auth_channels = [
-                    c.name for c in channels if c not in non_auth_chans]
-                auth_channels.sort()
-                auth_channels_str = " - ".join(auth_channels)
-            else:
-                auth_channels_str = "All"
-        else:
-            # for role without view permission on all channels
-            auth_channels = []
-            for channel in channels:
-                # check permission overwrites for the channel
-                if channel.overwrites_for(role).view_channel:
-                    # update the non auth channels list
-                    auth_channels.append(channel.name)
-            if len(auth_channels) == len(channels):
-                auth_channels_str = "All"
-            elif auth_channels:
-                auth_channels.sort()
-                auth_channels_str = " - ".join(auth_channels)
-            else:
-                auth_channels_str = "None"
-        self.add_field(
-            name="Channels allowed to view", value=auth_channels_str,
-            inline=False)
+        self.add_auth_channels(role)
         # footer and timestamp
         self.set_footer(text="Created on")
         self.timestamp = role.created_at
