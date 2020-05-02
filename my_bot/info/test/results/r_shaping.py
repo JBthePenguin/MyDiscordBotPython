@@ -177,6 +177,28 @@ class ComponentEmbedTestResult():
             'type': 'rich'}
 
     @property
+    def add_list_in_field(self):
+        """Return the result expected for test_add_list_in_field."""
+        embed_dict = {
+            'fields': [
+                {
+                    'inline': False, 'name': 'Members',
+                    'value': 'Al - Billy - Jean-Pierre - Joe - John - Mike'}]}
+        embed_dict.update(self.init_method)
+        return embed_dict
+
+    @property
+    def add_auth_channels(self):
+        """Return the result expected for test_add_auth_channels."""
+        embed_dict = {
+            'fields': [
+                {
+                    'inline': False, 'name': 'Channels allowed to view',
+                    'value': 'snack - studio'}]}
+        embed_dict.update(self.init_method)
+        return embed_dict
+
+    @property
     def add_member_infos(self):
         """Return the result expected for test_add_member_infos."""
         embed_dict = {
@@ -200,14 +222,9 @@ class ComponentEmbedTestResult():
         """Return the result expected for test_add_role_infos."""
         embed_dict = {
             'footer': {'text': 'Created on'},
-            'fields': [
-                {
-                    'inline': False, 'name': 'Members',
-                    'value': 'Billy - Joe'},
-                {
-                    'inline': False, 'name': 'Channels allowed to view',
-                    'value': 'snack - studio'}],
             'timestamp': '2020-04-27T15:30:00+00:00',
             'description': 'position: 1'}
-        embed_dict.update(self.init_method)
+        embed_dict.update(self.add_auth_channels)
+        embed_dict['fields'].insert(0, {
+            'inline': False, 'name': 'Members', 'value': 'Billy - Joe'})
         return embed_dict
