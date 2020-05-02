@@ -3,7 +3,7 @@ from discord import Embed, Guild
 from .fakers import FULL_GUILD
 from .results import (
     GuildEmbedTestResult, GuildShellTestResult, ComponentEmbedTestResult)
-from ..shaping import GuildEmbed, GuildShell, ComponentEmbed
+from ..shapers import GuildEmbed, GuildShell, ComponentEmbed
 from ..config import GUILD_TITLES as titles
 
 

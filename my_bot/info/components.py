@@ -1,6 +1,6 @@
 from discord.ext.commands import Cog, command
 from .config import COMPONENTS_COMMANDS as coms
-from .shaping import ComponentEmbed
+from .shapers import ComponentEmbed
 
 
 def check_parameter(param, get_by_id, get_by_name):

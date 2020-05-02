@@ -3,7 +3,7 @@ from aiounittest import AsyncTestCase
 from unittest.mock import Mock, patch
 from discord.ext.commands import Bot
 from ..guild import InfoGuildCommands, make_objs_embed
-from ..shaping import GuildEmbed
+from ..shapers import GuildEmbed
 from ..config import GUILD_TITLES as titles
 from .fakers import CONTEXT
 from .results import InfoGuildCommandsTestResult, MakeObjsEmbedTestResult

@@ -2,7 +2,7 @@ from discord import ChannelType
 from discord.ext.commands import Cog, command
 from .config import GUILD_COMMANDS as coms
 from .config import GUILD_TITLES as titles
-from .shaping import GuildEmbed, GuildShell
+from .shapers import GuildEmbed, GuildShell
 
 
 def make_objs_embed(name, icon_url, embed_titles, objs):
