@@ -192,13 +192,15 @@ class ComponentEmbed(Embed):
         roles = " - ".join([role.name for role in member.roles])
         self.add_field(name="Roles", value=roles, inline=False)
         # auth channels (authorized to view)
+        channels = [c for c in member.guild.channels if (
+            c.type != ChannelType.category)]
         auth_channels = []
-        for channel in [
-                c for c in member.guild.channels if (
-                    c.type != ChannelType.category)]:
+        for channel in channels:
             if member.permissions_in(channel).view_channel:
                 auth_channels.append(channel.name)
-        if auth_channels:
+        if len(auth_channels) == len(channels):
+            auth_channels_str = "All"
+        elif auth_channels:
             auth_channels.sort()
             auth_channels_str = " - ".join(auth_channels)
         else:
@@ -214,13 +216,17 @@ class ComponentEmbed(Embed):
     def add_role_infos(self, role):
         """Add infos for a specific role:
         - description -> is bot or human, status.
-        -fields -> roles and auth channels.
-        -footer text -> member since; timestamp -> joined_at."""
+        -fields -> members and auth channels.
+        -footer text -> Created on; timestamp -> created_at."""
         # desription -> position.
         self.description = f"position: {str(role.position)}"
         # members
-        members = " - ".join([member.name for member in role.members])
-        self.add_field(name="Members", value=members, inline=False)
+        members = [member.name for member in role.members]
+        if len(members) == len(role.guild.members):
+            members_str = "All"
+        else:
+            members_str = " - ".join(members)
+        self.add_field(name="Members", value=members_str, inline=False)
         # auth channels (authorized to view)
         channels = [c for c in role.guild.channels if (
             c.type != ChannelType.category)]

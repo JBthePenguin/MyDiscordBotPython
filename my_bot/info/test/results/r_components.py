@@ -18,9 +18,7 @@ class InfoComponentsCommandsTestResult():
                     'value': '@everyone - admin'},
                 {
                     'inline': False, 'name': 'Channels allowed to view',
-                    'value': ''.join([
-                        'boss office - info point - ',
-                        'meeting room - reception - shop - snack - studio'])}],
+                    'value': "All"}],
             'title': 'Jean-Pierre'}
         id_result.update(base_result)
         id_result['description'] += " He's the owner."

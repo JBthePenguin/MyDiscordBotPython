@@ -179,6 +179,5 @@ class ComponentEmbedTest(TestCase):
         """Assert if after add_role_infos if infos are added correctly,
         - position - members- auth channels - footer."""
         self.embed.add_role_infos(FULL_GUILD.get_role(8))
-        print(self.embed.to_dict())
-        # self.assertDictEqual(
-        #     self.embed.to_dict(), self.result.add_role_infos)
+        self.assertDictEqual(
+            self.embed.to_dict(), self.result.add_role_infos)

@@ -199,17 +199,15 @@ class ComponentEmbedTestResult():
     def add_role_infos(self):
         """Return the result expected for test_add_role_infos."""
         embed_dict = {
-            # 'footer': {'text': 'Member since'},
+            'footer': {'text': 'Created on'},
             'fields': [
                 {
                     'inline': False, 'name': 'Members',
-                    'value': 'Joe - '},
+                    'value': 'Joe - Billy'},
                 {
                     'inline': False, 'name': 'Channels allowed to view',
-                    'value': ''.join([
-                        'info point - meeting room - reception - shop - ',
-                        'snack - studio'])}],
-            # 'timestamp': '2020-04-27T13:00:00+00:00',
+                    'value': 'snack - studio'}],
+            'timestamp': '2020-04-27T15:30:00+00:00',
             'description': 'position: 1'}
         embed_dict.update(self.init_method)
         return embed_dict

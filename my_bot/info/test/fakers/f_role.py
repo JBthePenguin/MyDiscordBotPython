@@ -1,6 +1,7 @@
 from unittest.mock import MagicMock
 from discord import Role
 from discord.permissions import Permissions
+from datetime import datetime
 
 
 class FakeRole(Role):
@@ -15,3 +16,8 @@ class FakeRole(Role):
         if permissions is True:
             role_data['permissions'] = Permissions.all().value
         super().__init__(data=role_data, guild=guild, state=MagicMock())
+
+    @property
+    def created_at(self):
+        """Overwrite created at property to return a default value"""
+        return datetime.strptime("2020-04-27 15:30", "%Y-%m-%d %H:%M")
