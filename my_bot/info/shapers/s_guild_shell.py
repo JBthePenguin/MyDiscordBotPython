@@ -54,7 +54,7 @@ class GuildShell():
                 for obj in objs:
                     self.infos += f"- {obj.id} - {obj.name}\n"
         else:
-            self.infos += f"\n########## {l_titles[1]} ##########\n"
+            self.infos += f"\n########## No {l_titles[1]} ##########\n"
 
     def add_emojis(self, emojis):
         """Add a tuple of emojis (3 by line)."""
@@ -81,7 +81,7 @@ class GuildShell():
             self.infos += "\n\n########## CHANNELS BY CATEGORIES ##########\n"
             for chans_cat in chans_cats:
                 if chans_cat[0] is None:
-                    self.infos += f"\n##### {titles['cat'][1]} #####\n"
+                    self.infos += f"\n##### No {titles['cat'][1]} #####\n"
                 else:
                     self.infos += f"\n##### {chans_cat[0].name} #####\n"
                 if chans_cat[1]:
@@ -90,7 +90,7 @@ class GuildShell():
                             [c for c in chans_cat[1] if (c.type == t_tls[0])],
                             t_tls[1][0])
                 else:
-                    self.infos += f"- {titles.cha.no_obj}\n"
+                    self.infos += f"- No {titles['cha'][1]}\n"
 
     def add_infos(self):
         """Construct a string with all guild's infos."""

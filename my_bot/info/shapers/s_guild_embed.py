@@ -28,7 +28,7 @@ class GuildEmbed(Embed):
         self.set_author(name=name, icon_url=icon_url)
 
     def add_stat(self, o_title, objs):
-        """Add a field, set name with title and value with the number of objs."""
+        """Add a field, set name with title and value with number of objs."""
         self.add_field(name=o_title, value=str(len(objs)), inline=True)
 
     def add_title_stats(self, guild):
@@ -55,7 +55,7 @@ class GuildEmbed(Embed):
                         value="\n".join(tup_name_value[1]), inline=True)
             self.set_footer(text=f"Total: {str(len(objs))}")
         else:  # no obj
-            self.title = titles[titles_key][1]
+            self.title = f"No {titles[titles_key][1]}"
 
     def add_emojis(self, emojis):
         """Add emojis(tuple) symbol and name, separate in 2 fields."""
