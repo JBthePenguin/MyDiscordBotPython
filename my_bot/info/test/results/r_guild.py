@@ -21,138 +21,84 @@ class MakeObjsEmbedTestResult():
 
 class InfoGuildCommandsTestResult():
     """Class with InfoGuildCommandsTest expected result."""
-
-    @property
-    def base_result(self):
-        """Return a base for result, a dict with author(name, icon_url),
-        color and type."""
-        icon_url = 'https://cdn.discordapp.com/icons/6/icon.png.webp?size=1024'
-        return {
-            'author': {'name': 'Full guild', 'icon_url': icon_url},
-            'color': 1447446,
-            'type': 'rich'}
+    embed_base_result = {  # author(name, icon_url), color, type
+        'author': {'name': 'Full guild', 'icon_url': ''.join([
+            'https://cdn.discordapp.com/icons/',
+            '6/icon.png.webp?size=1024'])},
+        'color': 1447446,
+        'type': 'rich'}
 
     @property
     def guild(self):
         """Return the result expected for test_guild (embed dict)."""
         embed_dict = GuildEmbedTestResult().add_title_stats
-        embed_dict.update(self.base_result)
+        embed_dict.update(self.embed_base_result)
+        return embed_dict
+
+    def get_embed_dict(self, title, values, total):
+        """Return embed dict {title, fields, footer} and updated with base."""
+        embed_dict = {
+            'title': title,
+            'fields': [
+                {'inline': True, 'name': 'ID', 'value': values[0]},
+                {'inline': True, 'name': 'Name', 'value': values[1]}],
+            'footer': {'text': f'Total: {total}'}}
+        embed_dict.update(self.embed_base_result)
         return embed_dict
 
     @property
     def owner(self):
         """Return the result expected for test_owner (embed dict)."""
-        embed_dict = {
-            'title': 'Owner',
-            'fields': [
-                {'inline': True, 'name': 'ID', 'value': '0'},
-                {'inline': True, 'name': 'Name', 'value': 'Jean-Pierre'}],
-            'footer': {'text': 'Total: 1'}}
-        embed_dict.update(self.base_result)
-        return embed_dict
+        return self.get_embed_dict('Owner', ('0', 'Jean-Pierre'), '1')
 
     @property
     def members(self):
         """Return the result expected for test_members (embed dict)."""
         embed_dict = GuildEmbedTestResult().add_title_objs
-        embed_dict.update(self.base_result)
+        embed_dict.update(self.embed_base_result)
         return embed_dict
 
     @property
     def roles(self):
         """Return the result expected for test_roles (embed dict)."""
-        embed_dict = {
-            'title': 'Roles',
-            'fields': [
-                {'inline': True, 'name': 'ID', 'value': '6\n7\n8'},
-                {
-                    'inline': True, 'name': 'Name',
-                    'value': '@everyone\nadmin\nstaff'}],
-            'footer': {'text': 'Total: 3'}}
-        embed_dict.update(self.base_result)
-        return embed_dict
+        return self.get_embed_dict(
+            'Roles', ('6\n7\n8', '@everyone\nadmin\nstaff'), '3')
 
     @property
     def categories(self):
         """Return the result expected for test_categories (embed dict)."""
-        embed_dict = {
-            'title': 'Channel Categories',
-            'fields': [
-                {'inline': True, 'name': 'ID', 'value': '9\n10'},
-                {
-                    'inline': True, 'name': 'Name',
-                    'value': '1st floor\n2nd floor'}],
-            'footer': {'text': 'Total: 2'}}
-        embed_dict.update(self.base_result)
-        return embed_dict
+        return self.get_embed_dict(
+            'Channel Categories', ('9\n10', '1st floor\n2nd floor'), '2')
 
     @property
     def channels(self):
         """Return the result expected for test_channels (embed dict)."""
-        embed_dict = {
-            'title': 'Channels',
-            'fields': [
-                {
-                    'inline': True, 'name': 'ID',
-                    'value': '17\n12\n16\n11\n13\n14\n15'},
-                {
-                    'inline': True, 'name': 'Name',
-                    'value': '\n'.join([
-                        'boss office', 'info point', 'meeting room',
-                        'reception', 'shop', 'snack', 'studio'])}],
-            'footer': {'text': 'Total: 7'}}
-        embed_dict.update(self.base_result)
-        return embed_dict
+        return self.get_embed_dict(
+            'Channels', ('17\n12\n16\n11\n13\n14\n15', '\n'.join([
+                'boss office', 'info point', 'meeting room',
+                'reception', 'shop', 'snack', 'studio'])), '7')
 
     @property
     def text_channels(self):
         """Return the result expected for test_text_channels (embed dict)."""
-        embed_dict = {
-            'title': 'Text Channels',
-            'fields': [
-                {'inline': True, 'name': 'ID', 'value': '17\n16\n11'},
-                {
-                    'inline': True, 'name': 'Name',
-                    'value': 'boss office\nmeeting room\nreception'}],
-            'footer': {'text': 'Total: 3'}}
-        embed_dict.update(self.base_result)
-        return embed_dict
+        return self.get_embed_dict('Text Channels', (
+            '17\n16\n11', 'boss office\nmeeting room\nreception'), '3')
 
     @property
     def voice_channels(self):
         """Return the result expected for test_voice_channels (embed dict)."""
-        embed_dict = {
-            'title': 'Voice Channels',
-            'fields': [
-                {'inline': True, 'name': 'ID', 'value': '14\n15'},
-                {'inline': True, 'name': 'Name', 'value': 'snack\nstudio'}],
-            'footer': {'text': 'Total: 2'}}
-        embed_dict.update(self.base_result)
-        return embed_dict
+        return self.get_embed_dict(
+            'Voice Channels', ('14\n15', 'snack\nstudio'), '2')
 
     @property
     def news_channels(self):
         """Return the result expected for test_news_channels (embed dict)."""
-        embed_dict = {
-            'title': 'News Channels',
-            'fields': [
-                {'inline': True, 'name': 'ID', 'value': '12'},
-                {'inline': True, 'name': 'Name', 'value': 'info point'}],
-            'footer': {'text': 'Total: 1'}}
-        embed_dict.update(self.base_result)
-        return embed_dict
+        return self.get_embed_dict('News Channels', ('12', 'info point'), '1')
 
     @property
     def store_channels(self):
         """Return the result expected for test_store_channels (embed dict)."""
-        embed_dict = {
-            'title': 'Store Channels',
-            'fields': [
-                {'inline': True, 'name': 'ID', 'value': '13'},
-                {'inline': True, 'name': 'Name', 'value': 'shop'}],
-            'footer': {'text': 'Total: 1'}}
-        embed_dict.update(self.base_result)
-        return embed_dict
+        return self.get_embed_dict('Store Channels', ('13', 'shop'), '1')
 
     @property
     def emojis(self):
@@ -161,7 +107,7 @@ class InfoGuildCommandsTestResult():
             'title': 'Emojis',
             'fields': GuildEmbedTestResult().add_emojis,
             'footer': {'text': 'Total: 4'}}
-        embed_dict.update(self.base_result)
+        embed_dict.update(self.embed_base_result)
         return embed_dict
 
     @property
