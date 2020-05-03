@@ -4,7 +4,6 @@ from unittest.mock import Mock, patch
 from discord.ext.commands import Bot
 from ..guild import InfoGuildCommands, make_objs_embed
 from ..shapers import GuildEmbed
-from ..config import GUILD_TITLES as titles
 from .fakers import CONTEXT
 from .results import InfoGuildCommandsTestResult, MakeObjsEmbedTestResult
 
@@ -19,7 +18,7 @@ class MakeObjsEmbedTest(TestCase):
         """Assert if make_objs_embed return the good embed."""
         embed = make_objs_embed(
             'Guild Embed Test', 'https://url.com/icon.png',
-            titles.mem, m_list)
+            'mem', m_list)
         self.assertIsInstance(embed, GuildEmbed)
         self.assertDictEqual(embed.to_dict(), result)
 

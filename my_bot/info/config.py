@@ -1,12 +1,3 @@
-class ConfTitle():
-    """Configuration for a guild's component title in embed and shell."""
-
-    def __init__(self, title, obj_type):
-        """Init with a default title and a no obj message."""
-        self.default = title
-        self.no_obj = f"No {obj_type}"
-
-
 class ConfCommand():
     """Configuration for a command."""
 
@@ -14,33 +5,6 @@ class ConfCommand():
         """Init with name, help message."""
         self.name = name
         self.help = help_text
-
-
-#
-# GUILD TITLES AND COMMANDS
-#
-class ConfGuildTitles():
-    """All titles used in shaping.py for guild commands."""
-
-    def __init__(self):
-        """Init with title for each component (singular and plural)."""
-        # guild, owner, members, roles, channel's categories, channels
-        self.gld = ConfTitle('Guild', 'guild')
-        self.own = ConfTitle('Owner', 'owner')
-        self.mem = ConfTitle('Members', 'member')
-        self.rol = ConfTitle('Roles', 'role')
-        self.cat = ConfTitle('Channel Categories', 'channel category')
-        self.cha = ConfTitle('Channels', 'channel')
-        # text, voice, news and store channels
-        self.tcha = ConfTitle('Text Channels', 'text channel')
-        self.vcha = ConfTitle('Voice Channels', 'voice channel')
-        self.ncha = ConfTitle('News Channels', 'news channel')
-        self.scha = ConfTitle('Store Channels', 'store channel')
-        # emojis
-        self.emo = ConfTitle('Emojis', 'emoji')
-
-
-GUILD_TITLES = ConfGuildTitles()
 
 
 class ConfGuildCommands():
@@ -66,21 +30,6 @@ class ConfGuildCommands():
 
 
 GUILD_COMMANDS = ConfGuildCommands()
-
-
-#
-# COMPONENTS TITLES AND COMMANDS
-#
-class ConfComponentsTitles():
-    """All titles used in shaping.py for components commands."""
-
-    def __init__(self):
-        """"Init with title for each component (singular and plural)."""
-        # members
-        self.mem = ConfTitle('Member', 'member')
-
-
-COMPONENTS_TITLES = ConfComponentsTitles()
 
 
 class ConfComponentsCommands():

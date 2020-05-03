@@ -1,14 +1,13 @@
 from discord import ChannelType
 from discord.ext.commands import Cog, command
 from .config import GUILD_COMMANDS as coms
-from .config import GUILD_TITLES as titles
 from .shapers import GuildEmbed, GuildShell
 
 
-def make_objs_embed(name, icon_url, embed_titles, objs):
+def make_objs_embed(name, icon_url, titles_key, objs):
     """Return an embed with a list of objects."""
     embed = GuildEmbed(name, icon_url)
-    embed.add_title_objs(embed_titles, objs)
+    embed.add_title_objs(titles_key, objs)
     return embed
 
 
@@ -30,34 +29,34 @@ class InfoGuildCommands(Cog, name='Commands Info Guild'):
         """Send an embed with the owner."""
         await ctx.send(embed=make_objs_embed(
             ctx.guild.name, ctx.guild.icon_url,
-            titles.own, [ctx.guild.owner]))
+            'own', [ctx.guild.owner]))
 
     @command(name=coms.mem.name, help=coms.mem.help, ignore_extra=False)
     async def members(self, ctx):
         """Send an embed with a list of all members."""
         await ctx.send(embed=make_objs_embed(
             ctx.guild.name, ctx.guild.icon_url,
-            titles.mem, ctx.guild.members))
+            'mem', ctx.guild.members))
 
     @command(name=coms.rol.name, help=coms.rol.help, ignore_extra=False)
     async def roles(self, ctx):
         """Send an embed with a list of all roles."""
         await ctx.send(embed=make_objs_embed(
             ctx.guild.name, ctx.guild.icon_url,
-            titles.rol, ctx.guild.roles))
+            'rol', ctx.guild.roles))
 
     @command(name=coms.cat.name, help=coms.cat.help, ignore_extra=False)
     async def categories(self, ctx):
         """Send an embed with a list of all channel's categories."""
         await ctx.send(embed=make_objs_embed(
             ctx.guild.name, ctx.guild.icon_url,
-            titles.cat, ctx.guild.categories))
+            'cat', ctx.guild.categories))
 
     @command(name=coms.cha.name, help=coms.cha.help, ignore_extra=False)
     async def channels(self, ctx):
         """Send an embed with a list of all channels (no send category)."""
         await ctx.send(embed=make_objs_embed(
-            ctx.guild.name, ctx.guild.icon_url, titles.cha,
+            ctx.guild.name, ctx.guild.icon_url, 'cha',
             [c for c in ctx.guild.channels if c.type != ChannelType.category]))
 
     @command(name=coms.tcha.name, help=coms.tcha.help, ignore_extra=False)
@@ -65,7 +64,7 @@ class InfoGuildCommands(Cog, name='Commands Info Guild'):
         """Send an embed with a list of all text channels."""
         await ctx.send(embed=make_objs_embed(
             ctx.guild.name, ctx.guild.icon_url,
-            titles.tcha,
+            'tcha',
             [c for c in ctx.guild.text_channels if not c.is_news()]))
 
     @command(name=coms.vcha.name, help=coms.vcha.help, ignore_extra=False)
@@ -73,20 +72,20 @@ class InfoGuildCommands(Cog, name='Commands Info Guild'):
         """Send an embed with a list of all voice channels."""
         await ctx.send(embed=make_objs_embed(
             ctx.guild.name, ctx.guild.icon_url,
-            titles.vcha, ctx.guild.voice_channels))
+            'vcha', ctx.guild.voice_channels))
 
     @command(name=coms.ncha.name, help=coms.ncha.help, ignore_extra=False)
     async def news_channels(self, ctx):
         """Send an embed with a list of all news channels."""
         await ctx.send(embed=make_objs_embed(
-            ctx.guild.name, ctx.guild.icon_url, titles.ncha,
+            ctx.guild.name, ctx.guild.icon_url, 'ncha',
             [c for c in ctx.guild.text_channels if c.is_news()]))
 
     @command(name=coms.scha.name, help=coms.scha.help, ignore_extra=False)
     async def store_channels(self, ctx):
         """Send an embed with a list of all store channels."""
         await ctx.send(embed=make_objs_embed(
-            ctx.guild.name, ctx.guild.icon_url, titles.scha,
+            ctx.guild.name, ctx.guild.icon_url, 'scha',
             [c for c in ctx.guild.channels if c.type == ChannelType.store]))
 
     @command(name=coms.emo.name, help=coms.emo.help, ignore_extra=False)
@@ -94,7 +93,7 @@ class InfoGuildCommands(Cog, name='Commands Info Guild'):
         """Send an embed with a list of all emojis."""
         await ctx.send(embed=make_objs_embed(
             ctx.guild.name, ctx.guild.icon_url,
-            titles.emo, ctx.guild.emojis))
+            'emo', ctx.guild.emojis))
 
     @command(name=coms.shl.name, help=coms.shl.help, ignore_extra=False)
     async def shell_info(self, ctx):

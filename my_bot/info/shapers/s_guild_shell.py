@@ -1,32 +1,34 @@
 from discord import ChannelType
-from ..config import GUILD_TITLES as titles
+from .s_titles import GUILD_TITLES as titles
 
 
 def get_tup_titles_list(guild):
     """Return a list of tuples with titles and corresponding guild list.
     -> [(titles, list), (titles, list), ...]"""
     return [
-        (titles.gld, [guild]), (titles.own, [guild.owner]),
-        (titles.mem, guild.members), (titles.rol, guild.roles),
-        (titles.cat, guild.categories),
-        (titles.cha, [
+        (titles['gld'], [guild]), (titles['own'], [guild.owner]),
+        (titles['mem'], guild.members), (titles['rol'], guild.roles),
+        (titles['cat'], guild.categories),
+        (titles['cha'], [
             c for c in guild.channels if c.type != ChannelType.category]),
-        (titles.tcha, [
+        (titles['tcha'], [
             c for c in guild.text_channels if not c.is_news()]),
-        (titles.vcha, guild.voice_channels),
-        (titles.ncha, [
+        (titles['vcha'], guild.voice_channels),
+        (titles['ncha'], [
             c for c in guild.channels if c.type == ChannelType.news]),
-        (titles.scha, [
+        (titles['scha'], [
             c for c in guild.channels if c.type == ChannelType.store]),
-        (titles.emo, guild.emojis)]
+        (titles['emo'], guild.emojis)]
 
 
 def get_tup_type_titles():
     """Return a list of tuples with channel type and corresponding titles.
     -> [(c_type, titles), (c_type, titles), ...]"""
     return [
-        (ChannelType.text, titles.tcha), (ChannelType.voice, titles.vcha),
-        (ChannelType.news, titles.ncha), (ChannelType.store, titles.scha)]
+        (ChannelType.text, titles['tcha']),
+        (ChannelType.voice, titles['vcha']),
+        (ChannelType.news, titles['ncha']),
+        (ChannelType.store, titles['scha'])]
 
 
 class GuildShell():
@@ -37,22 +39,22 @@ class GuildShell():
         self.guild = guild
         self.infos = ''
 
-    def add_list(self, title, objs):
+    def add_list(self, l_titles, objs):
         """Add a list with a title to infos string."""
         if objs:
-            if (title.default == 'Guild') or (title.default == 'Owner'):
+            if (l_titles[0] == 'Guild') or (l_titles[0] == 'Owner'):
                 n_objs = ''
             else:
                 n_objs = str(len(objs))
-            self.infos += f"\n########## {n_objs} {title.default} ##########\n"
-            if title.default == 'Emojis':
+            self.infos += f"\n########## {n_objs} {l_titles[0]} ##########\n"
+            if l_titles[0] == 'Emojis':
                 self.add_emojis(objs)
             else:
                 objs.sort(key=lambda obj: obj.name)
                 for obj in objs:
                     self.infos += f"- {obj.id} - {obj.name}\n"
         else:
-            self.infos += f"\n########## {title.no_obj} ##########\n"
+            self.infos += f"\n########## {l_titles[1]} ##########\n"
 
     def add_emojis(self, emojis):
         """Add a tuple of emojis (3 by line)."""
@@ -65,10 +67,10 @@ class GuildShell():
             else:
                 i += 1
 
-    def add_type_chans(self, chans, title):
+    def add_type_chans(self, chans, c_title):
         """Add channels with a specific type(title)."""
         if chans:
-            self.infos += f"### {str(len(chans))} {title.default}\n"
+            self.infos += f"### {str(len(chans))} {c_title}\n"
             chans.sort(key=lambda chan: chan.name)
             for chan in chans:
                 self.infos += f"- {chan.id} - {chan.name}\n"
@@ -79,14 +81,14 @@ class GuildShell():
             self.infos += "\n\n########## CHANNELS BY CATEGORIES ##########\n"
             for chans_cat in chans_cats:
                 if chans_cat[0] is None:
-                    self.infos += f"\n##### {titles.cat.no_obj} #####\n"
+                    self.infos += f"\n##### {titles['cat'][1]} #####\n"
                 else:
                     self.infos += f"\n##### {chans_cat[0].name} #####\n"
                 if chans_cat[1]:
                     for t_tls in get_tup_type_titles():
                         self.add_type_chans(
                             [c for c in chans_cat[1] if (c.type == t_tls[0])],
-                            t_tls[1])
+                            t_tls[1][0])
                 else:
                     self.infos += f"- {titles.cha.no_obj}\n"
 
