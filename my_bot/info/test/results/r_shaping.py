@@ -84,7 +84,7 @@ class GuildShellTestResult():
         """Return the result expected for test_add_emojis."""
         return '\n'.join([
             '- <:cool:18> cool - <:good:19> good - <:bad:20> bad ',
-            '- <:strong:21> strong '])
+            '- <:strong:21> strong \n'])
 
     @property
     def add_type_chans(self):
@@ -122,13 +122,15 @@ class GuildShellTestResult():
         # guild owner members
         for value in self.add_list.values():
             result += value
-        # roles categories
+        # roles emojis categories
         result += '\n'.join([
             '\n########## 3 Roles ##########',
             '- 6 - @everyone',
             '- 7 - admin',
             '- 8 - staff',
-            '\n########## 2 Channel Categories ##########',
+            '\n########## 4 Emojis ##########',
+            self.add_emojis,
+            '########## 2 Channel Categories ##########',
             '- 9 - 1st floor',
             '- 10 - 2nd floor\n'])
         # channels
@@ -154,10 +156,7 @@ class GuildShellTestResult():
             '- 12 - info point',
             '\n########## 1 Store Channels ##########',
             '- 13 - shop\n'])
-        # emojis channels by categories
-        result += '\n'.join([
-            '\n########## 4 Emojis ##########',
-            self.add_emojis])
+        # channels by categories
         result += self.add_cats_chans
         return result
 

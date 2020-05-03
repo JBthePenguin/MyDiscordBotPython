@@ -1,22 +1,5 @@
-from discord import Embed, ChannelType
-from .s_titles import GUILD_TITLES as titles
-
-
-def get_tup_titles_list(guild):
-    """Return a list of tuples with titles and corresponding guild list.
-    -> [(titles, list), (titles, list), ...]"""
-    return [
-        (titles['mem'], guild.members), (titles['rol'], guild.roles),
-        (titles['emo'], guild.emojis), (titles['cat'], guild.categories),
-        (titles['cha'], [
-            c for c in guild.channels if c.type != ChannelType.category]),
-        (titles['tcha'], [
-            c for c in guild.text_channels if not c.is_news()]),
-        (titles['vcha'], guild.voice_channels),
-        (titles['ncha'], [
-            c for c in guild.channels if c.type == ChannelType.news]),
-        (titles['scha'], [
-            c for c in guild.channels if c.type == ChannelType.store])]
+from discord import Embed
+from .s_titles import get_tup_titles_list, get_titles
 
 
 class GuildEmbed(Embed):
@@ -37,12 +20,12 @@ class GuildEmbed(Embed):
         self.title = f"id: {guild.id}"
         for corres_tup in get_tup_titles_list(guild):
             self.add_stat(corres_tup[0][0], corres_tup[1])
-        self.set_footer(text=f"{titles['own'][0]}: {guild.owner.name}")
+        self.set_footer(text=f"Owner: {guild.owner.name}")
 
     def add_title_objs(self, titles_key, objs):
         """Add title, add fields id and name, add each obj sorted by name."""
         if objs:
-            self.title = titles[titles_key][0]
+            self.title = get_titles(titles_key)[0]
             if self.title == 'Emojis':  # for emoji
                 self.add_emojis(objs)
             else:
@@ -55,7 +38,7 @@ class GuildEmbed(Embed):
                         value="\n".join(tup_name_value[1]), inline=True)
             self.set_footer(text=f"Total: {str(len(objs))}")
         else:  # no obj
-            self.title = f"No {titles[titles_key][1]}"
+            self.title = f"No {get_titles(titles_key)[1]}"
 
     def add_emojis(self, emojis):
         """Add emojis(tuple) symbol and name, separate in 2 fields."""
