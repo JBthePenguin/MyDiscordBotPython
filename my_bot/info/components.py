@@ -27,7 +27,7 @@ class InfoComponentsCommands(Cog, name='Commands Info Components'):
     def __init__(self, bot):
         self.bot = bot
 
-    @command(name=coms.mem.name, help=coms.mem.help, ignore_extra=False)
+    @command(name=coms['mem'][0], help=coms['mem'][1], ignore_extra=False)
     async def member(self, ctx, id_or_name):
         """Send an embed with info for a specific member."""
         member = check_parameter(

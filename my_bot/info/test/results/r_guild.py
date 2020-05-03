@@ -1,4 +1,4 @@
-from .r_shaping import GuildEmbedTestResult, GuildShellTestResult
+from .r_shapers import GuildEmbedTestResult, GuildShellTestResult
 
 
 class MakeObjsEmbedTestResult():
