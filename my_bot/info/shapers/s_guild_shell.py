@@ -28,12 +28,12 @@ class GuildShell():
 
     def add_emojis(self, emojis):
         """Add a tuple of emojis (3 by line)."""
-        for i in range(len(emojis)):
-            emoji = emojis[i]
+        # for i in range(len(emojis)):
+        for i, emoji in enumerate(emojis):
             self.infos += f"- {str(emoji)} {emoji.name} "
             if (i + 1) % 3 == 0:
                 self.infos += "\n"
-        if (i + 1) % 3 != 0:
+        if len(emojis) % 3 != 0:
             self.infos += "\n"
 
     def add_type_chans(self, chans, c_title):
