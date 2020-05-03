@@ -2,6 +2,33 @@ from discord import ChannelType
 from ..config import GUILD_TITLES as titles
 
 
+def get_tup_titles_list(guild):
+    """Return a list of tuples with titles and corresponding guild list.
+    -> [(titles, list), (titles, list), ...]"""
+    return [
+        (titles.gld, [guild]), (titles.own, [guild.owner]),
+        (titles.mem, guild.members), (titles.rol, guild.roles),
+        (titles.cat, guild.categories),
+        (titles.cha, [
+            c for c in guild.channels if c.type != ChannelType.category]),
+        (titles.tcha, [
+            c for c in guild.text_channels if not c.is_news()]),
+        (titles.vcha, guild.voice_channels),
+        (titles.ncha, [
+            c for c in guild.channels if c.type == ChannelType.news]),
+        (titles.scha, [
+            c for c in guild.channels if c.type == ChannelType.store]),
+        (titles.emo, guild.emojis)]
+
+
+def get_tup_type_titles():
+    """Return a list of tuples with channel type and corresponding titles.
+    -> [(c_type, titles), (c_type, titles), ...]"""
+    return [
+        (ChannelType.text, titles.tcha), (ChannelType.voice, titles.vcha),
+        (ChannelType.news, titles.ncha), (ChannelType.store, titles.scha)]
+
+
 class GuildShell():
     """String for a Guild."""
 
@@ -56,45 +83,16 @@ class GuildShell():
                 else:
                     self.infos += f"\n##### {chans_cat[0].name} #####\n"
                 if chans_cat[1]:
-                    self.add_type_chans(
-                        [c for c in chans_cat[1] if (
-                            c.type == ChannelType.text)], titles.tcha)
-                    self.add_type_chans(
-                        [c for c in chans_cat[1] if (
-                            c.type == ChannelType.voice)], titles.vcha)
-                    self.add_type_chans(
-                        [c for c in chans_cat[1] if (
-                            c.type == ChannelType.news)], titles.ncha)
-                    self.add_type_chans(
-                        [c for c in chans_cat[1] if (
-                            c.type == ChannelType.store)], titles.scha)
+                    for t_tls in get_tup_type_titles():
+                        self.add_type_chans(
+                            [c for c in chans_cat[1] if (c.type == t_tls[0])],
+                            t_tls[1])
                 else:
                     self.infos += f"- {titles.cha.no_obj}\n"
 
     def add_infos(self):
         """Construct a string with all guild's infos."""
-        # guild and owner
-        self.add_list(titles.gld, [self.guild])
-        self.add_list(titles.own, [self.guild.owner])
-        # members, roles, channel's categories, channels
-        self.add_list(titles.mem, self.guild.members)
-        self.add_list(titles.rol, self.guild.roles)
-        self.add_list(titles.cat, self.guild.categories)
-        self.add_list(
-            titles.cha,
-            [c for c in self.guild.channels if c.type != ChannelType.category])
-        # text, voice, private, group, news and store channels
-        self.add_list(
-            titles.tcha,
-            [c for c in self.guild.text_channels if not c.is_news()])
-        self.add_list(titles.vcha, self.guild.voice_channels)
-        self.add_list(
-            titles.ncha,
-            [c for c in self.guild.channels if c.type == ChannelType.news])
-        self.add_list(
-            titles.scha,
-            [c for c in self.guild.channels if c.type == ChannelType.store])
-        # Emojis
-        self.add_list(titles.emo, self.guild.emojis)
+        for corres_tup in get_tup_titles_list(self.guild):
+            self.add_list(corres_tup[0], corres_tup[1])
         # Channels by Category
         self.add_cats_chans(self.guild.by_category())
