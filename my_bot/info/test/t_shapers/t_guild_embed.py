@@ -2,7 +2,7 @@ from unittest import TestCase
 from discord import Embed
 from ..results import G_EMBED_RESULTS as RESULTS
 from ..fakers import FULL_GUILD
-from ..t_guild import GuildEmbed
+# from ..t_guild import GuildEmbed
 
 
 class GuildEmbedTest(TestCase):
