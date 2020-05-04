@@ -1,25 +1,6 @@
 from .r_shapers import GuildEmbedTestResult, GuildShellTestResult
 
 
-class MakeObjsEmbedTestResult():
-    """Class with MakeObjsEmbedTest expected result."""
-
-    @property
-    def empty_list(self):
-        """Return the result expected for test_empty_list."""
-        embed_dict = GuildEmbedTestResult().init_method
-        embed_dict['title'] = 'No member'
-        return embed_dict
-
-    @property
-    def not_empty_list(self):
-        """Return the result expected for test_not_empty_list (embed dict)."""
-        embed_dict = GuildEmbedTestResult().init_method
-        embed_dict.update(GuildEmbedTestResult().add_title_objs)
-        return embed_dict
-
-
-# GUILD RESULTS
 # BASE_RESULT -> {author(name: , icon_url), color, type}
 BASE_RESULT = {'author': {
     'name': 'Full guild',
@@ -43,8 +24,14 @@ def get_list_embed_dict(title, values, total):
         'footer': {'text': f'Total: {total}'}})
 
 
-# InfoGuildCommandsTest expected results
-GUILD_RESULTS = {
+# MAKE OBJS EMBED RESULTS -> MakeObjsEmbedTest expected results
+O_RESULTS = {
+    'list': get_list_embed_dict('Members', ('1\n0\n2', 'Pam\nPim\nPom'), '3'),
+    'no_list': get_full_embed_dict({'title': 'No member'})
+}
+
+# GUILD RESULTS -> InfoGuildCommandsTest expected results
+G_RESULTS = {
     'gld': get_full_embed_dict(GuildEmbedTestResult().add_title_stats),
     'own': get_list_embed_dict('Owner', ('0', 'Jean-Pierre'), '1'),
     'mem': get_full_embed_dict(GuildEmbedTestResult().add_title_objs),
