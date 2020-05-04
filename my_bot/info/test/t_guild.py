@@ -5,7 +5,7 @@ from discord.ext.commands import Bot
 from ..guild import InfoGuildCommands
 from ..shapers import GuildEmbed
 from .fakers import CONTEXT
-from .results import O_RESULTS, G_RESULTS
+from .results import G_RESULTS
 
 
 # class ObjTest():
