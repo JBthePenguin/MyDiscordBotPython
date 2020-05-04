@@ -2,52 +2,44 @@ from unittest import TestCase
 from aiounittest import AsyncTestCase
 from unittest.mock import Mock, patch
 from discord.ext.commands import Bot
-from ..guild import InfoGuildCommands, make_objs_embed
+from ..guild import InfoGuildCommands
 from ..shapers import GuildEmbed
 from .fakers import CONTEXT
 from .results import O_RESULTS, G_RESULTS
 
 
-class ObjForTest():
-    """Obj instance used in MakeObjsEmbedTest"""
-
-    def __init__(self, obj_id, obj_name):
-        """Init with properties id and name."""
-        self.id = obj_id
-        self.name = obj_name
-
-
-def objs_list(*args):
-    """Return a list of ObjForTest initialised with each arg.
-    arg -> (obj_id, obj_name)."""
-    objs = []
-    for arg in args:
-        objs.append(ObjForTest(arg[0], arg[1]))
-    return objs
-
-
-class MakeObjsEmbedTest(TestCase):
-    """Test Case for make_objs_embed function.
-    *** test with 'mem' for titles_key ***"""
-    maxDiff = None
-
-    def assert_list(self, m_list, result):
-        """Assert if make_objs_embed return the good embed."""
-        embed = make_objs_embed(
-            'Full guild',
-            'https://cdn.discordapp.com/icons/6/icon.png.webp?size=1024',
-            'mem', m_list)
-        self.assertIsInstance(embed, GuildEmbed)
-        self.assertDictEqual(embed.to_dict(), result)
-
-    def test_not_empty_list(self):
-        """Assert with a list of ObjForTest."""
-        self.assert_list(
-            objs_list((0, 'Pim'), (1, 'Pam'), (2, 'Pom')), O_RESULTS['list'])
-
-    def test_empty_list(self):
-        """Assert with an empty list."""
-        self.assert_list([], O_RESULTS['no_list'])
+# class ObjTest():
+#     """Obj instance used in MakeObjsEmbedTest"""
+#
+#     def __init__(self, values):
+#         """Init with properties id and name. values -> (obj_id, obj_name)."""
+#         self.id = values[0]
+#         self.name = values[1]
+#
+#
+# class MakeObjsEmbedTest(TestCase):
+#     """Test Case for make_objs_embed function.
+#     *** test with 'mem' for titles_key ***"""
+#     maxDiff = None
+#
+#     def assert_list(self, m_list, result):
+#         """Assert if make_objs_embed return the good embed."""
+#         embed = make_objs_embed(
+#             'Full guild',
+#             'https://cdn.discordapp.com/icons/6/icon.png.webp?size=1024',
+#             'mem', m_list)
+#         self.assertIsInstance(embed, GuildEmbed)
+#         self.assertDictEqual(embed.to_dict(), result)
+#
+#     def test_not_empty_list(self):
+#         """Assert with a list of ObjForTest."""
+#         self.assert_list(
+#             [ObjTest(vals) for vals in [(0, 'Pim'), (1, 'Pam'), (2, 'Pom')]],
+#             O_RESULTS['list'])
+#
+#     def test_empty_list(self):
+#         """Assert with an empty list."""
+#         self.assert_list([], O_RESULTS['no_list'])
 
 
 class InfoGuildCommandsTest(AsyncTestCase):

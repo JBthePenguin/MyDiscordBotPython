@@ -16,6 +16,10 @@ TITLES = {
     'scha': ('Store Channels', 'store channel')}
 
 
+# TITLES_LISTS -> dict {command key: corresponding (title, guild's list)
+
+
+
 def get_titles(titles_key):
     """return titles for a specific key"""
     return TITLES[titles_key]
