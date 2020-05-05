@@ -46,11 +46,11 @@ class GuildEmbed(Embed):
                         name=tup_name_value[0],
                         value="\n".join(tup_name_value[1]), inline=True)
             self.set_footer(text=f"Total: {str(len(objs))}")
-        else:  # no objs 
+        else:  # no objs
             self.title = f"No {TITLES[com_key][1]}"
 
     def add_emojis(self, emojis):
-        """Add emojis(tuple) symbol and name, separate in 2 fields"""
+        """Add emojis(tuple) symbol and name, separate in 2 fields."""
         half_n_emo = len(emojis) // 2
         for emos in [
                 [emo for emo in emojis[half_n_emo:]],

@@ -55,7 +55,7 @@ class GuildShell():
         return objs_str
 
     def get_chans_cats_str(self):
-        """Return the string for channels sorted by category and type"""
+        """Return the string for channels sorted by category and type."""
         cc_str = ""
         chans_cats = self.guild.by_category()
         if chans_cats:
