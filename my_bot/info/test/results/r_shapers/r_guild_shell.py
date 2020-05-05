@@ -1,2 +1,2 @@
 # GuildShellTest expected results
-GuildShellTestResult = {}
+G_SHL_RESULTS = {}
