@@ -16,9 +16,8 @@ class ConfCommandsTest(TestCase):
         self.assertIsInstance(cog, Cog)
         commands = cog.get_commands()
         self.assertEqual(len(commands), n_commands)
-        c_tuples = [(c.name, c.help) for c in commands]
-        for i in range(len(commands)):
-            self.assertTupleEqual(c_tuples[i], results[i])
+        for i, result in enumerate(results):
+            self.assertTupleEqual((commands[i].name, commands[i].help), result)
 
     def test_cog_guild(self):
         """Assert cog InfoGuildCommands."""

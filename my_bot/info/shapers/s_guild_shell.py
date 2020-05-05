@@ -1,6 +1,5 @@
-from discord import ChannelType
 from .s_titles import TITLES
-from .s_guild_embed import get_list
+from .s_utils import get_list, get_c_type
 
 
 def get_objs_str(objs):
@@ -23,18 +22,6 @@ def get_emos_str(emojis):
         else:
             emos_str += " "
     return emos_str
-
-
-def get_c_type(com_key):
-    """Return the corresponding channel type for a specific command key"""
-    if com_key == 'tcha':
-        return ChannelType.text
-    elif com_key == 'vcha':
-        return ChannelType.voice
-    elif com_key == 'ncha':
-        return ChannelType.news
-    elif com_key == 'scha':
-        return ChannelType.store
 
 
 def get_chans_cats_str(chans_cats):
