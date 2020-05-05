@@ -3,7 +3,7 @@ from aiounittest import AsyncTestCase
 from discord.ext.commands import Bot
 from ..components import InfoComponentsCommands, check_parameter
 from .fakers import CONTEXT
-from .results import InfoComponentsCommandsTestResult
+from .results import C_RESULTS as RESULTS
 
 
 class CheckParameterTest(TestCase):
@@ -42,7 +42,6 @@ class CheckParameterTest(TestCase):
 class InfoComponentsCommandsTest(AsyncTestCase):
     """Async Test case for cog InfoComponentsCommands."""
     cog = InfoComponentsCommands(Bot(command_prefix='#'))
-    result = InfoComponentsCommandsTestResult()
     maxDiff = None
     ctx = CONTEXT
 
@@ -65,19 +64,19 @@ class InfoComponentsCommandsTest(AsyncTestCase):
     async def test_member_id_exist(self):
         """Assert send method after member command with an exist id (owner)."""
         await self.assert_send_method(
-            self.cog.member, '0', self.result.member['id'], True)
+            self.cog.member, '0', RESULTS['id'], True)
 
     async def test_member_name_exist(self):
         """Assert send method after member command with an exist name."""
         await self.assert_send_method(
-            self.cog.member, 'Joe', self.result.member['name'], True)
+            self.cog.member, 'Joe', RESULTS['name'], True)
 
     async def test_member_id_no_exist(self):
         """Assert send method after member command with a no exist id."""
         await self.assert_send_method(
-            self.cog.member, '12', self.result.member['no_id'], False)
+            self.cog.member, '12', RESULTS['no_id'], False)
 
     async def test_member_name_no_exist(self):
         """Assert send method after member command with a no exist name."""
         await self.assert_send_method(
-            self.cog.member, 'Tom', self.result.member['no_name'], False)
+            self.cog.member, 'Tom', RESULTS['no_name'], False)

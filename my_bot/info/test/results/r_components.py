@@ -1,88 +1,38 @@
-class InfoComponentsCommandsTestResult():
-    """Class with InfoComponentsCommandsTest expected result."""
+# ### Component Embed
+# BASE_RESULT -> {footer, color, type, timestamp, desription}
+BASE_RESULT = {
+    'footer': {'text': 'Member since'}, 'color': 0,
+    'timestamp': '2020-04-27T13:00:00+00:00', 'type': 'rich',
+    'description': "A human actually offline.", }
 
-    @property
-    def member(self):
-        """Return the result expected for test_member - embed or not found."""
-        base_result = {
-            'footer': {'text': 'Member since'}, 'color': 0,
-            'timestamp': '2020-04-27T13:00:00+00:00', 'type': 'rich',
-            'description': "A human actually offline.", }
-        id_result = {
-            'author': {
-                'name': 'id: 0',
-                'icon_url': 'https://url.com/avatar.png'},
-            'fields': [
-                {
-                    'inline': False, 'name': 'Roles',
-                    'value': '@everyone - admin'},
-                {
-                    'inline': False, 'name': 'Channels allowed to view',
-                    'value': "All"}],
-            'title': 'Jean-Pierre'}
-        id_result.update(base_result)
-        id_result['description'] += " He's the owner."
-        name_result = {
-            'author': {
-                'name': 'id: 2',
-                'icon_url': 'https://url.com/avatar.png'},
-            'fields': [
-                {
-                    'inline': False, 'name': 'Roles',
-                    'value': '@everyone - staff'},
-                {
-                    'inline': False, 'name': 'Channels allowed to view',
-                    'value': ''.join([
-                        'info point - meeting room - reception - shop - ',
-                        'snack - studio'])}],
-            'title': 'Joe'}
-        name_result.update(base_result)
-        return {
-            'id': id_result,
-            'name': name_result,
-            'no_id': 'Member with id 12 not founded.',
-            'no_name': 'Member with name Tom not founded.'}
 
-    @property
-    def role(self):
-        """Return the result expected for test_role - embed or not found."""
-        base_result = {
-            'footer': {'text': 'Member since'}, 'color': 0,
-            'timestamp': '2020-04-27T13:00:00+00:00', 'type': 'rich',
-            'description': "A human actually offline.", }
-        id_result = {
-            'author': {
-                'name': 'id: 0',
-                'icon_url': 'https://url.com/avatar.png'},
-            'fields': [
-                {
-                    'inline': False, 'name': 'Roles',
-                    'value': '@everyone - admin'},
-                {
-                    'inline': False, 'name': 'Channels allowed to view',
-                    'value': ''.join([
-                        '1st floor - 2nd floor - boss office - info point - ',
-                        'meeting room - reception - shop - snack - studio'])}],
-            'title': 'Jean-Pierre'}
-        id_result.update(base_result)
-        id_result['description'] += " He's the owner."
-        name_result = {
-            'author': {
-                'name': 'id: 2',
-                'icon_url': 'https://url.com/avatar.png'},
-            'fields': [
-                {
-                    'inline': False, 'name': 'Roles',
-                    'value': '@everyone - staff'},
-                {
-                    'inline': False, 'name': 'Channels allowed to view',
-                    'value': ''.join([
-                        'info point - meeting room - reception - shop - ',
-                        'snack - studio'])}],
-            'title': 'Joe'}
-        name_result.update(base_result)
-        return {
-            'id': id_result,
-            'name': name_result,
-            'no_id': 'Member with id 12 not founded.',
-            'no_name': 'Member with name Tom not founded.'}
+def get_embed_dict(title, obj_id, values):
+    """Return an embed dict for components infos.
+    -> {title, author, fields} and updated with base result."""
+    tups_name_val = [
+        ('Roles', values[0]),
+        ('Channels allowed to view', values[1])]
+    fields = []
+    for name_val in tups_name_val:
+        fields.append(
+            {'inline': False, 'name': name_val[0], 'value': name_val[1]})
+    embed_dict = {
+        'title': title,
+        'author': {
+            'name': f"id: {obj_id}",
+            'icon_url': 'https://url.com/avatar.png'},
+        'fields': fields}
+    embed_dict.update(BASE_RESULT)
+    if obj_id == 0:
+        embed_dict['description'] += " He's the owner."
+    return embed_dict
+
+
+# COMPONENTS RESULTS -> InfoComponentsCommandsTest expected results
+C_RESULTS = {
+    'id': get_embed_dict('Jean-Pierre', 0, ('@everyone - admin', 'All')),
+    'name': get_embed_dict('Joe', 2, (
+        '@everyone - staff',
+        'info point - meeting room - reception - shop - snack - studio')),
+    'no_id': 'Member with id 12 not founded.',
+    'no_name': 'Member with name Tom not founded.'}

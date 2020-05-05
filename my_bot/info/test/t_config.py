@@ -2,7 +2,7 @@ from unittest import TestCase
 from discord.ext.commands import Cog, Bot
 from ..guild import InfoGuildCommands
 from ..components import InfoComponentsCommands
-from .results import CONF_COMMANDS_RESULTS as RESULTS
+from .results import CONF_RESULTS as RESULTS
 
 
 class ConfCommandsTest(TestCase):

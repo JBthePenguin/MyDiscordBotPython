@@ -1,5 +1,5 @@
-# CONF_COMMANDS_RESULTS ->  ConfCommandsTest expected results
-CONF_COMMANDS_RESULTS = {
+# CONF COMMANDS RESULTS ->  ConfCommandsTest expected results
+CONF_RESULTS = {
     'gld': [
         ('guild', "Guild's stats -> #guild"),
         ('mems', 'All members -> #mems'),
