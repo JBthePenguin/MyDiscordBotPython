@@ -2,12 +2,11 @@ from unittest import TestCase
 from discord.ext.commands import Cog, Bot
 from ..guild import InfoGuildCommands
 from ..components import InfoComponentsCommands
-from .results import ConfCommandsTestResult
+from .results import CONF_COMMANDS_RESULTS as RESULTS
 
 
 class ConfCommandsTest(TestCase):
     """Test Case for commands's configuration"""
-    result = ConfCommandsTestResult()
     maxDiff = None
 
     def assert_cog(self, cog_class, n_commands, results):
@@ -23,8 +22,8 @@ class ConfCommandsTest(TestCase):
 
     def test_cog_guild(self):
         """Assert cog InfoGuildCommands."""
-        self.assert_cog(InfoGuildCommands, 11, self.result.cog_guild)
+        self.assert_cog(InfoGuildCommands, 11, RESULTS['gld'])
 
     def test_cog_components(self):
         """Assert cog InfoComponentsCommands."""
-        self.assert_cog(InfoComponentsCommands, 1, self.result.cog_components)
+        self.assert_cog(InfoComponentsCommands, 1, RESULTS['comp'])
