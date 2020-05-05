@@ -35,9 +35,9 @@ class GuildEmbed(Embed):
         objs = get_list(guild, com_key)
         if objs:
             self.title = TITLES[com_key][0]
-            if com_key == 'emo':
+            if com_key == 'emo':  # for emojis
                 self.add_emojis(objs)
-            else:
+            else:  # for objs
                 objs.sort(key=lambda obj: obj.name)
                 for tup_name_value in [
                         ('ID', [str(obj.id) for obj in objs]),
@@ -46,7 +46,7 @@ class GuildEmbed(Embed):
                         name=tup_name_value[0],
                         value="\n".join(tup_name_value[1]), inline=True)
             self.set_footer(text=f"Total: {str(len(objs))}")
-        else:
+        else:  # no objs 
             self.title = f"No {TITLES[com_key][1]}"
 
     def add_emojis(self, emojis):
