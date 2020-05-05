@@ -23,18 +23,3 @@ class GuildShellTestResult():
                 '- 2 - Joe',
                 '- 4 - John',
                 '- 5 - Mike\n'])}
-
-    @property
-    def add_emojis(self):
-        """Return the result expected for test_add_emojis."""
-        return '\n'.join([
-            '- <:cool:18> cool - <:good:19> good - <:bad:20> bad ',
-            '- <:strong:21> strong \n'])
-
-    @property
-    def add_type_chans(self):
-        """Return the result expected for test_add_type_chans."""
-        return '\n'.join([
-            '### 2 Voice Channels',
-            '- 14 - snack',
-            '- 15 - studio\n'])
