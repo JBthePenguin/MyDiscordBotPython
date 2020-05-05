@@ -2,7 +2,7 @@ discord.py
 
 python-dotenv
 
-MyHtmlTestRunner
+html-testRunner
 
 aiounittest
 
