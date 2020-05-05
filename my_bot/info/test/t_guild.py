@@ -74,9 +74,11 @@ class InfoGuildCommandsTest(AsyncTestCase):
     async def test_shell_info(self):
         """Mock print function, assert if it,
         and the context send method is called once with the good string."""
-        mock_print = Mock()
-        with patch("builtins.print", mock_print):
-            await self.cog.shell_info.callback(self.cog, self.ctx)
-        print(G_RESULTS['shl'])
+        await self.cog.shell_info.callback(self.cog, self.ctx)
+        # mock_print = Mock()
+        # with patch("builtins.print", mock_print):
+        #     await self.cog.shell_info.callback(self.cog, self.ctx)
+        #print(G_RESULTS['shl'])
+        # print('tamère')
             # mock_print.assert_called_once_with(G_RESULTS['shl'])
             # self.ctx.send.assert_called_once_with("Infos displayed in shell")

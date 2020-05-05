@@ -67,7 +67,9 @@ class InfoGuildCommands(Cog, name='Commands Info Guild'):
     @command(name=coms['shl'][0], help=coms['shl'][1], ignore_extra=False)
     async def shell_info(self, ctx):
         """Display guild's infos in shell."""
+        # GuildShell(ctx.guild)
         print(GuildShell(ctx.guild))
+        # print('raaaaa')
         # guild_shell = GuildShell(ctx.guild)
         # guild_shell.add_infos()
         # print(guild_shell.infos)
