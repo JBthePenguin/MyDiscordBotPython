@@ -1,3 +1,7 @@
+# GuildShellTest expected results
+G_SHELL_RESULTS = {}
+
+
 class GuildShellTestResult():
     """Class with GuildShellTest expected result."""
 
@@ -34,69 +38,3 @@ class GuildShellTestResult():
             '### 2 Voice Channels',
             '- 14 - snack',
             '- 15 - studio\n'])
-
-    @property
-    def add_cats_chans(self):
-        """Return the result expected for test_add_cats_chans."""
-        return '\n'.join([
-            "\n\n########## CHANNELS BY CATEGORIES ##########",
-            '\n##### No channel category #####',
-            '### 1 Text Channels',
-            '- 11 - reception',
-            '### 1 News Channels',
-            '- 12 - info point',
-            '\n##### 1st floor #####',
-            '### 2 Voice Channels',
-            '- 14 - snack',
-            '- 15 - studio',
-            '### 1 Store Channels',
-            '- 13 - shop',
-            '\n##### 2nd floor #####',
-            '### 2 Text Channels',
-            '- 17 - boss office',
-            '- 16 - meeting room\n'])
-
-    @property
-    def add_infos(self):
-        """Return the result expected for test_add_infos."""
-        result = ''
-        # guild owner members
-        for value in self.add_list.values():
-            result += value
-        # roles emojis categories
-        result += '\n'.join([
-            '\n########## 3 Roles ##########',
-            '- 6 - @everyone',
-            '- 7 - admin',
-            '- 8 - staff',
-            '\n########## 4 Emojis ##########',
-            self.add_emojis,
-            '########## 2 Channel Categories ##########',
-            '- 9 - 1st floor',
-            '- 10 - 2nd floor\n'])
-        # channels
-        result += '\n'.join([
-            '\n########## 7 Channels ##########',
-            '- 17 - boss office',
-            '- 12 - info point',
-            '- 16 - meeting room',
-            '- 11 - reception',
-            '- 13 - shop',
-            '- 14 - snack',
-            '- 15 - studio\n'])
-        # text voice news store CHANNELS
-        result += '\n'.join([
-            '\n########## 3 Text Channels ##########',
-            '- 17 - boss office',
-            '- 16 - meeting room',
-            '- 11 - reception',
-            '\n########## 2 Voice Channels ##########',
-            '- 14 - snack',
-            '- 15 - studio',
-            '\n########## 1 News Channels ##########',
-            '- 12 - info point',
-            '\n########## 1 Store Channels ##########',
-            '- 13 - shop\n'])
-        # channels by categories
-        result += self.add_cats_chans
-        return result

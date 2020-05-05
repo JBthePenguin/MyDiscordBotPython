@@ -27,10 +27,6 @@ class InfoGuildCommandsTest(AsyncTestCase):
         """Assert send method after guild command."""
         await self.assert_send_method(self.cog.guild, G_RESULTS['gld'])
 
-    async def test_owner(self):
-        """Assert send method after owner command."""
-        await self.assert_send_method(self.cog.owner, G_RESULTS['own'])
-
     async def test_members(self):
         """Assert send method after members command."""
         await self.assert_send_method(self.cog.members, G_RESULTS['mem'])
@@ -74,11 +70,10 @@ class InfoGuildCommandsTest(AsyncTestCase):
     async def test_shell_info(self):
         """Mock print function, assert if it,
         and the context send method is called once with the good string."""
-        await self.cog.shell_info.callback(self.cog, self.ctx)
-        # mock_print = Mock()
-        # with patch("builtins.print", mock_print):
-        #     await self.cog.shell_info.callback(self.cog, self.ctx)
-        #print(G_RESULTS['shl'])
-        # print('tamère')
-            # mock_print.assert_called_once_with(G_RESULTS['shl'])
-            # self.ctx.send.assert_called_once_with("Infos displayed in shell")
+        mock_print = Mock()
+        with patch("builtins.print", mock_print):
+            await self.cog.shell_info.callback(self.cog, self.ctx)
+            mock_print.assert_called_once()
+            guild_shell = mock_print.call_args[0][0]
+            self.assertEqual(str(guild_shell), G_RESULTS['shl'])
+            self.ctx.send.assert_called_once_with("Infos displayed in shell")

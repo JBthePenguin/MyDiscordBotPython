@@ -1,13 +1,12 @@
 from unittest import TestCase
 from discord import Guild
-from ..results import GuildShellTestResult
 from ..fakers import FULL_GUILD
 from ...shapers import GuildShell
 
 
 class GuildShellTest(TestCase):
     """Test case for class GuildShell."""
-    result = GuildShellTestResult()
+    # result = GuildShellTestResult()
 
     def setUp(self):
         """Init tests with a guild_shell."""

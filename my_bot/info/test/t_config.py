@@ -23,7 +23,7 @@ class ConfCommandsTest(TestCase):
 
     def test_cog_guild(self):
         """Assert cog InfoGuildCommands."""
-        self.assert_cog(InfoGuildCommands, 12, self.result.cog_guild)
+        self.assert_cog(InfoGuildCommands, 11, self.result.cog_guild)
 
     def test_cog_components(self):
         """Assert cog InfoComponentsCommands."""

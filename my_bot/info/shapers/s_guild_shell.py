@@ -14,13 +14,14 @@ def get_objs_str(objs):
 
 def get_emos_str(emojis):
     """Return a string with list of emojis(tup) symbol and name, 3 by line"""
+    n_emos = len(emojis)
     emos_str = ""
     for i, emoji in enumerate(emojis):
-        emos_str += f"- {str(emoji)} {emoji.name} "
-        if (i + 1) % 3 == 0:
+        emos_str += f"- {str(emoji)} {emoji.name}"
+        if ((i + 1) % 3 == 0) or ((i + 1) == n_emos):
             emos_str += "\n"
-    if len(emojis) % 3 != 0:
-        emos_str += "\n"
+        else:
+            emos_str += " "
     return emos_str
 
 
@@ -72,9 +73,11 @@ class GuildShell():
 
     def __str__(self):
         sep = '##########'
-        g_str = ""
+        g_str = "\n"
         # Guild and Owner
-        for title_obj in [('Guild', self.guild), ('Owner', self.guild.owner)]:
+        for title_obj in [
+                (TITLES['gld'][0], self.guild),
+                (TITLES['own'][0], self.guild.owner)]:
             g_str += f"\n{sep} {title_obj[0]} {sep}"
             g_str += f"\n- {title_obj[1].id} - {title_obj[1].name}\n"
         # Components: members, roles, ....

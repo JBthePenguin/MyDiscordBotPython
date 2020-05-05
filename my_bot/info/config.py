@@ -1,7 +1,6 @@
 GUILD_COMMANDS = {  # (name, help message)
-    # guild, owner, members, roles, channel's categories, channels
+    # guild, members, roles, channel's categories, channels
     'gld': ('guild', "Guild's stats -> #guild"),
-    'own': ('owner', "The Owner-> #owner"),
     'mem': ('mems', "All members -> #mems"),
     'rol': ('roles', "All roles -> #roles"),
     'cat': ('cats', "All channel's categories -> #cats"),

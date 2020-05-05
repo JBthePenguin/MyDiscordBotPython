@@ -4,9 +4,7 @@ from .s_titles import TITLES
 
 def get_list(guild, com_key):
     """Return the corresponding guild's list for a specific command key."""
-    if com_key == 'own':
-        return [guild.owner]
-    elif com_key == 'mem':
+    if com_key == 'mem':
         return guild.members
     elif com_key == 'rol':
         return guild.roles
@@ -44,7 +42,7 @@ class GuildEmbed(Embed):
                 self.add_field(
                     name=TITLES[com_key][0],
                     value=str(len(get_list(guild, com_key))), inline=True)
-            self.set_footer(text=f"Owner: {guild.owner.name}")
+            self.set_footer(text=f"{TITLES['own'][0]}: {guild.owner.name}")
         else:
             # Add title, add fields id and name, add each obj sorted by name.
             # Or no obj message in title

@@ -6,7 +6,6 @@ class ConfCommandsTestResult():
         """Return the result expected for test_cog_guild."""
         return [
             ('guild', "Guild's stats -> #guild"),
-            ('owner', 'The Owner-> #owner'),
             ('mems', 'All members -> #mems'),
             ('roles', 'All roles -> #roles'),
             ('cats', "All channel's categories -> #cats"),

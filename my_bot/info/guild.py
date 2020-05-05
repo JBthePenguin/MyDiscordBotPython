@@ -14,11 +14,6 @@ class InfoGuildCommands(Cog, name='Commands Info Guild'):
         """Send an embed with guild's stats."""
         await ctx.send(embed=GuildEmbed(ctx.guild, 'gld'))
 
-    @command(name=coms['own'][0], help=coms['own'][1], ignore_extra=False)
-    async def owner(self, ctx):
-        """Send an embed with the owner."""
-        await ctx.send(embed=GuildEmbed(ctx.guild, 'own'))
-
     @command(name=coms['mem'][0], help=coms['mem'][1], ignore_extra=False)
     async def members(self, ctx):
         """Send an embed with a list of all members."""
@@ -67,10 +62,5 @@ class InfoGuildCommands(Cog, name='Commands Info Guild'):
     @command(name=coms['shl'][0], help=coms['shl'][1], ignore_extra=False)
     async def shell_info(self, ctx):
         """Display guild's infos in shell."""
-        # GuildShell(ctx.guild)
         print(GuildShell(ctx.guild))
-        # print('raaaaa')
-        # guild_shell = GuildShell(ctx.guild)
-        # guild_shell.add_infos()
-        # print(guild_shell.infos)
         await ctx.send("Infos displayed in shell")
