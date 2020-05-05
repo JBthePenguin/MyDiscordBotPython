@@ -51,6 +51,8 @@ You need to [create a Discord Bot account to get a token](https://discordpy.read
 (env)$ python -m unittest -v
 # or
 (env)$ python TestRunner.py -v
+# or
+(env)$ python MyHtmlTestRunner.py
 ```
 -   Test for a specific module (ex: info)
 ```shell
