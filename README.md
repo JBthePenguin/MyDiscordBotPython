@@ -50,9 +50,7 @@ You need to [create a Discord Bot account to get a token](https://discordpy.read
 ```shell
 (env)$ python -m unittest -v
 # or
-(env)$ python TestRunner.py -v
-# or
-(env)$ python MyHtmlTestRunner.py
+(env)$ python run_test.py -v
 ```
 -   Test for a specific module (ex: info)
 ```shell

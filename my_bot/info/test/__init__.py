@@ -3,7 +3,8 @@ from .t_guild import InfoGuildCommandsTest
 from .t_components import CheckParameterTest, InfoComponentsCommandsTest
 from .t_config import ConfCommandsTest
 
-__all__ = [
-    "GuildEmbedTest", "GuildShellTest", "ComponentEmbedTest",
-    "CheckParameterTest", "InfoGuildCommandsTest", "InfoComponentsCommandsTest",
-    "ConfCommandsTest"]
+
+ALL_TESTS_CASE = [
+    GuildEmbedTest, GuildShellTest, ComponentEmbedTest,
+    InfoGuildCommandsTest, InfoComponentsCommandsTest, CheckParameterTest,
+    ConfCommandsTest]
