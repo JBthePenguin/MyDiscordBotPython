@@ -15,7 +15,7 @@ if __name__ == "__main__":
             description='\n'.join([
                 'Run without argument for a bot with all commands, ',
                 'or with optionnal one(s) for a bot with',
-                ' only desired commands, or to run test', ]))
+                ' only desired commands.', ]))
         parser.add_argument(
             '-i', '--info', action='store_true',
             help='Add InfoTeam commamds to the bot')

@@ -4,7 +4,7 @@ from .t_components import CheckParameterTest, InfoComponentsCommandsTest
 from .t_config import ConfCommandsTest
 
 
-ALL_TESTS_CASE = [
+INFO_TESTS = [
     GuildEmbedTest, GuildShellTest, ComponentEmbedTest,
     InfoGuildCommandsTest, InfoComponentsCommandsTest, CheckParameterTest,
     ConfCommandsTest]
