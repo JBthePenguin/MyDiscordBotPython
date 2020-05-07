@@ -62,7 +62,6 @@ class MyHelpFormatter(HelpFormatter):
                 args_string = self._format_args(action, default)
                 for option_string in action.option_strings:
                     parts.append('%s %s' % (option_string, args_string))
-
             return '\n' + ', '.join(parts)
 
 
@@ -130,11 +129,20 @@ if __name__ == "__main__":
         for test_name in (I_TEST_NAMES + E_TEST_NAMES):
             options = args_dict[test_name]
             if isinstance(options, list):
+                for test_case in (INFO_TESTS + EVENT_TESTS):
+                    if test_name == test_case.__name__:
+                        break
                 if not options:  # all test case tests
-                    for test_case in (INFO_TESTS + EVENT_TESTS):
-                        if test_name == test_case.__name__:
-                            break
                     MyTestRunner(
                         output='html_test_reports', combine_reports=True,
                         report_name=test_name, add_timestamp=False).run(
                             get_suite([test_case]))
+                else:
+                    print(options)
+                    suite_list = []
+                    for option in options:
+                        suite_list.append(test_case(option))
+                    MyTestRunner(
+                        output='html_test_reports', combine_reports=True,
+                        report_name=test_name + '_methods', add_timestamp=False).run(
+                            TestSuite(suite_list))
