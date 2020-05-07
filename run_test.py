@@ -90,16 +90,16 @@ if __name__ == "__main__":
         parser = ArgumentParser(
             formatter_class=MyHelpFormatter, description='\n'.join([
                 'Without argument to run all tests, ',
-                'or with optionnal one(s) without parameter to run all ',
+                'or with optionnal one(s) without option to run all ',
                 "specific app or TestCase tests, or with test's names",
-                " in parameters for a TestCase arg to run specific tests.", ]))
+                " in option for a TestCase arg to run specific tests.", ]))
         parser._optionals.title = 'Help'
         # argument groups
         for arg_name in ['info', 'event']:
             group = parser.add_argument_group(f"{arg_name.title()} Tests")
             # app arg
             group.add_argument(
-                f"-{arg_name}", action='store_true',
+                f"--{arg_name}", action='store_true',
                 help=f"Run all {arg_name.title()} tests.")
             for test_case in TESTS[arg_name]:
                 # test case arg
@@ -110,10 +110,31 @@ if __name__ == "__main__":
                 methods = TestLoader().loadTestsFromTestCase(test_case)._tests
                 methods_names = [m._testMethodName for m in methods]
                 group.add_argument(
-                    f"-{test_name}", choices=methods_names, nargs='*',
+                    f"--{test_name}", choices=methods_names, nargs='*',
                     help="".join([
-                        f"Without parameter to run all {test_name} tests,",
+                        f"Without option to run all {test_name} tests,",
                         " or pass method's names to run specific tests. ",
                         "Allowed values are: ", " - ".join(methods_names)]))
         args = parser.parse_args()
-        print(args)
+        if args.info:  # all info tests
+            MyTestRunner(
+                output='html_test_reports', combine_reports=True,
+                report_name='info_test', add_timestamp=False).run(
+                    get_suite(INFO_TESTS))
+        if args.event:  # all event test
+            MyTestRunner(
+                output='html_test_reports', combine_reports=True,
+                report_name='event_test', add_timestamp=False).run(
+                    get_suite(EVENT_TESTS))
+        args_dict = vars(args)
+        for test_name in (I_TEST_NAMES + E_TEST_NAMES):
+            options = args_dict[test_name]
+            if isinstance(options, list):
+                if not options:  # all test case tests
+                    for test_case in (INFO_TESTS + EVENT_TESTS):
+                        if test_name == test_case.__name__:
+                            break
+                    MyTestRunner(
+                        output='html_test_reports', combine_reports=True,
+                        report_name=test_name, add_timestamp=False).run(
+                            get_suite([test_case]))
