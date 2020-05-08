@@ -9,48 +9,54 @@
 </head>
 <body>
     <div class="container">
-        <div class="row align-items-center mt-2 pt-2">
+        <div class="row bg-dark mt-2 pt-2">
             <div class="card col-12 bg-dark text-light text-center">
                 <div class="card-header">
                     <h3 class="card-title">MyDiscordBotPython Unittest Results</h3>
-                    <h5 class="card-subtitle text-white-50 mb-2"><i class="fa fa-clock-o"></i> <strong>Start Time:</strong> 2020-05-08 12:33:03</h5>
-                    <h5 class="card-subtitle text-white-50 mt-2"><i class="fa fa-hourglass-half"></i><strong> Duration: </strong>8 ms</h5>
+                    <h5 class="card-subtitle text-white-50 mb-2"><i class="fa fa-clock-o"></i> <strong>Start Time:</strong> 2020-05-08 15:00:15</h5>
+                    <h5 class="card-subtitle text-white-50 mt-2"><i class="fa fa-hourglass-half"></i> <strong>Duration:</strong> 9 ms</h5>
                 </div>
                 <div class="card-body">
-                    <h4><span class="badge badge-pill badge-light"><strong>Total</strong> 4</span> <span class="badge badge-pill badge-success"><strong>Pass</strong> 2</span> <span class="badge badge-pill badge-warning"><strong>Fail</strong> 1</span> <span class="badge badge-pill badge-danger"><strong>Error</strong> 1</span> <span class="badge badge-pill badge-info"><strong>Skip</strong> 0</span></h4>
+                    <h4><span class="badge badge-light"><strong>Total</strong> <span class="badge badge-pill badge-dark">4</span></span> <span class="badge badge-success"><i class="fa fa-thumbs-o-up"></i> <strong>Pass</strong> <span class="badge badge-pill badge-dark">2</span></span> <span class="badge badge-warning"><strong>Fail</strong> <span class="badge badge-pill badge-dark">1</span></span> <span class="badge badge-danger"><strong>Error</strong> <span class="badge badge-pill badge-dark">1</span></span> <span class="badge badge-info"><strong>Skip</strong> <span class="badge badge-pill badge-dark">0</span></span></h4>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-12 col-sm-10 col-md-10">
-                <table class='table table-hover table-responsive'>
+        <div class="row bg-secondary pt-2 pb-2">
+        
+        
+        <div class="col-12 col-md-10 card bg-light mx-auto m-2">
+            <div class="card-header">
+                <h5 class="card-title">InfoComponentsCommandsTest</h5>
+                <h6 class="card-subtitle text-black-50 mt-2"><i class="fa fa-file-code-o"></i> my_bot/info/test/t_components.py</h6>
+            </div>
+            <div class="card-body pt-0 pb-0">
+                <table class='table table-dark table-hover table-responsive pl-2 pr-2'>
                     <thead>
                         <tr>
-                            <th>my_bot.info.test.t_components.InfoComponentsCommandsTest</th>
-                            <th>Status</th>
+                            <th><i class="fa fa-flask"></i> Tests</th>
+                            <th><i class="fa fa-clipboard"></i> Status</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class='success'>
-                            <td class="col-10">test_member_id_exist</td>
-                            <td class="col-1">
-                                <span class="label label-success" style="display:block;width:40px;">Pass</span>
-                            </td>
-                            <td class="col-1">
-                            </td>
-                        </tr>
-                        <tr class='danger'>
-                            <td class="col-10">test_member_id_no_exist</td>
-                            <td class="col-1">
-                                <span class="label label-danger" style="display:block;width:40px;">Fail</span>
-                            </td>
-                            <td class="col-1">
-                                <button class="btn btn-default btn-xs">View</button>
-                            </td>
-                        </tr>
-                        <tr style="display:none;">
-                            <td class="col-9" colspan="3"><p style="color:maroon;">AssertionError: 'Member with id 12 not founded.' != {'title': 'Jean-Pierre', 'author': {'name[364 chars]er."}</p><p style="color:maroon;">Traceback (most recent call last):
+                    
+                    
+                    <tr>
+                        <td class="col-5">test_member_id_exist</td>
+                        <td class="col-4">Pass</td>
+                        <td class="col-3">
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="col-5">test_member_id_no_exist</td>
+                        <td class="col-4">Fail</td>
+                        <td class="col-3">
+                        <button class="btn btn-default btn-xs">View</button>
+                        </td>
+                    </tr>
+                    <tr style="display:none;">
+                        <td class="col-9" colspan="3"><p style="color:maroon;">AssertionError: 'Member with id 12 not founded.' != {'title': 'Jean-Pierre', 'author': {'name[364 chars]er."}</p><p style="color:maroon;">Traceback (most recent call last):
   File "/home/jbthepenguin/Documents/MyDiscordBotPython/env/lib/python3.7/site-packages/aiounittest/helpers.py", line 138, in wrapper
     return loop.run_until_complete(future)
   File "/usr/lib/python3.7/asyncio/base_events.py", line 579, in run_until_complete
@@ -61,19 +67,18 @@
     self.assertEqual(args[0], result)
 AssertionError: 'Member with id 12 not founded.' != {'title': 'Jean-Pierre', 'author': {'name[364 chars]er."}
 </p>
-                            </td>
-                        </tr>
-                        <tr class='warning'>
-                            <td class="col-10">test_member_name_exist</td>
-                            <td class="col-1">
-                                <span class="label label-warning" style="display:block;width:40px;">Error</span>
-                            </td>
-                            <td class="col-1">
-                                <button class="btn btn-default btn-xs">View</button>
-                            </td>
-                        </tr>
-                        <tr style="display:none;">
-                            <td class="col-9" colspan="3"><p style="color:maroon;">KeyError: 'embed'</p><p style="color:maroon;">Traceback (most recent call last):
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="col-5">test_member_name_exist</td>
+                        <td class="col-4">Error</td>
+                        <td class="col-3">
+                        <button class="btn btn-default btn-xs">View</button>
+                        </td>
+                    </tr>
+                    <tr style="display:none;">
+                        <td class="col-9" colspan="3"><p style="color:maroon;">KeyError: 'embed'</p><p style="color:maroon;">Traceback (most recent call last):
   File "/home/jbthepenguin/Documents/MyDiscordBotPython/env/lib/python3.7/site-packages/aiounittest/helpers.py", line 138, in wrapper
     return loop.run_until_complete(future)
   File "/usr/lib/python3.7/asyncio/base_events.py", line 579, in run_until_complete
@@ -84,24 +89,22 @@ AssertionError: 'Member with id 12 not founded.' != {'title': 'Jean-Pierre', 'au
     kwargs['embed'].to_dict(), result)
 KeyError: 'embed'
 </p>
-                            </td>
-                        </tr>
-                        <tr class='success'>
-                            <td class="col-10">test_member_name_no_exist</td>
-                            <td class="col-1">
-                                <span class="label label-success" style="display:block;width:40px;">Pass</span>
-                            </td>
-                            <td class="col-1">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">
-                                Total: 4, Pass: 2, Fail: 1, Error: 1 -- Duration: 8 ms
-                            </td>
-                        </tr>
+                        </td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="col-5">test_member_name_no_exist</td>
+                        <td class="col-4">Pass</td>
+                        <td class="col-3">
+                        </td>
+                    </tr>
                     </tbody>
+                    <caption>
+                        Total: 4, Pass: 2, Fail: 1, Error: 1 -- Duration: 9 ms
+                    </caption>
                 </table>
             </div>
+        </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
