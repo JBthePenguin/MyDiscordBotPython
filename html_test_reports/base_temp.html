@@ -17,7 +17,15 @@
                     <h5 class="card-subtitle text-white-50 mt-2"><i class="fa fa-hourglass-half"></i> <strong>Duration:</strong> {{ header_info.status.duration }}</h5>
                 </div>
                 <div class="card-body">
-                    <h4><span class="badge badge-light"><strong>Total</strong> <span class="badge badge-pill badge-dark">{{ header_info.status.total }}</span></span> <span class="badge badge-success"><i class="fa fa-thumbs-o-up"></i> <strong>Pass</strong> <span class="badge badge-pill badge-dark">{{ header_info.status.success }}</span></span> <span class="badge badge-warning"><strong>Fail</strong> <span class="badge badge-pill badge-dark">{{ header_info.status.failure }}</span></span> <span class="badge badge-danger"><strong>Error</strong> <span class="badge badge-pill badge-dark">{{ header_info.status.error }}</span></span> <span class="badge badge-info"><strong>Skip</strong> <span class="badge badge-pill badge-dark">{{ header_info.status.skip }}</span></span></h4>
+                    <h4>
+                      <ul class="list-inline">
+                          <li class="list-inline-item"><span class="badge badge-light"><strong>Total</strong> <span class="badge badge-pill badge-dark">{{ header_info.status.total }}</span></span></li>
+                          <li class="list-inline-item"><span class="badge badge-success"><i class="fa fa-thumbs-o-up"></i> <strong>Pass</strong> <span class="badge badge-pill badge-dark">{{ header_info.status.success }}</span></span></li>
+                          <li class="list-inline-item"><span class="badge badge-warning"><i class="fa fa-thumbs-o-down"></i> <strong>Fail</strong> <span class="badge badge-pill badge-dark">{{ header_info.status.failure }}</span></span></li>
+                          <li class="list-inline-item"><span class="badge badge-danger"><i class="fa fa-times-circle"></i> <strong>Error</strong> <span class="badge badge-pill badge-dark">{{ header_info.status.error }}</span></span></li>
+                          <li class="list-inline-item"><span class="badge badge-info"><i class="fa fa-cut"></i> <strong>Skip</strong> <span class="badge badge-pill badge-dark">{{ header_info.status.skip }}</span></span></li>
+                      </ul>
+                    </h4>
                 </div>
             </div>
         </div>
@@ -29,11 +37,11 @@
                 <h5 class="card-title">{{ test_case_name.split('.')[-1] }}</h5>
                 <h6 class="card-subtitle text-black-50 mt-2"><i class="fa fa-file-code-o"></i> {{ '/'.join(test_case_name.split('.')[:-1]) + '.py' }}</h6>
             </div>
-            <div class="card-body pt-0 pb-0">
-                <table class='table table-dark table-hover table-responsive pl-2 pr-2'>
+            <div class="card-body table-responsive pt-0 pb-0">
+                <table class='table table-sm table-dark table-hover mb-0'>
                     <thead>
                         <tr>
-                            <th><i class="fa fa-flask"></i> Tests</th>
+                            <th class="pl-2"><i class="fa fa-flask"></i> Tests</th>
                             <th><i class="fa fa-clipboard"></i> Status</th>
                             <th></th>
                         </tr>
@@ -42,9 +50,8 @@
                     {% for test_case in tests_results %}
                     {% if not test_case.subtests is defined %}
                     <tr>
-                        <td class="col-5">{{ test_case.test_id.split(".")[-1] }}</td>
-                        <td class="col-4">
-
+                        <td class="pl-2">{{ test_case.test_id.split(".")[-1] }}</td>
+                        <td>
                             {%- if test_case.outcome == test_case.SUCCESS -%}
                             Pass
                             {%- elif test_case.outcome == test_case.SKIP -%}
@@ -55,7 +62,7 @@
                             Error
                             {%- endif -%}
                         </td>
-                        <td class="col-3">
+                        <td>
                         {%- if (test_case.stdout or test_case.err) %}
                         <button class="btn btn-default btn-xs">View</button>
                         {%- endif %}
@@ -136,8 +143,16 @@
                     {%- endif %}
                     {%- endfor %}
                     </tbody>
-                    <caption>
-                        Total: {{ summaries[test_case_name].total }}, Pass: {{ summaries[test_case_name].success }}{% if summaries[test_case_name].failure %}, Fail: {{ summaries[test_case_name].failure }}{% endif %}{% if summaries[test_case_name].error %}, Error: {{ summaries[test_case_name].error }}{% endif %}{% if summaries[test_case_name].skip %}, Skip: {{ summaries[test_case_name].skip }}{% endif %} -- Duration: {{ summaries[test_case_name].duration }}
+                    <caption class="pb-0">
+                      <h5 class="mb-0">
+                        <ul class="list-inline">
+                            <li class="list-inline-item"><span class="badge badge-dark"><strong>Total</strong> <span class="badge badge-pill badge-light">{{ summaries[test_case_name].total }}</span></span></li>
+                            <li class="list-inline-item"><span class="badge badge-success"><i class="fa fa-thumbs-o-up"></i> <strong>Pass</strong> <span class="badge badge-pill badge-dark">{{ summaries[test_case_name].success }}</span></span></li>
+                            <li class="list-inline-item"><span class="badge badge-warning"><i class="fa fa-thumbs-o-down"></i> <strong>Fail</strong> <span class="badge badge-pill badge-dark">{{ summaries[test_case_name].failure }}</span></span></li>
+                            <li class="list-inline-item"><span class="badge badge-danger"><i class="fa fa-times-circle"></i> <strong>Error</strong> <span class="badge badge-pill badge-dark">{{ summaries[test_case_name].error }}</span></span></li>
+                            <li class="list-inline-item"><span class="badge badge-info"><i class="fa fa-cut"></i> <strong>Skip</strong> <span class="badge badge-pill badge-dark">{{ summaries[test_case_name].skip }}</span></span></li>
+                        </ul>
+                      </h5>
                     </caption>
                 </table>
             </div>
