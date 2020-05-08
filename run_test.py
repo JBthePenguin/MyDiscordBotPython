@@ -5,6 +5,8 @@ from sys import argv
 from argparse import (
     ArgumentParser, HelpFormatter, SUPPRESS, OPTIONAL, ZERO_OR_MORE,
     ONE_OR_MORE, REMAINDER, PARSER)
+from getpass import getuser
+
 
 EVENT_TESTS = []
 ALL_TESTS = EVENT_TESTS + INFO_TESTS
@@ -74,7 +76,7 @@ class TestArgumentParser(ArgumentParser):
                 'Without argument to run all tests, ',
                 'or with optionnal one(s) without option to run all ',
                 "specific app or TestCase tests, or with test's names",
-                " in option for a TestCase arg to run specific tests.", ]))
+                " in option for a TestCase arg to run specific tests."]))
         # groups
         self._optionals.title = 'Help'
         for name_tests in groups:
@@ -101,9 +103,14 @@ class MyTestRunner(HTMLTestRunner):
     """Override HTMLTestRunner..."""
 
     def __init__(self, report_name):
+        template_args = {
+            "report_title": "MyDiscordBotPython Unittest Results"
+        }
         super().__init__(
             output='html_test_reports', combine_reports=True,
-            report_name=report_name, add_timestamp=False)
+            report_name=report_name, add_timestamp=False,
+            template='html_test_reports/base_temp.html',
+            template_args=template_args)
 
 
 def get_suite(tests, options=None):
