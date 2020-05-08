@@ -5,8 +5,6 @@ from sys import argv
 from argparse import (
     ArgumentParser, HelpFormatter, SUPPRESS, OPTIONAL, ZERO_OR_MORE,
     ONE_OR_MORE, REMAINDER, PARSER)
-from getpass import getuser
-
 
 EVENT_TESTS = []
 ALL_TESTS = EVENT_TESTS + INFO_TESTS
