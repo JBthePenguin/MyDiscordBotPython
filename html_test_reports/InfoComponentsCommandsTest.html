@@ -5,16 +5,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 </head>
 <body>
     <div class="container">
-        <div class="row bg-dark text-light align-items-center mt-2">
-            <div class="col-12 text-center">
-                <h1 class="font-weight-light">MyDiscordBotPython Unittest Results</h1>
-                <p class='attribute'><strong>Start Time: </strong>2020-05-08 10:20:18</p>
-                <p class='attribute'><strong>Duration: </strong>5 ms</p>
-                <p class='attribute'><strong>Total:</strong> 4</p>
-                <p class='attribute'><strong><strong>Pass:</strong> 4 <strong>Fail:</strong> 0 <strong>Error:</strong> 0<strong>Skip:</strong> 0</p>
+        <div class="row align-items-center mt-2 pt-2">
+            <div class="card col-12 bg-dark text-light text-center">
+                <div class="card-header">
+                    <h3 class="card-title">MyDiscordBotPython Unittest Results</h3>
+                    <h5 class="card-subtitle text-white-50 mb-2"><i class="fa fa-clock-o"></i> <strong>Start Time:</strong> 2020-05-08 12:33:03</h5>
+                    <h5 class="card-subtitle text-white-50 mt-2"><i class="fa fa-hourglass-half"></i><strong> Duration: </strong>8 ms</h5>
+                </div>
+                <div class="card-body">
+                    <h4><span class="badge badge-pill badge-light"><strong>Total</strong> 4</span> <span class="badge badge-pill badge-success"><strong>Pass</strong> 2</span> <span class="badge badge-pill badge-warning"><strong>Fail</strong> 1</span> <span class="badge badge-pill badge-danger"><strong>Error</strong> 1</span> <span class="badge badge-pill badge-info"><strong>Skip</strong> 0</span></h4>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -36,20 +40,50 @@
                             <td class="col-1">
                             </td>
                         </tr>
-                        <tr class='success'>
+                        <tr class='danger'>
                             <td class="col-10">test_member_id_no_exist</td>
                             <td class="col-1">
-                                <span class="label label-success" style="display:block;width:40px;">Pass</span>
+                                <span class="label label-danger" style="display:block;width:40px;">Fail</span>
                             </td>
                             <td class="col-1">
+                                <button class="btn btn-default btn-xs">View</button>
                             </td>
                         </tr>
-                        <tr class='success'>
+                        <tr style="display:none;">
+                            <td class="col-9" colspan="3"><p style="color:maroon;">AssertionError: 'Member with id 12 not founded.' != {'title': 'Jean-Pierre', 'author': {'name[364 chars]er."}</p><p style="color:maroon;">Traceback (most recent call last):
+  File "/home/jbthepenguin/Documents/MyDiscordBotPython/env/lib/python3.7/site-packages/aiounittest/helpers.py", line 138, in wrapper
+    return loop.run_until_complete(future)
+  File "/usr/lib/python3.7/asyncio/base_events.py", line 579, in run_until_complete
+    return future.result()
+  File "/home/jbthepenguin/Documents/MyDiscordBotPython/my_bot/info/test/t_components.py", line 77, in test_member_id_no_exist
+    self.cog.member, '12', RESULTS['id'], False)
+  File "/home/jbthepenguin/Documents/MyDiscordBotPython/my_bot/info/test/t_components.py", line 62, in assert_send_method
+    self.assertEqual(args[0], result)
+AssertionError: 'Member with id 12 not founded.' != {'title': 'Jean-Pierre', 'author': {'name[364 chars]er."}
+</p>
+                            </td>
+                        </tr>
+                        <tr class='warning'>
                             <td class="col-10">test_member_name_exist</td>
                             <td class="col-1">
-                                <span class="label label-success" style="display:block;width:40px;">Pass</span>
+                                <span class="label label-warning" style="display:block;width:40px;">Error</span>
                             </td>
                             <td class="col-1">
+                                <button class="btn btn-default btn-xs">View</button>
+                            </td>
+                        </tr>
+                        <tr style="display:none;">
+                            <td class="col-9" colspan="3"><p style="color:maroon;">KeyError: 'embed'</p><p style="color:maroon;">Traceback (most recent call last):
+  File "/home/jbthepenguin/Documents/MyDiscordBotPython/env/lib/python3.7/site-packages/aiounittest/helpers.py", line 138, in wrapper
+    return loop.run_until_complete(future)
+  File "/usr/lib/python3.7/asyncio/base_events.py", line 579, in run_until_complete
+    return future.result()
+  File "/home/jbthepenguin/Documents/MyDiscordBotPython/my_bot/info/test/t_components.py", line 72, in test_member_name_exist
+    self.cog.member, 'Je', RESULTS['name'], True)
+  File "/home/jbthepenguin/Documents/MyDiscordBotPython/my_bot/info/test/t_components.py", line 60, in assert_send_method
+    kwargs['embed'].to_dict(), result)
+KeyError: 'embed'
+</p>
                             </td>
                         </tr>
                         <tr class='success'>
@@ -62,7 +96,7 @@
                         </tr>
                         <tr>
                             <td colspan="3">
-                                Total: 4, Pass: 4 -- Duration: 5 ms
+                                Total: 4, Pass: 2, Fail: 1, Error: 1 -- Duration: 8 ms
                             </td>
                         </tr>
                     </tbody>

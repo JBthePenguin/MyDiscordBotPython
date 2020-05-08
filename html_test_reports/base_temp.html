@@ -5,16 +5,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 </head>
 <body>
     <div class="container">
-        <div class="row bg-dark text-light align-items-center mt-2">
-            <div class="col-12 text-center">
-                <h1 class="font-weight-light">{{ report_title }}</h1>
-                <p class='attribute'><strong>Start Time: </strong>{{ header_info.start_time.strftime("%Y-%m-%d %H:%M:%S") }}</p>
-                <p class='attribute'><strong>Duration: </strong>{{ header_info.status.duration }}</p>
-                <p class='attribute'><strong>Total:</strong> {{ header_info.status.total }}</p>
-                <p class='attribute'><strong><strong>Pass:</strong> {{ header_info.status.success }} <strong>Fail:</strong> {{ header_info.status.failure }} <strong>Error:</strong> {{ header_info.status.error }}<strong>Skip:</strong> {{ header_info.status.skip }}</p>
+        <div class="row align-items-center mt-2 pt-2">
+            <div class="card col-12 bg-dark text-light text-center">
+                <div class="card-header">
+                    <h3 class="card-title">{{ report_title }}</h3>
+                    <h5 class="card-subtitle text-white-50 mb-2"><i class="fa fa-clock-o"></i> <strong>Start Time:</strong> {{ header_info.start_time.strftime("%Y-%m-%d %H:%M:%S") }}</h5>
+                    <h5 class="card-subtitle text-white-50 mt-2"><i class="fa fa-hourglass-half"></i><strong> Duration: </strong>{{ header_info.status.duration }}</h5>
+                </div>
+                <div class="card-body">
+                    <h4><span class="badge badge-pill badge-light"><strong>Total</strong> {{ header_info.status.total }}</span> <span class="badge badge-pill badge-success"><strong>Pass</strong> {{ header_info.status.success }}</span> <span class="badge badge-pill badge-warning"><strong>Fail</strong> {{ header_info.status.failure }}</span> <span class="badge badge-pill badge-danger"><strong>Error</strong> {{ header_info.status.error }}</span> <span class="badge badge-pill badge-info"><strong>Skip</strong> {{ header_info.status.skip }}</span></h4>
+                </div>
             </div>
         </div>
         {%- for test_case_name, tests_results in all_results.items() %}
