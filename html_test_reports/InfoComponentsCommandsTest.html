@@ -13,8 +13,8 @@
             <div class="card col-12 bg-dark text-light text-center">
                 <div class="card-header">
                     <h3 class="card-title">MyDiscordBotPython Unittest Results</h3>
-                    <h5 class="card-subtitle text-white-50 mb-2"><i class="fa fa-clock-o"></i> <strong>Start Time:</strong> 2020-05-08 17:24:19</h5>
-                    <h5 class="card-subtitle text-white-50 mt-2"><i class="fa fa-hourglass-half"></i> <strong>Duration:</strong> 8 ms</h5>
+                    <h5 class="card-subtitle text-white-50 mb-2"><i class="fa fa-clock-o"></i> <strong>Start Time:</strong> 2020-05-08 19:05:37</h5>
+                    <h5 class="card-subtitle text-white-50 mt-2"><i class="fa fa-hourglass-half"></i> <strong>Duration:</strong> 5 ms</h5>
                 </div>
                 <div class="card-body">
                     <h4>
@@ -49,6 +49,7 @@
                     <tbody>
                     
                     
+                    
                     <tr>
                         <td class="pl-2"  style="vertical-align: middle;">test_member_id_exist</td>
                         <td style="vertical-align: middle;">
@@ -57,7 +58,15 @@
                         
                         </td>
                         <td style="vertical-align: middle;">
-                        
+                        <button data-toggle="collapse" data-target="#test_member_id_exist" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye text-white m-0"></i></button>
+                        </td>
+                    </tr>
+                    <tr id="test_member_id_exist" class="collapse bg-secondary" >
+                        <td colspan="3" class="pl-2">
+                            <small class="text-dark"><p><i class="fa fa-hourglass-half"></i> 1.64 ms</p></small>
+                            
+                            
+                            </small>
                         </td>
                     </tr>
                     
@@ -73,13 +82,17 @@
                         
                         </td>
                         <td style="vertical-align: middle;">
-                        
-                        <button type="button" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye text-white m-0"></i></button>
+                        <button data-toggle="collapse" data-target="#test_member_id_no_exist" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye text-white m-0"></i></button>
                         </td>
                     </tr>
-                    
-                    <tr style="display:none;">
-                        <td class="col-9" colspan="3"><p style="color:maroon;">AssertionError: 'Member with id 12 not founded.' != {'title': 'Jean-Pierre', 'author': {'name[364 chars]er."}</p><p style="color:maroon;">Traceback (most recent call last):
+                    <tr id="test_member_id_no_exist" class="collapse bg-secondary" >
+                        <td colspan="3" class="pl-2">
+                            <small class="text-dark"><p><i class="fa fa-hourglass-half"></i> 1.99 ms</p></small>
+                            
+                            
+                            
+                            <p style="color:maroon;">AssertionError: 'Member with id 12 not founded.' != {'title': 'Jean-Pierre', 'author': {'name[364 chars]er."}</p>
+                            <small><p style="color:maroon;">Traceback (most recent call last):
   File "/home/jbthepenguin/Documents/MyDiscordBotPython/env/lib/python3.7/site-packages/aiounittest/helpers.py", line 138, in wrapper
     return loop.run_until_complete(future)
   File "/usr/lib/python3.7/asyncio/base_events.py", line 579, in run_until_complete
@@ -90,6 +103,9 @@
     self.assertEqual(args[0], result)
 AssertionError: 'Member with id 12 not founded.' != {'title': 'Jean-Pierre', 'author': {'name[364 chars]er."}
 </p>
+                            
+                            
+                            </small>
                         </td>
                     </tr>
                     
@@ -105,13 +121,17 @@ AssertionError: 'Member with id 12 not founded.' != {'title': 'Jean-Pierre', 'au
                         
                         </td>
                         <td style="vertical-align: middle;">
-                        
-                        <button type="button" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye text-white m-0"></i></button>
+                        <button data-toggle="collapse" data-target="#test_member_name_exist" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye text-white m-0"></i></button>
                         </td>
                     </tr>
-                    
-                    <tr style="display:none;">
-                        <td class="col-9" colspan="3"><p style="color:maroon;">KeyError: 'embed'</p><p style="color:maroon;">Traceback (most recent call last):
+                    <tr id="test_member_name_exist" class="collapse bg-secondary" >
+                        <td colspan="3" class="pl-2">
+                            <small class="text-dark"><p><i class="fa fa-hourglass-half"></i> 1.25 ms</p></small>
+                            
+                            
+                            
+                            <p style="color:maroon;">KeyError: 'embed'</p>
+                            <small><p style="color:maroon;">Traceback (most recent call last):
   File "/home/jbthepenguin/Documents/MyDiscordBotPython/env/lib/python3.7/site-packages/aiounittest/helpers.py", line 138, in wrapper
     return loop.run_until_complete(future)
   File "/usr/lib/python3.7/asyncio/base_events.py", line 579, in run_until_complete
@@ -122,6 +142,9 @@ AssertionError: 'Member with id 12 not founded.' != {'title': 'Jean-Pierre', 'au
     kwargs['embed'].to_dict(), result)
 KeyError: 'embed'
 </p>
+                            
+                            
+                            </small>
                         </td>
                     </tr>
                     
@@ -137,10 +160,17 @@ KeyError: 'embed'
                         
                         </td>
                         <td style="vertical-align: middle;">
-                        
+                        <button data-toggle="collapse" data-target="#test_member_name_no_exist" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye text-white m-0"></i></button>
                         </td>
                     </tr>
-                    
+                    <tr id="test_member_name_no_exist" class="collapse bg-secondary" >
+                        <td colspan="3" class="pl-2">
+                            <small class="text-dark"><p><i class="fa fa-hourglass-half"></i> 0.87 ms</p></small>
+                            
+                            
+                            </small>
+                        </td>
+                    </tr>
                     
                     
                     
@@ -164,23 +194,5 @@ KeyError: 'embed'
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('td').on('click', '.btn', function(e){
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                var $this = $(this);
-                var $nextRow = $this.closest('tr').next('tr');
-                $nextRow.slideToggle("fast");
-                $this.text(function(i, text){
-                    if (text === 'View') {
-                        return 'Hide';
-                    } else {
-                        return 'View';
-                    };
-                });
-            });
-        });
-    </script>
 </body>
 </html>
