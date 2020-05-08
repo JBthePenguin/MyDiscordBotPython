@@ -49,8 +49,9 @@
                     <tbody>
                     {% for test_case in tests_results %}
                     {% if not test_case.subtests is defined %}
+                    {% with test_name = test_case.test_id.split(".")[-1] %}
                     <tr>
-                        <td class="pl-2"  style="vertical-align: middle;">{{ test_case.test_id.split(".")[-1] }}</td>
+                        <td class="pl-2"  style="vertical-align: middle;">{{ test_name }}</td>
                         <td style="vertical-align: middle;">
                         {% if test_case.outcome == test_case.SUCCESS%}
                         <h6 class="m-0"><span class="badge badge-success"><i class="fa fa-thumbs-o-up"></i> <strong>Pass</strong></span></h6>
@@ -63,28 +64,27 @@
                         {% endif %}
                         </td>
                         <td style="vertical-align: middle;">
-                        {% if (test_case.stdout or test_case.err) %}
-                        <button type="button" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye text-white m-0"></i></button>
-                        {%- endif %}
+                        <button data-toggle="collapse" data-target="#{{ test_name }}" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye text-white m-0"></i></button>
                         </td>
                     </tr>
-                    {% if (test_case.stdout or test_case.err or test_case.err) and test_case.outcome != test_case.SKIP %}
-                    <tr style="display:none;">
-                        <td class="col-9" colspan="3">
-                        {%- if test_case.stdout %}<p>{{ test_case.stdout }}</p>{% endif %}
-                        {%- if test_case.err %}<p style="color:maroon;">{{ test_case.err[0].__name__ }}: {{ test_case.err[1] }}</p>{% endif %}
-                        {%- if test_case.err %}<p style="color:maroon;">{{ test_case.test_exception_info }}</p>{% endif %}
+                    <tr id="{{ test_name }}" class="collapse bg-secondary" >
+                        <td colspan="3" class="pl-2">
+                            <small class="text-dark"><p><i class="fa fa-hourglass-half"></i> {{ (test_case.elapsed_time * 1000)|round(2) }} ms</p></small>
+                            {% if test_case.stdout %}
+                            <p>{{ test_case.stdout }}</p>
+                            {% endif %}
+                            {% if test_case.err %}
+                            {% if  test_case.outcome == test_case.SKIP %}
+                            <p style="color:maroon;">{{ test_case.err }}</p>
+                            {% else %}
+                            <p style="color:maroon;">{{ test_case.err[0].__name__ }}: {{ test_case.err[1] }}</p>
+                            <small><p style="color:maroon;">{{ test_case.test_exception_info }}</p>
+                            {% endif %}
+                            {% endif %}
+                            </small>
                         </td>
                     </tr>
-                    {% endif %}
-                    {% if (test_case.stdout or test_case.err or test_case.err) and test_case.outcome == test_case.SKIP %}
-                    <tr style="display:none;">
-                        <td class="col-9" colspan="3">
-                        {% if test_case.stdout %}<p>{{ test_case.stdout }}</p>{% endif %}
-                        {% if test_case.err %}<p style="color:maroon;">{{ test_case.err }}</p>{% endif %}
-                        </td>
-                    </tr>
-                    {% endif %}
+                    {% endwith %}
                     {% endif %}
                     {% endfor %}
                     </tbody>
@@ -109,23 +109,5 @@
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('td').on('click', '.btn', function(e){
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                var $this = $(this);
-                var $nextRow = $this.closest('tr').next('tr');
-                $nextRow.slideToggle("fast");
-                $this.text(function(i, text){
-                    if (text === 'View') {
-                        return 'Hide';
-                    } else {
-                        return 'View';
-                    };
-                });
-            });
-        });
-    </script>
 </body>
 </html>
