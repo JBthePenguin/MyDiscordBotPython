@@ -48,21 +48,19 @@ You need to [create a Discord Bot account to get a token](https://discordpy.read
 [![Build Status](https://travis-ci.com/JBthePenguin/MyDiscordBotPython.svg?branch=master)](https://travis-ci.com/github/JBthePenguin/MyDiscordBotPython)
 -   All tests
 ```shell
-(env)$ python -m unittest -v
-# or
-(env)$ python run_test.py -v
+(env)$ python run_test.py
 ```
 -   Test for a specific module (ex: info)
 ```shell
-(env)$ python -m unittest -v my_bot.info.test
+(env)$ python run_test.py --info
 ```
 -   Test for a specific TestCase (ex: InfoGuildCommandsTest)
 ```shell
-(env)$ python -m unittest -v my_bot.info.test.InfoGuildCommandsTest
+(env)$ python run_test.py --InfoGuildCommandsTest
 ```
--   Only one specific test (ex: test_members)
+-   Only specific tests (ex: test_members, test_roles)
 ```shell
-(env)$ python -m unittest -v my_bot.info.test.InfoGuildCommandsTest.test_members
+(env)$ python run_test.py --InfoGuildCommandsTest test_members test_roles
 ```
 
 ### Screenshots
