@@ -164,26 +164,28 @@ class MyTestRunner(HTMLTestRunner):
             self.stream.writeln()
             self.stream.writeln("Running tests... ")
             self.stream.writeln(result.separator2)
-
-            self.start_time = datetime.now()
+            t_names = []
             for test_case in test._tests:
                 if test_case._tests:
                     t_name = str(test_case._tests[0]).split(" ")
                     t_name = t_name[-1].split('.')[-1][:-1]
-                    self.stream.writeln(t_name)
-                    self.stream.writeln(self.my_sep)
+                    t_names.append(t_name)
+            i = 0
+            self.start_time = datetime.now()
+            for test_case in test._tests:
+                if test_case._tests:
+                    self.stream.writeln(f"\n{t_names[i]}\n")
                     test_case(result)
-                    self.stream.writeln(self.my_sep)
-                    self.stream.writeln(self.my_sep)
-                    self.stream.writeln(result.separator2)
+                    self.stream.writeln(f"\n{result.separator2}")
             stop_time = datetime.now()
             self.time_taken = stop_time - self.start_time
-            print(self.time_taken)
+            # print(round(self.time_taken.total_seconds() * 1000, 3))
             result.printErrors()
             self.stream.writeln(result.separator2)
             run = result.testsRun
-            self.stream.writeln("Ran {} test{} in {}".format(run,
-                                run != 1 and "s" or "", str(self.time_taken)[:7]))
+            self.stream.writeln("Ran {} test{} in {} ms".format(
+                run, run != 1 and "s" or "",
+                str(round(self.time_taken.total_seconds() * 1000, 3))))
             self.stream.writeln()
 
             expectedFails = len(result.expectedFailures)
@@ -216,6 +218,7 @@ class MyTestRunner(HTMLTestRunner):
             self.stream.writeln()
             self.stream.writeln('Generating HTML reports... ')
             result.generate_reports(self)
+            self.stream.writeln()
             if self.open_in_browser:
                 import webbrowser
                 for report in result.report_files:
