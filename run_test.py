@@ -100,9 +100,10 @@ class TestArgumentParser(ArgumentParser):
 class MyTestRunner(HTMLTestRunner):
     """Override HTMLTestRunner..."""
 
-    def __init__(self, report_name):
+    def __init__(self, report_name, tests_docs):
         template_args = {
-            "report_title": "MyDiscordBotPython Unittest Results"
+            "report_title": "MyDiscordBotPython Unittest Results",
+            'tests_docs': tests_docs
         }
         super().__init__(
             output='html_test_reports', combine_reports=True,
@@ -111,23 +112,36 @@ class MyTestRunner(HTMLTestRunner):
             template_args=template_args)
 
 
-def get_suite(tests, options=None):
-    """Return the corresponding tests suite"""
+def get_suite_docs(tests, options=None):
+    """Return the corresponding tests suite and a dict with all tests's docs."""
     suite_list = []
+    all_docs = {}
     if options is None:
         for test_case in tests:
-            suite_list.append(
-                TestLoader().loadTestsFromTestCase(test_case))
+            tests_suite = TestLoader().loadTestsFromTestCase(test_case)
+            suite_list.append(tests_suite)
+            tests_docs = {}
+            for test_method in tests_suite._tests:
+                tests_docs[
+                    test_method._testMethodName] = test_method._testMethodDoc
+            all_docs[test_case.__name__] = tests_docs
     else:
         test_case = tests[0]
+        tests_docs = {}
         for option in options:
-            suite_list.append(test_case(option))
-    return TestSuite(suite_list)
+            test_method = test_case(option)
+            suite_list.append(test_method)
+            tests_docs[
+                test_method._testMethodName] = test_method._testMethodDoc
+        all_docs[test_case.__name__] = tests_docs
+    suite = TestSuite(suite_list)
+    return suite, all_docs
 
 
 if __name__ == "__main__":
     if len(argv) == 1:  # no argument passed
-        MyTestRunner('full_test').run(get_suite(ALL_TESTS))
+        suite, all_docs = get_suite_docs(ALL_TESTS)
+        MyTestRunner('full_test', all_docs).run(suite)
     else:  # parse args
         groups = [('info', INFO_TESTS), ('event', EVENT_TESTS)]
         parser = TestArgumentParser(groups)
@@ -136,14 +150,15 @@ if __name__ == "__main__":
         args_dict = vars(args)
         for name_tests in groups:
             if args_dict[name_tests[0]]:  # all group test
-                MyTestRunner(f"{name_tests[0]}_test").run(
-                    get_suite(name_tests[1]))
+                suite, all_docs = get_suite_docs(name_tests[1])
+                MyTestRunner(f"{name_tests[0]}_test", all_docs).run(suite)
         for test_case in ALL_TESTS:
             test_name = test_case.__name__
             options = args_dict[test_name]
             if isinstance(options, list):
                 if not options:  # all test case tests
-                    MyTestRunner(test_name).run(get_suite([test_case]))
+                    suite, all_docs = get_suite_docs([test_case])
+                    MyTestRunner(test_name, all_docs).run(suite)
                 else:  # tests case methods
-                    MyTestRunner(f"{test_name}_methods").run(
-                        get_suite([test_case], options))
+                    suite, all_docs = get_suite_docs([test_case], options)
+                    MyTestRunner(f"{test_name}_methods", all_docs).run(suite)

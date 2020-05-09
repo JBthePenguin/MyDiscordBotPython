@@ -5,67 +5,119 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 </head>
 <body>
     <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h2 class="text-capitalize">MyDiscordBotPython Unittest Results</h2>
-                <p class='attribute'><strong>Start Time: </strong>2020-05-08 10:01:58</p>
-                <p class='attribute'><strong>Duration: </strong>0 ms</p>
-                <p class='attribute'><strong>Total:</strong> 1</p>
-                <p class='attribute'><strong><strong>Pass:</strong> 1 <strong>Fail:</strong> 0 <strong>Error:</strong> 0<strong>Skip:</strong> 0</p>
+        <!-- Header -->
+        <div class="row bg-dark mt-2 pt-2">
+            <div class="card col-12 bg-dark text-light text-center">
+                <div class="card-header">
+                    <h3 class="card-title">MyDiscordBotPython Unittest Results</h3>
+                    <h5 class="card-subtitle text-white-50 mb-2">
+                        <ul class="list-inline">
+                            <li class="list-inline-item"><i class="fa fa-clock-o"></i> 2020-05-09 10:55:34</li>
+                            <li class="list-inline-item"><i class="fa fa-hourglass-half"></i> 0 ms</li>
+                        </ul>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <h4>
+                      <ul class="list-inline">
+                          <li class="list-inline-item"><span class="badge badge-light"><strong>Total</strong> <span class="badge badge-pill badge-dark">1</span></span></li>
+                          <li class="list-inline-item"><span class="badge badge-success"><i class="fa fa-thumbs-o-up"></i> <strong>Pass</strong> <span class="badge badge-pill badge-dark">1</span></span></li>
+                          <li class="list-inline-item"><span class="badge badge-warning"><i class="fa fa-thumbs-o-down"></i> <strong>Fail</strong> <span class="badge badge-pill badge-dark">0</span></span></li>
+                          <li class="list-inline-item"><span class="badge badge-danger"><i class="fa fa-times-circle"></i> <strong>Error</strong> <span class="badge badge-pill badge-dark">0</span></span></li>
+                          <li class="list-inline-item"><span class="badge badge-info"><i class="fa fa-cut"></i> <strong>Skip</strong> <span class="badge badge-pill badge-dark">0</span></span></li>
+                      </ul>
+                    </h4>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-12 col-sm-10 col-md-10">
-                <table class='table table-hover table-responsive'>
+        <!-- Tests Cases -->
+        <div class="row bg-secondary pt-2 pb-2">
+        
+        
+        <!-- Test case -->
+        
+        <div class="col-12 col-md-10 card bg-light mx-auto m-2">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                  <ul class="list-inline mb-1">
+                      <li class="list-inline-item">CheckParameterTest</li>
+                      <li class="list-inline-item"><small><i class="fa fa-file-code-o text-black-50"></i> my_bot/info/test/t_components.py</small></li>
+                  </ul>
+                </h5>
+                <h6 class="card-subtitle text-black-50 mt-0"><i class="fa fa-hourglass-half"></i> 0 ms</h6>
+            </div>
+            <div class="card-body table-responsive pt-0 pb-0">
+                <table class='table table-sm table-dark table-hover mb-0'>
                     <thead>
                         <tr>
-                            <th>my_bot.info.test.t_components.CheckParameterTest</th>
-                            <th>Status</th>
+                            <th class="pl-2"><i class="fa fa-flask"></i> Tests</th>
+                            <th class="text-center"><i class="fa fa-clipboard"></i> Status</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class='success'>
-                            <td class="col-10">test_exist_name</td>
-                            <td class="col-1">
-                                <span class="label label-success" style="display:block;width:40px;">Pass</span>
-                            </td>
-                            <td class="col-1">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">
-                                Total: 1, Pass: 1 -- Duration: 0 ms
-                            </td>
-                        </tr>
+                    <!-- Tests -->
+                    
+                    
+                    
+                    <!-- Test -->
+                    <tr>
+                        <td class="pl-2"  style="vertical-align: middle;"><i>test_exist_name</i></td>
+                        <td class="text-center" style="vertical-align: middle;">
+                        
+                        <h6 class="m-0"><span class="badge badge-success"><i class="fa fa-thumbs-o-up"></i></span></h6>
+                        
+                        </td>
+                        <td style="vertical-align: middle;">
+                        <button data-toggle="collapse" data-target=".CheckParameterTesttest_exist_name" class="btn btn-dark show CheckParameterTesttest_exist_name collapse pb-0 pt-0"><i class="fa fa-eye text-white m-0"></i></button>
+                        </td>
+                    </tr>
+                    <!-- hidden infos -->
+                    <tr class="collapse bg-secondary CheckParameterTesttest_exist_name">
+                        <td colspan="2" class="pl-2" style="vertical-align: middle;">
+                            <small class="text-dark"><p><i class="fa fa-hourglass-half"></i> 0.24 ms</p></small>
+                            Assert if check_parameter return the good obj.
+                        </td>
+                        <td style="vertical-align: middle;">
+                            <button data-toggle="collapse" data-target=".CheckParameterTesttest_exist_name" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye-slash text-white m-0"></i></button>
+                        </td>
+                    </tr>
+                    <!-- Error -->
+                    <tr class="collapse bg-secondary CheckParameterTesttest_exist_name" >
+                        <td colspan="3" class="pl-2">
+                            
+                            
+                            </small>
+                        </td>
+                    </tr>
+                    
+                    
+                    
                     </tbody>
+                    <!-- summaries -->
+                    <caption class="pb-0">
+                      <h5 class="mb-0">
+                        <ul class="list-inline">
+                            <li class="list-inline-item"><span class="badge badge-dark"><strong>Total</strong> <span class="badge badge-pill badge-light">1</span></span></li>
+                            <li class="list-inline-item"><span class="badge badge-success"><i class="fa fa-thumbs-o-up"></i> <strong>Pass</strong> <span class="badge badge-pill badge-dark">1</span></span></li>
+                            <li class="list-inline-item"><span class="badge badge-warning"><i class="fa fa-thumbs-o-down"></i> <strong>Fail</strong> <span class="badge badge-pill badge-dark">0</span></span></li>
+                            <li class="list-inline-item"><span class="badge badge-danger"><i class="fa fa-times-circle"></i> <strong>Error</strong> <span class="badge badge-pill badge-dark">0</span></span></li>
+                            <li class="list-inline-item"><span class="badge badge-info"><i class="fa fa-cut"></i> <strong>Skip</strong> <span class="badge badge-pill badge-dark">0</span></span></li>
+                        </ul>
+                      </h5>
+                    </caption>
                 </table>
             </div>
+        </div>
+        
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('td').on('click', '.btn', function(e){
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                var $this = $(this);
-                var $nextRow = $this.closest('tr').next('tr');
-                $nextRow.slideToggle("fast");
-                $this.text(function(i, text){
-                    if (text === 'View') {
-                        return 'Hide';
-                    } else {
-                        return 'View';
-                    };
-                });
-            });
-        });
-    </script>
 </body>
 </html>

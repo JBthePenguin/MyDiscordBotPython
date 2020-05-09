@@ -39,11 +39,12 @@
         {% for test_case_name, tests_results in all_results.items() %}
         {% if tests_results %}
         <!-- Test case -->
+        {% with short_test_case_name = test_case_name.split('.')[-1] %}
         <div class="col-12 col-md-10 card bg-light mx-auto m-2">
             <div class="card-header">
                 <h5 class="card-title mb-0">
                   <ul class="list-inline mb-1">
-                      <li class="list-inline-item">{{ test_case_name.split('.')[-1] }}</li>
+                      <li class="list-inline-item">{{ short_test_case_name }}</li>
                       <li class="list-inline-item"><small><i class="fa fa-file-code-o text-black-50"></i> {{ '/'.join(test_case_name.split('.')[:-1]) + '.py' }}</small></li>
                   </ul>
                 </h5>
@@ -78,20 +79,21 @@
                         {% endif %}
                         </td>
                         <td style="vertical-align: middle;">
-                        <button data-toggle="collapse" data-target=".{{ test_name }}" class="btn btn-dark show {{ test_name }} collapse pb-0 pt-0"><i class="fa fa-eye text-white m-0"></i></button>
+                        <button data-toggle="collapse" data-target=".{{ short_test_case_name }}{{ test_name }}" class="btn btn-dark show {{ short_test_case_name }}{{ test_name }} collapse pb-0 pt-0"><i class="fa fa-eye text-white m-0"></i></button>
                         </td>
                     </tr>
                     <!-- hidden infos -->
-                    <tr class="collapse bg-secondary {{ test_name }}">
+                    <tr class="collapse bg-secondary {{ short_test_case_name }}{{ test_name }}">
                         <td colspan="2" class="pl-2" style="vertical-align: middle;">
                             <small class="text-dark"><p><i class="fa fa-hourglass-half"></i> {{ (test_case.elapsed_time * 1000)|round(2) }} ms</p></small>
+                            {{ tests_docs[short_test_case_name][test_name] }}
                         </td>
                         <td style="vertical-align: middle;">
-                            <button data-toggle="collapse" data-target=".{{ test_name }}" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye-slash text-white m-0"></i></button>
+                            <button data-toggle="collapse" data-target=".{{ short_test_case_name }}{{ test_name }}" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye-slash text-white m-0"></i></button>
                         </td>
                     </tr>
                     <!-- Error -->
-                    <tr class="collapse bg-secondary {{ test_name }}" >
+                    <tr class="collapse bg-secondary {{ short_test_case_name }}{{ test_name }}" >
                         <td colspan="3" class="pl-2">
                             {% if test_case.stdout %}
                             <p>{{ test_case.stdout }}</p>
@@ -126,6 +128,7 @@
                 </table>
             </div>
         </div>
+        {% endwith %}
         {%- endif %}
         {%- endfor %}
         </div>
