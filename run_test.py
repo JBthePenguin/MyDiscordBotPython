@@ -1,7 +1,8 @@
 from HtmlTestRunner import HTMLTestRunner
+from HtmlTestRunner.result import HtmlTestResult
 from unittest import TestSuite, TestLoader
 from my_bot.info.test import INFO_TESTS
-from sys import argv
+import sys
 from argparse import (
     ArgumentParser, HelpFormatter, SUPPRESS, OPTIONAL, ZERO_OR_MORE,
     ONE_OR_MORE, REMAINDER, PARSER)
@@ -97,6 +98,41 @@ class TestArgumentParser(ArgumentParser):
                         "Allowed values are: ", " - ".join(methods_names)]))
 
 
+class MyHtmlTestResult(HtmlTestResult):
+    def __init__(self, stream, descriptions, verbosity):
+        super().__init__(stream, descriptions, verbosity)
+
+    def getDescription(self, test):
+        """ Return the test description if not have test name. """
+        return test._testMethodName
+
+
+    def _prepare_callback(self, test_info, target_list, verbose_str,
+                          short_str):
+        """ Appends a 'info class' to the given target list and sets a
+            callback method to be called by stopTest method."""
+        target_list.append(test_info)
+
+        def callback():
+            """ Print test method outcome to the stream and elapsed time too."""
+            test_info.test_finished()
+
+            if self.showAll:
+                self.stream.writeln(
+                    f"{verbose_str} {str(round(test_info.elapsed_time * 1000, 3))}ms")
+            elif self.dots:
+                self.stream.write(short_str)
+
+        self.callback = callback
+
+
+    def addSuccess(self, test):
+        """ Called when a test executes successfully. """
+        self._save_output_data()
+        # print(self)
+        self._prepare_callback(self.infoclass(self, test), self.successes, "OK", ".")
+
+
 class MyTestRunner(HTMLTestRunner):
     """Override HTMLTestRunner..."""
 
@@ -108,6 +144,7 @@ class MyTestRunner(HTMLTestRunner):
         super().__init__(
             output='html_test_reports', combine_reports=True,
             report_name=report_name, add_timestamp=False,
+            resultclass=MyHtmlTestResult,
             template='html_test_reports/base_temp.html',
             template_args=template_args)
 
@@ -139,7 +176,7 @@ def get_suite_docs(tests, options=None):
 
 
 if __name__ == "__main__":
-    if len(argv) == 1:  # no argument passed
+    if len(sys.argv) == 1:  # no argument passed
         suite, all_docs = get_suite_docs(ALL_TESTS)
         MyTestRunner('full_test', all_docs).run(suite)
     else:  # parse args
