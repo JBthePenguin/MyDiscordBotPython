@@ -9,12 +9,17 @@
 </head>
 <body>
     <div class="container">
+        <!-- Header -->
         <div class="row bg-dark mt-2 pt-2">
             <div class="card col-12 bg-dark text-light text-center">
                 <div class="card-header">
                     <h3 class="card-title">{{ report_title }}</h3>
-                    <h5 class="card-subtitle text-white-50 mb-2"><i class="fa fa-clock-o"></i> <strong>Start Time:</strong> {{ header_info.start_time.strftime("%Y-%m-%d %H:%M:%S") }}</h5>
-                    <h5 class="card-subtitle text-white-50 mt-2"><i class="fa fa-hourglass-half"></i> <strong>Duration:</strong> {{ header_info.status.duration }}</h5>
+                    <h5 class="card-subtitle text-white-50 mb-2">
+                        <ul class="list-inline">
+                            <li class="list-inline-item"><i class="fa fa-clock-o"></i> {{ header_info.start_time.strftime("%Y-%m-%d %H:%M:%S") }}</li>
+                            <li class="list-inline-item"><i class="fa fa-hourglass-half"></i> {{ header_info.status.duration }}</li>
+                        </ul>
+                    </h5>
                 </div>
                 <div class="card-body">
                     <h4>
@@ -29,47 +34,65 @@
                 </div>
             </div>
         </div>
+        <!-- Tests Cases -->
         <div class="row bg-secondary pt-2 pb-2">
         {% for test_case_name, tests_results in all_results.items() %}
         {% if tests_results %}
+        <!-- Test case -->
         <div class="col-12 col-md-10 card bg-light mx-auto m-2">
             <div class="card-header">
-                <h5 class="card-title">{{ test_case_name.split('.')[-1] }}</h5>
-                <h6 class="card-subtitle text-black-50 mt-2"><i class="fa fa-file-code-o"></i> {{ '/'.join(test_case_name.split('.')[:-1]) + '.py' }}</h6>
+                <h5 class="card-title mb-0">
+                  <ul class="list-inline mb-1">
+                      <li class="list-inline-item">{{ test_case_name.split('.')[-1] }}</li>
+                      <li class="list-inline-item"><small><i class="fa fa-file-code-o text-black-50"></i> {{ '/'.join(test_case_name.split('.')[:-1]) + '.py' }}</small></li>
+                  </ul>
+                </h5>
+                <h6 class="card-subtitle text-black-50 mt-0"><i class="fa fa-hourglass-half"></i> {{ summaries[test_case_name].duration }}</h6>
             </div>
             <div class="card-body table-responsive pt-0 pb-0">
                 <table class='table table-sm table-dark table-hover mb-0'>
                     <thead>
                         <tr>
                             <th class="pl-2"><i class="fa fa-flask"></i> Tests</th>
-                            <th><i class="fa fa-clipboard"></i> Status</th>
+                            <th class="text-center"><i class="fa fa-clipboard"></i> Status</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
+                    <!-- Tests -->
                     {% for test_case in tests_results %}
                     {% if not test_case.subtests is defined %}
                     {% with test_name = test_case.test_id.split(".")[-1] %}
+                    <!-- Test -->
                     <tr>
-                        <td class="pl-2"  style="vertical-align: middle;">{{ test_name }}</td>
-                        <td style="vertical-align: middle;">
+                        <td class="pl-2"  style="vertical-align: middle;"><i>{{ test_name }}</i></td>
+                        <td class="text-center" style="vertical-align: middle;">
                         {% if test_case.outcome == test_case.SUCCESS%}
-                        <h6 class="m-0"><span class="badge badge-success"><i class="fa fa-thumbs-o-up"></i> <strong>Pass</strong></span></h6>
+                        <h6 class="m-0"><span class="badge badge-success"><i class="fa fa-thumbs-o-up"></i></span></h6>
                         {% elif test_case.outcome == test_case.SKIP %}
-                        <h6 class="m-0"><span class="badge badge-info"><i class="fa fa-cut"></i> <strong>Skip</strong></span></h6>
+                        <h6 class="m-0"><span class="badge badge-info"><i class="fa fa-cut"></i></span></h6>
                         {% elif test_case.outcome == test_case.FAILURE %}
-                        <h6 class="m-0"><span class="badge badge-warning"><i class="fa fa-thumbs-o-down"></i> <strong>Fail</strong></span></h6>
+                        <h6 class="m-0"><span class="badge badge-warning"><i class="fa fa-thumbs-o-down"></i></span></h6>
                         {% else %}
-                        <h6 class="m-0"><span class="badge badge-danger"><i class="fa fa-times-circle"></i> <strong>Error</strong></span></h6>
+                        <h6 class="m-0"><span class="badge badge-danger"><i class="fa fa-times-circle"></i></span></h6>
                         {% endif %}
                         </td>
                         <td style="vertical-align: middle;">
-                        <button data-toggle="collapse" data-target="#{{ test_name }}" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye text-white m-0"></i></button>
+                        <button data-toggle="collapse" data-target=".{{ test_name }}" class="btn btn-dark show {{ test_name }} collapse pb-0 pt-0"><i class="fa fa-eye text-white m-0"></i></button>
                         </td>
                     </tr>
-                    <tr id="{{ test_name }}" class="collapse bg-secondary" >
-                        <td colspan="3" class="pl-2">
+                    <!-- hidden infos -->
+                    <tr class="collapse bg-secondary {{ test_name }}">
+                        <td colspan="2" class="pl-2" style="vertical-align: middle;">
                             <small class="text-dark"><p><i class="fa fa-hourglass-half"></i> {{ (test_case.elapsed_time * 1000)|round(2) }} ms</p></small>
+                        </td>
+                        <td style="vertical-align: middle;">
+                            <button data-toggle="collapse" data-target=".{{ test_name }}" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye-slash text-white m-0"></i></button>
+                        </td>
+                    </tr>
+                    <!-- Error -->
+                    <tr class="collapse bg-secondary {{ test_name }}" >
+                        <td colspan="3" class="pl-2">
                             {% if test_case.stdout %}
                             <p>{{ test_case.stdout }}</p>
                             {% endif %}
@@ -88,6 +111,7 @@
                     {% endif %}
                     {% endfor %}
                     </tbody>
+                    <!-- summaries -->
                     <caption class="pb-0">
                       <h5 class="mb-0">
                         <ul class="list-inline">

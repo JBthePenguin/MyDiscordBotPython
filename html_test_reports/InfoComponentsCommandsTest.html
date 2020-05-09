@@ -9,12 +9,17 @@
 </head>
 <body>
     <div class="container">
+        <!-- Header -->
         <div class="row bg-dark mt-2 pt-2">
             <div class="card col-12 bg-dark text-light text-center">
                 <div class="card-header">
                     <h3 class="card-title">MyDiscordBotPython Unittest Results</h3>
-                    <h5 class="card-subtitle text-white-50 mb-2"><i class="fa fa-clock-o"></i> <strong>Start Time:</strong> 2020-05-08 19:05:37</h5>
-                    <h5 class="card-subtitle text-white-50 mt-2"><i class="fa fa-hourglass-half"></i> <strong>Duration:</strong> 5 ms</h5>
+                    <h5 class="card-subtitle text-white-50 mb-2">
+                        <ul class="list-inline">
+                            <li class="list-inline-item"><i class="fa fa-clock-o"></i> 2020-05-09 08:56:05</li>
+                            <li class="list-inline-item"><i class="fa fa-hourglass-half"></i> 6 ms</li>
+                        </ul>
+                    </h5>
                 </div>
                 <div class="card-body">
                     <h4>
@@ -29,41 +34,59 @@
                 </div>
             </div>
         </div>
+        <!-- Tests Cases -->
         <div class="row bg-secondary pt-2 pb-2">
         
         
+        <!-- Test case -->
         <div class="col-12 col-md-10 card bg-light mx-auto m-2">
             <div class="card-header">
-                <h5 class="card-title">InfoComponentsCommandsTest</h5>
-                <h6 class="card-subtitle text-black-50 mt-2"><i class="fa fa-file-code-o"></i> my_bot/info/test/t_components.py</h6>
+                <h5 class="card-title mb-0">
+                  <ul class="list-inline mb-1">
+                      <li class="list-inline-item">InfoComponentsCommandsTest</li>
+                      <li class="list-inline-item"><small><i class="fa fa-file-code-o text-black-50"></i> my_bot/info/test/t_components.py</small></li>
+                  </ul>
+                </h5>
+                <h6 class="card-subtitle text-black-50 mt-0"><i class="fa fa-hourglass-half"></i> 6 ms</h6>
             </div>
             <div class="card-body table-responsive pt-0 pb-0">
                 <table class='table table-sm table-dark table-hover mb-0'>
                     <thead>
                         <tr>
                             <th class="pl-2"><i class="fa fa-flask"></i> Tests</th>
-                            <th><i class="fa fa-clipboard"></i> Status</th>
+                            <th class="text-center"><i class="fa fa-clipboard"></i> Status</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
+                    <!-- Tests -->
                     
                     
                     
+                    <!-- Test -->
                     <tr>
-                        <td class="pl-2"  style="vertical-align: middle;">test_member_id_exist</td>
-                        <td style="vertical-align: middle;">
+                        <td class="pl-2"  style="vertical-align: middle;"><i>test_member_id_exist</i></td>
+                        <td class="text-center" style="vertical-align: middle;">
                         
-                        <h6 class="m-0"><span class="badge badge-success"><i class="fa fa-thumbs-o-up"></i> <strong>Pass</strong></span></h6>
+                        <h6 class="m-0"><span class="badge badge-success"><i class="fa fa-thumbs-o-up"></i></span></h6>
                         
                         </td>
                         <td style="vertical-align: middle;">
-                        <button data-toggle="collapse" data-target="#test_member_id_exist" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye text-white m-0"></i></button>
+                        <button data-toggle="collapse" data-target=".test_member_id_exist" class="btn btn-dark show test_member_id_exist collapse pb-0 pt-0"><i class="fa fa-eye text-white m-0"></i></button>
                         </td>
                     </tr>
-                    <tr id="test_member_id_exist" class="collapse bg-secondary" >
+                    <!-- hidden infos -->
+                    <tr class="collapse bg-secondary test_member_id_exist">
+                        <td colspan="2" class="pl-2" style="vertical-align: middle;">
+                            <small class="text-dark"><p><i class="fa fa-hourglass-half"></i> 1.42 ms</p></small>
+                        </td>
+                        <td style="vertical-align: middle;">
+                            <button data-toggle="collapse" data-target=".test_member_id_exist" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye-slash text-white m-0"></i></button>
+                        </td>
+                    </tr>
+                    <!-- Error -->
+                    <tr class="collapse bg-secondary test_member_id_exist" >
                         <td colspan="3" class="pl-2">
-                            <small class="text-dark"><p><i class="fa fa-hourglass-half"></i> 1.64 ms</p></small>
                             
                             
                             </small>
@@ -74,20 +97,30 @@
                     
                     
                     
+                    <!-- Test -->
                     <tr>
-                        <td class="pl-2"  style="vertical-align: middle;">test_member_id_no_exist</td>
-                        <td style="vertical-align: middle;">
+                        <td class="pl-2"  style="vertical-align: middle;"><i>test_member_id_no_exist</i></td>
+                        <td class="text-center" style="vertical-align: middle;">
                         
-                        <h6 class="m-0"><span class="badge badge-warning"><i class="fa fa-thumbs-o-down"></i> <strong>Fail</strong></span></h6>
+                        <h6 class="m-0"><span class="badge badge-warning"><i class="fa fa-thumbs-o-down"></i></span></h6>
                         
                         </td>
                         <td style="vertical-align: middle;">
-                        <button data-toggle="collapse" data-target="#test_member_id_no_exist" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye text-white m-0"></i></button>
+                        <button data-toggle="collapse" data-target=".test_member_id_no_exist" class="btn btn-dark show test_member_id_no_exist collapse pb-0 pt-0"><i class="fa fa-eye text-white m-0"></i></button>
                         </td>
                     </tr>
-                    <tr id="test_member_id_no_exist" class="collapse bg-secondary" >
+                    <!-- hidden infos -->
+                    <tr class="collapse bg-secondary test_member_id_no_exist">
+                        <td colspan="2" class="pl-2" style="vertical-align: middle;">
+                            <small class="text-dark"><p><i class="fa fa-hourglass-half"></i> 2.09 ms</p></small>
+                        </td>
+                        <td style="vertical-align: middle;">
+                            <button data-toggle="collapse" data-target=".test_member_id_no_exist" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye-slash text-white m-0"></i></button>
+                        </td>
+                    </tr>
+                    <!-- Error -->
+                    <tr class="collapse bg-secondary test_member_id_no_exist" >
                         <td colspan="3" class="pl-2">
-                            <small class="text-dark"><p><i class="fa fa-hourglass-half"></i> 1.99 ms</p></small>
                             
                             
                             
@@ -113,20 +146,30 @@ AssertionError: 'Member with id 12 not founded.' != {'title': 'Jean-Pierre', 'au
                     
                     
                     
+                    <!-- Test -->
                     <tr>
-                        <td class="pl-2"  style="vertical-align: middle;">test_member_name_exist</td>
-                        <td style="vertical-align: middle;">
+                        <td class="pl-2"  style="vertical-align: middle;"><i>test_member_name_exist</i></td>
+                        <td class="text-center" style="vertical-align: middle;">
                         
-                        <h6 class="m-0"><span class="badge badge-danger"><i class="fa fa-times-circle"></i> <strong>Error</strong></span></h6>
+                        <h6 class="m-0"><span class="badge badge-danger"><i class="fa fa-times-circle"></i></span></h6>
                         
                         </td>
                         <td style="vertical-align: middle;">
-                        <button data-toggle="collapse" data-target="#test_member_name_exist" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye text-white m-0"></i></button>
+                        <button data-toggle="collapse" data-target=".test_member_name_exist" class="btn btn-dark show test_member_name_exist collapse pb-0 pt-0"><i class="fa fa-eye text-white m-0"></i></button>
                         </td>
                     </tr>
-                    <tr id="test_member_name_exist" class="collapse bg-secondary" >
+                    <!-- hidden infos -->
+                    <tr class="collapse bg-secondary test_member_name_exist">
+                        <td colspan="2" class="pl-2" style="vertical-align: middle;">
+                            <small class="text-dark"><p><i class="fa fa-hourglass-half"></i> 1.55 ms</p></small>
+                        </td>
+                        <td style="vertical-align: middle;">
+                            <button data-toggle="collapse" data-target=".test_member_name_exist" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye-slash text-white m-0"></i></button>
+                        </td>
+                    </tr>
+                    <!-- Error -->
+                    <tr class="collapse bg-secondary test_member_name_exist" >
                         <td colspan="3" class="pl-2">
-                            <small class="text-dark"><p><i class="fa fa-hourglass-half"></i> 1.25 ms</p></small>
                             
                             
                             
@@ -152,20 +195,30 @@ KeyError: 'embed'
                     
                     
                     
+                    <!-- Test -->
                     <tr>
-                        <td class="pl-2"  style="vertical-align: middle;">test_member_name_no_exist</td>
-                        <td style="vertical-align: middle;">
+                        <td class="pl-2"  style="vertical-align: middle;"><i>test_member_name_no_exist</i></td>
+                        <td class="text-center" style="vertical-align: middle;">
                         
-                        <h6 class="m-0"><span class="badge badge-success"><i class="fa fa-thumbs-o-up"></i> <strong>Pass</strong></span></h6>
+                        <h6 class="m-0"><span class="badge badge-success"><i class="fa fa-thumbs-o-up"></i></span></h6>
                         
                         </td>
                         <td style="vertical-align: middle;">
-                        <button data-toggle="collapse" data-target="#test_member_name_no_exist" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye text-white m-0"></i></button>
+                        <button data-toggle="collapse" data-target=".test_member_name_no_exist" class="btn btn-dark show test_member_name_no_exist collapse pb-0 pt-0"><i class="fa fa-eye text-white m-0"></i></button>
                         </td>
                     </tr>
-                    <tr id="test_member_name_no_exist" class="collapse bg-secondary" >
+                    <!-- hidden infos -->
+                    <tr class="collapse bg-secondary test_member_name_no_exist">
+                        <td colspan="2" class="pl-2" style="vertical-align: middle;">
+                            <small class="text-dark"><p><i class="fa fa-hourglass-half"></i> 1.28 ms</p></small>
+                        </td>
+                        <td style="vertical-align: middle;">
+                            <button data-toggle="collapse" data-target=".test_member_name_no_exist" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye-slash text-white m-0"></i></button>
+                        </td>
+                    </tr>
+                    <!-- Error -->
+                    <tr class="collapse bg-secondary test_member_name_no_exist" >
                         <td colspan="3" class="pl-2">
-                            <small class="text-dark"><p><i class="fa fa-hourglass-half"></i> 0.87 ms</p></small>
                             
                             
                             </small>
@@ -175,6 +228,7 @@ KeyError: 'embed'
                     
                     
                     </tbody>
+                    <!-- summaries -->
                     <caption class="pb-0">
                       <h5 class="mb-0">
                         <ul class="list-inline">
