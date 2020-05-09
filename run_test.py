@@ -113,7 +113,7 @@ class MyTestRunner(HTMLTestRunner):
 
 
 def get_suite_docs(tests, options=None):
-    """Return the corresponding tests suite and a dict with all tests's docs."""
+    """Return the corresponding tests suite and dict with all tests's docs."""
     suite_list = []
     all_docs = {}
     if options is None:
