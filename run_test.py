@@ -1,5 +1,7 @@
 from HtmlTestRunner import HTMLTestRunner
 from HtmlTestRunner.result import HtmlTestResult
+from datetime import datetime
+import time
 from unittest import TestSuite, TestLoader
 from my_bot.info.test import INFO_TESTS
 import sys
@@ -137,6 +139,7 @@ class MyTestRunner(HTMLTestRunner):
     """Override HTMLTestRunner..."""
 
     def __init__(self, report_name, tests_docs):
+        self.my_sep = "----------------------"
         template_args = {
             "report_title": "MyDiscordBotPython Unittest Results",
             'tests_docs': tests_docs
@@ -147,6 +150,79 @@ class MyTestRunner(HTMLTestRunner):
             resultclass=MyHtmlTestResult,
             template='html_test_reports/base_temp.html',
             template_args=template_args)
+
+    def run(self, test):
+        """ Runs the given testcase or testsuite. """
+        try:
+
+            result = self._make_result()
+            result.failfast = self.failfast
+            if hasattr(test, 'properties'):
+                # junit testsuite properties
+                result.properties = test.properties
+
+            self.stream.writeln()
+            self.stream.writeln("Running tests... ")
+            self.stream.writeln(result.separator2)
+
+            self.start_time = datetime.now()
+            for test_case in test._tests:
+                if test_case._tests:
+                    t_name = str(test_case._tests[0]).split(" ")
+                    t_name = t_name[-1].split('.')[-1][:-1]
+                    self.stream.writeln(t_name)
+                    self.stream.writeln(self.my_sep)
+                    test_case(result)
+                    self.stream.writeln(self.my_sep)
+                    self.stream.writeln(self.my_sep)
+                    self.stream.writeln(result.separator2)
+            stop_time = datetime.now()
+            self.time_taken = stop_time - self.start_time
+            print(self.time_taken)
+            result.printErrors()
+            self.stream.writeln(result.separator2)
+            run = result.testsRun
+            self.stream.writeln("Ran {} test{} in {}".format(run,
+                                run != 1 and "s" or "", str(self.time_taken)[:7]))
+            self.stream.writeln()
+
+            expectedFails = len(result.expectedFailures)
+            unexpectedSuccesses = len(result.unexpectedSuccesses)
+            skipped = len(result.skipped)
+
+            infos = []
+            if not result.wasSuccessful():
+                self.stream.writeln("FAILED")
+                failed, errors = map(len, (result.failures, result.errors))
+                if failed:
+                    infos.append("Failures={0}".format(failed))
+                if errors:
+                    infos.append("Errors={0}".format(errors))
+            else:
+                self.stream.writeln("OK")
+
+            if skipped:
+                infos.append("Skipped={}".format(skipped))
+            if expectedFails:
+                infos.append("Expected Failures={}".format(expectedFails))
+            if unexpectedSuccesses:
+                infos.append("Unexpected Successes={}".format(unexpectedSuccesses))
+
+            if infos:
+                self.stream.writeln(" ({})".format(", ".join(infos)))
+            else:
+                self.stream.writeln("\n")
+
+            self.stream.writeln()
+            self.stream.writeln('Generating HTML reports... ')
+            result.generate_reports(self)
+            if self.open_in_browser:
+                import webbrowser
+                for report in result.report_files:
+                    webbrowser.open_new_tab('file://' + report)
+        finally:
+            pass
+        return result
 
 
 def get_suite_docs(tests, options=None):
