@@ -1,231 +1,11 @@
-from HtmlTestRunner import HTMLTestRunner
-from HtmlTestRunner.result import HtmlTestResult
-from datetime import datetime
-import time
 from unittest import TestSuite, TestLoader
+from my_tester.com_parser import ArgumentParserTestCase
+from my_tester.runner import TestCaseRunner
 from my_bot.info.test import INFO_TESTS
 import sys
-from argparse import (
-    ArgumentParser, HelpFormatter, SUPPRESS, OPTIONAL, ZERO_OR_MORE,
-    ONE_OR_MORE, REMAINDER, PARSER)
 
 EVENT_TESTS = []
 ALL_TESTS = EVENT_TESTS + INFO_TESTS
-
-
-class MyHelpFormatter(HelpFormatter):
-    """Overide HelpFormatter to customize help message."""
-
-    def _format_args(self, action, default_metavar):
-        """Just change result for args."""
-        get_metavar = self._metavar_formatter(action, default_metavar)
-        if action.nargs is None:
-            result = '%s' % get_metavar(1)
-        elif action.nargs == OPTIONAL:
-            result = '[%s]' % get_metavar(1)
-        elif action.nargs == ZERO_OR_MORE:
-            metavar = get_metavar(1)
-            if len(metavar) == 2:
-                result = '[%s [%s ...]]' % metavar
-            else:
-                result = "[Optionnal: method's names]"
-                # result = '%s' % metavar
-        elif action.nargs == ONE_OR_MORE:
-            result = '%s [%s ...]' % get_metavar(2)
-        elif action.nargs == REMAINDER:
-            result = '...'
-        elif action.nargs == PARSER:
-            result = '%s ...' % get_metavar(1)
-        elif action.nargs == SUPPRESS:
-            result = ''
-        else:
-            try:
-                formats = ['%s' for _ in range(action.nargs)]
-            except TypeError:
-                raise ValueError("invalid nargs value") from None
-            result = ' '.join(formats) % get_metavar(action.nargs)
-        return result
-
-    def _format_action_invocation(self, action):
-        """Just add a \n between args."""
-        if not action.option_strings:
-            default = self._get_default_metavar_for_positional(action)
-            metavar, = self._metavar_formatter(action, default)(1)
-            return metavar
-        else:
-            parts = []
-            if action.nargs == 0:
-                parts.extend(action.option_strings)
-            else:
-                default = self._get_default_metavar_for_optional(action)
-                args_string = self._format_args(action, default)
-                for option_string in action.option_strings:
-                    parts.append('%s %s' % (option_string, args_string))
-            return '\n' + ', '.join(parts)
-            # return ', '.join(parts)
-
-
-class TestArgumentParser(ArgumentParser):
-    """Override ArgumentParser..."""
-
-    def __init__(self, groups):
-        """Init ArgumentParser with MyHelpFormatter and description.
-        groups -> [(name, [TestCase, ...]), (..)].
-        Name is used for arg's name to run all tests."""
-        super().__init__(
-            formatter_class=MyHelpFormatter, description='\n'.join([
-                'Without argument to run all tests, ',
-                'or with optionnal one(s) without option to run all ',
-                "specific app or TestCase tests, or with test's names",
-                " in option for a TestCase arg to run specific tests."]))
-        # groups
-        self._optionals.title = 'Help'
-        for name_tests in groups:
-            group = self.add_argument_group(f"{name_tests[0].title()} Tests")
-            # all tests arg
-            group.add_argument(
-                f"--{name_tests[0]}", action='store_true',
-                help=f"Run all {name_tests[0].title()} tests.")
-            for test_case in name_tests[1]:
-                test_name = test_case.__name__
-                # optionnal choise -> tests case methods
-                methods = TestLoader().loadTestsFromTestCase(test_case)._tests
-                methods_names = [m._testMethodName for m in methods]
-                # test ase tests
-                group.add_argument(
-                    f"--{test_name}", choices=methods_names, nargs='*',
-                    help="".join([
-                        f"Without option to run all {test_name} tests,",
-                        " or pass method's names to run specific tests. ",
-                        "Allowed values are: ", " - ".join(methods_names)]))
-
-
-class MyHtmlTestResult(HtmlTestResult):
-    def __init__(self, stream, descriptions, verbosity):
-        super().__init__(stream, descriptions, verbosity)
-
-    def getDescription(self, test):
-        """ Return the test description if not have test name. """
-        return test._testMethodName
-
-
-    def _prepare_callback(self, test_info, target_list, verbose_str,
-                          short_str):
-        """ Appends a 'info class' to the given target list and sets a
-            callback method to be called by stopTest method."""
-        target_list.append(test_info)
-
-        def callback():
-            """ Print test method outcome to the stream and elapsed time too."""
-            test_info.test_finished()
-
-            if self.showAll:
-                self.stream.writeln(
-                    f"{verbose_str} {str(round(test_info.elapsed_time * 1000, 3))}ms")
-            elif self.dots:
-                self.stream.write(short_str)
-
-        self.callback = callback
-
-
-    def addSuccess(self, test):
-        """ Called when a test executes successfully. """
-        self._save_output_data()
-        # print(self)
-        self._prepare_callback(self.infoclass(self, test), self.successes, "OK", ".")
-
-
-class MyTestRunner(HTMLTestRunner):
-    """Override HTMLTestRunner..."""
-
-    def __init__(self, report_name, tests_docs):
-        self.my_sep = "----------------------"
-        template_args = {
-            "report_title": "MyDiscordBotPython Unittest Results",
-            'tests_docs': tests_docs
-        }
-        super().__init__(
-            output='html_test_reports', combine_reports=True,
-            report_name=report_name, add_timestamp=False,
-            resultclass=MyHtmlTestResult,
-            template='html_test_reports/base_temp.html',
-            template_args=template_args)
-
-    def run(self, test):
-        """ Runs the given testcase or testsuite. """
-        try:
-
-            result = self._make_result()
-            result.failfast = self.failfast
-            if hasattr(test, 'properties'):
-                # junit testsuite properties
-                result.properties = test.properties
-
-            self.stream.writeln()
-            self.stream.writeln("Running tests... ")
-            self.stream.writeln(result.separator2)
-            t_names = []
-            for test_case in test._tests:
-                if test_case._tests:
-                    t_name = str(test_case._tests[0]).split(" ")
-                    t_name = t_name[-1].split('.')[-1][:-1]
-                    t_names.append(t_name)
-            i = 0
-            self.start_time = datetime.now()
-            for test_case in test._tests:
-                if test_case._tests:
-                    self.stream.writeln(f"\n{t_names[i]}\n")
-                    test_case(result)
-                    self.stream.writeln(f"\n{result.separator2}")
-            stop_time = datetime.now()
-            self.time_taken = stop_time - self.start_time
-            # print(round(self.time_taken.total_seconds() * 1000, 3))
-            result.printErrors()
-            self.stream.writeln(result.separator2)
-            run = result.testsRun
-            self.stream.writeln("Ran {} test{} in {} ms".format(
-                run, run != 1 and "s" or "",
-                str(round(self.time_taken.total_seconds() * 1000, 3))))
-            self.stream.writeln()
-
-            expectedFails = len(result.expectedFailures)
-            unexpectedSuccesses = len(result.unexpectedSuccesses)
-            skipped = len(result.skipped)
-
-            infos = []
-            if not result.wasSuccessful():
-                self.stream.writeln("FAILED")
-                failed, errors = map(len, (result.failures, result.errors))
-                if failed:
-                    infos.append("Failures={0}".format(failed))
-                if errors:
-                    infos.append("Errors={0}".format(errors))
-            else:
-                self.stream.writeln("OK")
-
-            if skipped:
-                infos.append("Skipped={}".format(skipped))
-            if expectedFails:
-                infos.append("Expected Failures={}".format(expectedFails))
-            if unexpectedSuccesses:
-                infos.append("Unexpected Successes={}".format(unexpectedSuccesses))
-
-            if infos:
-                self.stream.writeln(" ({})".format(", ".join(infos)))
-            else:
-                self.stream.writeln("\n")
-
-            self.stream.writeln()
-            self.stream.writeln('Generating HTML reports... ')
-            result.generate_reports(self)
-            self.stream.writeln()
-            if self.open_in_browser:
-                import webbrowser
-                for report in result.report_files:
-                    webbrowser.open_new_tab('file://' + report)
-        finally:
-            pass
-        return result
 
 
 def get_suite_docs(tests, options=None):
@@ -243,13 +23,16 @@ def get_suite_docs(tests, options=None):
             all_docs[test_case.__name__] = tests_docs
     else:
         test_case = tests[0]
+        methods = []
         tests_docs = {}
         for option in options:
             test_method = test_case(option)
-            suite_list.append(test_method)
+            methods.append(test_method)
+            # suite_list.append(test_method)
             tests_docs[
                 test_method._testMethodName] = test_method._testMethodDoc
         all_docs[test_case.__name__] = tests_docs
+        suite_list.append(TestSuite(methods))
     suite = TestSuite(suite_list)
     return suite, all_docs
 
@@ -257,24 +40,24 @@ def get_suite_docs(tests, options=None):
 if __name__ == "__main__":
     if len(sys.argv) == 1:  # no argument passed
         suite, all_docs = get_suite_docs(ALL_TESTS)
-        MyTestRunner('full_test', all_docs).run(suite)
+        TestCaseRunner('full_test', all_docs).run(suite)
     else:  # parse args
         groups = [('info', INFO_TESTS), ('event', EVENT_TESTS)]
-        parser = TestArgumentParser(groups)
+        parser = ArgumentParserTestCase(groups)
         args = parser.parse_args()
         # check args
         args_dict = vars(args)
         for name_tests in groups:
             if args_dict[name_tests[0]]:  # all group test
                 suite, all_docs = get_suite_docs(name_tests[1])
-                MyTestRunner(f"{name_tests[0]}_test", all_docs).run(suite)
+                TestCaseRunner(f"{name_tests[0]}_test", all_docs).run(suite)
         for test_case in ALL_TESTS:
             test_name = test_case.__name__
             options = args_dict[test_name]
             if isinstance(options, list):
                 if not options:  # all test case tests
                     suite, all_docs = get_suite_docs([test_case])
-                    MyTestRunner(test_name, all_docs).run(suite)
+                    TestCaseRunner(test_name, all_docs).run(suite)
                 else:  # tests case methods
                     suite, all_docs = get_suite_docs([test_case], options)
-                    MyTestRunner(f"{test_name}_methods", all_docs).run(suite)
+                    TestCaseRunner(f"{test_name}_methods", all_docs).run(suite)
