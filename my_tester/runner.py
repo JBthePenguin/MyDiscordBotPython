@@ -42,25 +42,36 @@ class HtmlTestCaseResult(HtmlTestResult):
 class TestCaseRunner(HTMLTestRunner):
     """Override HTMLTestRunner..."""
 
-    def __init__(self, report_name, tests_cases, options=None):
+    def __init__(self, tests_cases):
         self.my_sep = "----------------------"
-        self.suite, tests_docs = self.get_suite_docs(tests_cases, options)
+        self.suites = []
+        tests_docs = {}
+        for t_list_or_tup in tests_cases:
+            if isinstance(t_list_or_tup, tuple):
+                t_list = t_list_or_tup[0]
+                o_methods = t_list_or_tup[1]
+            else:
+                t_list = t_list_or_tup
+                o_methods = None
+            suite, n_tests_docs = self.get_suite_docs(t_list, o_methods)
+            tests_docs.update(n_tests_docs)
+            self.suites.append(suite)
         template_args = {
             "report_title": "MyDiscordBotPython Unittest Results",
             'tests_docs': tests_docs
         }
         super().__init__(
             output='html_test_reports', combine_reports=True,
-            report_name=report_name, add_timestamp=False,
+            report_name='results', add_timestamp=False,
             resultclass=HtmlTestCaseResult,
             template='html_test_reports/base_temp.html',
             template_args=template_args)
 
-    def get_suite_docs(self, tests_cases, options):
+    def get_suite_docs(self, tests_cases, o_methods):
         """Return the corresponding tests suite and dict with all tests's docs."""
         suite_list = []
         all_docs = {}
-        if options is None:
+        if o_methods is None:
             for test_case in tests_cases:
                 tests_suite = TestLoader().loadTestsFromTestCase(test_case)
                 suite_list.append(tests_suite)
@@ -73,7 +84,7 @@ class TestCaseRunner(HTMLTestRunner):
             test_case = tests_cases[0]
             methods = []
             tests_docs = {}
-            for option in options:
+            for option in o_methods:
                 test_method = test_case(option)
                 methods.append(test_method)
                 # suite_list.append(test_method)
@@ -90,27 +101,29 @@ class TestCaseRunner(HTMLTestRunner):
 
             result = self._make_result()
             result.failfast = self.failfast
-            if hasattr(self.suite, 'properties'):
-                # junit testsuite properties
-                result.properties = self.suite.properties
+            # if hasattr(self.suite, 'properties'):
+            #     # junit testsuite properties
+            #     result.properties = self.suite.properties
 
             self.stream.writeln()
             self.stream.writeln("Running tests... ")
             self.stream.writeln(result.separator2)
             t_names = []
-            for test_case in self.suite._tests:
-                if test_case._tests:
-                    t_name = str(test_case._tests[0]).split(" ")
-                    t_name = t_name[-1].split('.')[-1][:-1]
-                    t_names.append(t_name)
+            for suite in self.suites:
+                for test_case in suite._tests:
+                    if test_case._tests:
+                        t_name = str(test_case._tests[0]).split(" ")
+                        t_name = t_name[-1].split('.')[-1][:-1]
+                        t_names.append(t_name)
             i = 0
             self.start_time = datetime.now()
-            for test_case in self.suite._tests:
-                if test_case._tests:
-                    self.stream.writeln(f"\n{t_names[i]}\n")
-                    test_case(result)
-                    self.stream.writeln(f"\n{result.separator2}")
-                    i += 1
+            for suite in self.suites:
+                for test_case in suite._tests:
+                    if test_case._tests:
+                        self.stream.writeln(f"\n{t_names[i]}\n")
+                        test_case(result)
+                        self.stream.writeln(f"\n{result.separator2}")
+                        i += 1
             stop_time = datetime.now()
             self.time_taken = stop_time - self.start_time
             # print(round(self.time_taken.total_seconds() * 1000, 3))

@@ -62,45 +62,31 @@ class ArgumentParserTestCase(ArgumentParser):
     """Override ArgumentParser..."""
 
     def __init__(self, arg_groups):
-        """Set a all tests list and run them if no argument passed.
-        Else, init ArgumentParser with formatter - description,
-        set help message's title for help command, make argument groups.
+        """Set properties arg_groups and all tests list.
+        Init ArgumentParser with formatter class and description.
+        Set help message's title for help command. Make argument groups.
+        Check args and run the corresponding tests.
         ***arg_groups -> [('group_name', [TestCase1, ...]), (..)].***"""
-        all_tests = []
-        for name_tests in arg_groups:
-            all_tests += name_tests[1]
-        if len(sys.argv) == 1:  # no arg -> all tests
-            TestCaseRunner('full_test', all_tests).run()
-        else:  # parse args
-            super().__init__(  # init ArgumentParser
-                formatter_class=HelpFormatterTestCase, description='\n'.join([
-                    'Without argument to run all tests, ',
-                    'or with optionnal one(s) without option to run ',
-                    "specific app or TestCase tests, or with method's names",
-                    " in options for TestCase arg to run specific tests."]))
-            self._optionals.title = 'Help'  # help msg's title for help command
-            self.make_arg_groups(arg_groups)  # groups
-            args = self.parse_args()  # parse
-            args_dict = vars(args)  # check args and run associated tests
-            for name_tests in arg_groups:
-                if args_dict[name_tests[0]]:  # group's name arg -> group's tests
-                    TestCaseRunner(f"{name_tests[0]}_test", name_tests[1]).run()
-            for test_case in all_tests:
-                test_name = test_case.__name__
-                options = args_dict[test_name]
-                if isinstance(options, list):  # test case's name arg
-                    if not options:  # no param -> test case's tests
-                        TestCaseRunner(test_name, [test_case]).run()
-                    else:  # method name(s) param -> methods's tests
-                        TestCaseRunner(
-                            f"{test_name}_methods", [test_case], options).run()
+        self.arg_groups = arg_groups
+        self.all_tests = []
+        super().__init__(  # init ArgumentParser
+            formatter_class=HelpFormatterTestCase, description='\n'.join([
+                'Without argument to run all tests, ',
+                'or with optionnal one(s) without option to run ',
+                "specific app or TestCase tests, or with method's names",
+                " in options for TestCase arg to run specific tests."]))
+        self._optionals.title = 'Help'  # help msg's title for help command
+        self.make_arg_groups()  # groups
+        self.check_and_run()
 
-    def make_arg_groups(self, arg_groups):
+    def make_arg_groups(self):
         """ For each group, set help message's title with his name,
         add argument with his name, for each of his TestCases,
         add argument with his name, for each of his methods,
-        add optionnal parameter with his name."""
-        for group_name, tests_cases in arg_groups:  # groups
+        add optionnal parameter with his name.
+        ***construct all tests list by adding each tests cases list"""
+        for group_name, tests_cases in self.arg_groups:  # groups
+            self.all_tests += tests_cases
             group = self.add_argument_group(f"{group_name.title()} Tests")
             group.add_argument(  # arg with group name to run all tests
                 f"--{group_name}", action='store_true',
@@ -115,3 +101,23 @@ class ArgumentParserTestCase(ArgumentParser):
                         f"Without option to run {test_case.__name__}'s tests,",
                         " or pass method's names to run specific tests. ",
                         "Allowed values are: ", " - ".join(methods_names)]))
+
+    def check_and_run(self):
+        """Check args and set the corresponding tests cases list and run it."""
+        tests_cases = []
+        if len(sys.argv) == 1:  # no arg -> all tests
+            tests_cases.append(self.all_tests)
+        else:
+            args_dict = vars(self.parse_args())
+            for name_tests in self.arg_groups:
+                if args_dict[name_tests[0]]:  # group's name arg -> group tests
+                    tests_cases.append(name_tests[1])
+            for test_case in self.all_tests:
+                test_name = test_case.__name__
+                options = args_dict[test_name]
+                if isinstance(options, list):  # test case's name arg
+                    if not options:  # no param -> test case's tests
+                        tests_cases.append([test_case])
+                    else:  # method name(s) param -> methods's tests
+                        tests_cases.append(([test_case], options))
+        TestCaseRunner(tests_cases).run()
