@@ -67,20 +67,15 @@ class TestCaseRunner(HTMLTestRunner):
     def update_suites_docs(self, test_case):
         """Return the corresponding tests suite and dict with all tests's docs."""
         if isinstance(test_case, tuple):
-            t_case, m_names = test_case
-            methods = []
-            for m_name in m_names:
-                test_method = t_case(m_name)
-                methods.append(test_method)
-            suite = TestSuite(methods)
-            test_case = t_case
+            test_case, m_names = test_case
+            suite = TestSuite([test_case(m_name) for m_name in m_names])
         else:
             suite = TestLoader().loadTestsFromTestCase(test_case)
-        self.suites.append(suite)
         tests_docs = {}
         for test_method in suite._tests:
             tests_docs[
                 test_method._testMethodName] = test_method._testMethodDoc
+        self.suites.append(suite)
         self.tests_docs[test_case.__name__] = tests_docs
 
     def run(self):
