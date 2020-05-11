@@ -61,51 +61,28 @@ class HelpFormatterTestCase(HelpFormatter):
 class ArgumentParserTestCase(ArgumentParser):
     """Override ArgumentParser..."""
 
-    def __init__(self, argv=None, groups=None):
-        """Init ArgumentParser with MyHelpFormatter and description.
-        Set help message's title for help command.
-        For each group, set help message's title with his name,
-        add argument with his name, for each of his TestCases,
-        add argument with his name, for each of his methods,
-        add optionnal parameter with his name.
-        ***groups -> [(group_name, [TestCase1, TestCase2, ...]), (..)].***"""
+    def __init__(self, arg_groups):
+        """Set a all tests list and run them if no argument passed.
+        Else, init ArgumentParser with formatter - description,
+        set help message's title for help command, make argument groups.
+        ***arg_groups -> [('group_name', [TestCase1, ...]), (..)].***"""
         all_tests = []
-        for name_tests in groups:
+        for name_tests in arg_groups:
             all_tests += name_tests[1]
         if len(sys.argv) == 1:  # no arg -> all tests
             TestCaseRunner('full_test', all_tests).run()
-        else:
-            super().__init__(
+        else:  # parse args
+            super().__init__(  # init ArgumentParser
                 formatter_class=HelpFormatterTestCase, description='\n'.join([
                     'Without argument to run all tests, ',
                     'or with optionnal one(s) without option to run ',
                     "specific app or TestCase tests, or with method's names",
                     " in options for TestCase arg to run specific tests."]))
-            # groups
-            self._optionals.title = 'Help'
-            for name_tests in groups:
-                group = self.add_argument_group(f"{name_tests[0].title()} Tests")
-                # all tests arg
-                group.add_argument(
-                    f"--{name_tests[0]}", action='store_true',
-                    help=f"Run all {name_tests[0].title()} tests.")
-                for test_case in name_tests[1]:
-                    test_name = test_case.__name__
-                    # optionnal choise -> tests case methods
-                    methods = TestLoader().loadTestsFromTestCase(test_case)._tests
-                    methods_names = [m._testMethodName for m in methods]
-                    # test ase tests
-                    group.add_argument(
-                        f"--{test_name}", choices=methods_names, nargs='*',
-                        help="".join([
-                            f"Without option to run all {test_name} tests,",
-                            " or pass method's names to run specific tests. ",
-                            "Allowed values are: ", " - ".join(methods_names)]))
-            # parse, check args and run associated tests
-            args = self.parse_args()
-            # check args
-            args_dict = vars(args)
-            for name_tests in groups:
+            self._optionals.title = 'Help'  # help msg's title for help command
+            self.make_arg_groups(arg_groups)  # groups
+            args = self.parse_args()  # parse
+            args_dict = vars(args)  # check args and run associated tests
+            for name_tests in arg_groups:
                 if args_dict[name_tests[0]]:  # group's name arg -> group's tests
                     TestCaseRunner(f"{name_tests[0]}_test", name_tests[1]).run()
             for test_case in all_tests:
@@ -117,3 +94,24 @@ class ArgumentParserTestCase(ArgumentParser):
                     else:  # method name(s) param -> methods's tests
                         TestCaseRunner(
                             f"{test_name}_methods", [test_case], options).run()
+
+    def make_arg_groups(self, arg_groups):
+        """ For each group, set help message's title with his name,
+        add argument with his name, for each of his TestCases,
+        add argument with his name, for each of his methods,
+        add optionnal parameter with his name."""
+        for group_name, tests_cases in arg_groups:  # groups
+            group = self.add_argument_group(f"{group_name.title()} Tests")
+            group.add_argument(  # arg with group name to run all tests
+                f"--{group_name}", action='store_true',
+                help=f"Run all {group_name.title()} tests.")
+            for test_case in tests_cases:
+                methods = TestLoader().loadTestsFromTestCase(test_case)._tests
+                methods_names = [m._testMethodName for m in methods]
+                # arg with testcase name and methods names for optionnal params
+                group.add_argument(  # arg with testcase name
+                    f"--{test_case.__name__}", choices=methods_names,
+                    nargs='*', help="".join([  # optionnal params with methods
+                        f"Without option to run {test_case.__name__}'s tests,",
+                        " or pass method's names to run specific tests. ",
+                        "Allowed values are: ", " - ".join(methods_names)]))

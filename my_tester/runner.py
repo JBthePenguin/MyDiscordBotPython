@@ -52,7 +52,7 @@ class TestCaseRunner(HTMLTestRunner):
         super().__init__(
             output='html_test_reports', combine_reports=True,
             report_name=report_name, add_timestamp=False,
-            resultclass= HtmlTestCaseResult,
+            resultclass=HtmlTestCaseResult,
             template='html_test_reports/base_temp.html',
             template_args=template_args)
 

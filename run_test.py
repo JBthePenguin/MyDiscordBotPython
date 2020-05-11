@@ -4,4 +4,4 @@ from my_bot.info.test import INFO_TESTS
 EVENT_TESTS = []
 
 groups = [('info', INFO_TESTS), ('event', EVENT_TESTS)]
-ArgumentParserTestCase(groups=groups)
+ArgumentParserTestCase(groups)
