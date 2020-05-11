@@ -42,88 +42,69 @@ class HtmlTestCaseResult(HtmlTestResult):
 class TestCaseRunner(HTMLTestRunner):
     """Override HTMLTestRunner..."""
 
-    def __init__(self, tests_cases):
-        self.my_sep = "----------------------"
+    def __init__(self, test_cases):
+        """Set property suites a dict for all tests docs.
+        For each tests cases list
+        Init ArgumentParser with formatter class and description.
+        Set help message's title for help command. Make argument groups.
+        Check args and run the corresponding tests.
+        ***arg_groups -> [('group_name', [TestCase1, ...]), (..)].***"""
         self.suites = []
-        tests_docs = {}
-        for t_list_or_tup in tests_cases:
-            if isinstance(t_list_or_tup, tuple):
-                t_list = t_list_or_tup[0]
-                o_methods = t_list_or_tup[1]
-            else:
-                t_list = t_list_or_tup
-                o_methods = None
-            suite, n_tests_docs = self.get_suite_docs(t_list, o_methods)
-            tests_docs.update(n_tests_docs)
-            self.suites.append(suite)
+        self.tests_docs = {}
+        for test_case in test_cases:
+            self.update_suites_docs(test_case)
         template_args = {
             "report_title": "MyDiscordBotPython Unittest Results",
-            'tests_docs': tests_docs
+            'tests_docs': self.tests_docs
         }
         super().__init__(
             output='html_test_reports', combine_reports=True,
-            report_name='results', add_timestamp=False,
+            report_name='result', add_timestamp=False,
             resultclass=HtmlTestCaseResult,
             template='html_test_reports/base_temp.html',
             template_args=template_args)
 
-    def get_suite_docs(self, tests_cases, o_methods):
+    def update_suites_docs(self, test_case):
         """Return the corresponding tests suite and dict with all tests's docs."""
-        suite_list = []
-        all_docs = {}
-        if o_methods is None:
-            for test_case in tests_cases:
-                tests_suite = TestLoader().loadTestsFromTestCase(test_case)
-                suite_list.append(tests_suite)
-                tests_docs = {}
-                for test_method in tests_suite._tests:
-                    tests_docs[
-                        test_method._testMethodName] = test_method._testMethodDoc
-                all_docs[test_case.__name__] = tests_docs
-        else:
-            test_case = tests_cases[0]
+        if isinstance(test_case, tuple):
+            t_case, m_names = test_case
             methods = []
-            tests_docs = {}
-            for option in o_methods:
-                test_method = test_case(option)
+            for m_name in m_names:
+                test_method = t_case(m_name)
                 methods.append(test_method)
-                # suite_list.append(test_method)
-                tests_docs[
-                    test_method._testMethodName] = test_method._testMethodDoc
-            all_docs[test_case.__name__] = tests_docs
-            suite_list.append(TestSuite(methods))
-        suite = TestSuite(suite_list)
-        return suite, all_docs
+            suite = TestSuite(methods)
+            test_case = t_case
+        else:
+            suite = TestLoader().loadTestsFromTestCase(test_case)
+        self.suites.append(suite)
+        tests_docs = {}
+        for test_method in suite._tests:
+            tests_docs[
+                test_method._testMethodName] = test_method._testMethodDoc
+        self.tests_docs[test_case.__name__] = tests_docs
 
     def run(self):
         """ Runs the given testcase or testsuite. """
         try:
-
             result = self._make_result()
             result.failfast = self.failfast
-            # if hasattr(self.suite, 'properties'):
-            #     # junit testsuite properties
-            #     result.properties = self.suite.properties
-
             self.stream.writeln()
             self.stream.writeln("Running tests... ")
             self.stream.writeln(result.separator2)
             t_names = []
             for suite in self.suites:
-                for test_case in suite._tests:
-                    if test_case._tests:
-                        t_name = str(test_case._tests[0]).split(" ")
-                        t_name = t_name[-1].split('.')[-1][:-1]
-                        t_names.append(t_name)
+                if suite._tests:
+                    t_name = str(suite._tests[0]).split(" ")
+                    t_name = t_name[-1].split('.')[-1][:-1]
+                    t_names.append(t_name)
             i = 0
             self.start_time = datetime.now()
             for suite in self.suites:
-                for test_case in suite._tests:
-                    if test_case._tests:
-                        self.stream.writeln(f"\n{t_names[i]}\n")
-                        test_case(result)
-                        self.stream.writeln(f"\n{result.separator2}")
-                        i += 1
+                if suite._tests:
+                    self.stream.writeln(f"\n{t_names[i]}\n")
+                    suite(result)
+                    self.stream.writeln(f"\n{result.separator2}")
+                    i += 1
             stop_time = datetime.now()
             self.time_taken = stop_time - self.start_time
             # print(round(self.time_taken.total_seconds() * 1000, 3))
