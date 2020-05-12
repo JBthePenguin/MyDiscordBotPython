@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{ report_title }}</title>
+    <title>{{ title }}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -12,8 +12,9 @@
         <!-- Header -->
         <div class="row bg-dark mt-2 pt-2">
             <div class="card col-12 bg-dark text-light text-center">
+                <!-- title - duration -->
                 <div class="card-header">
-                    <h3 class="card-title">{{ report_title }}</h3>
+                    <h3 class="card-title">{{ title }}</h3>
                     <h5 class="card-subtitle text-white-50 mb-2">
                         <ul class="list-inline">
                             <li class="list-inline-item"><i class="fa fa-clock-o"></i> {{ header_info.start_time.strftime("%Y-%m-%d %H:%M:%S") }}</li>
@@ -21,6 +22,7 @@
                         </ul>
                     </h5>
                 </div>
+                <!-- infos -->
                 <div class="card-body">
                     <h4>
                       <ul class="list-inline">
@@ -62,7 +64,6 @@
                     <tbody>
                     <!-- Tests -->
                     {% for test_case in tests_results %}
-                    {% if not test_case.subtests is defined %}
                     {% with test_name = test_case.test_id.split(".")[-1] %}
                     <!-- Test -->
                     <tr>
@@ -84,7 +85,7 @@
                     </tr>
                     <!-- hidden infos -->
                     <tr class="collapse bg-secondary {{ short_test_case_name }}{{ test_name }}">
-                        <td colspan=2 class="pl-2"><small class="text-dark"><i class="fa fa-hourglass-half"></i> {{ (test_case.elapsed_time * 1000)|round(2) }} ms</small></td>
+                        <td colspan=2 class="pl-2"><small class="text-dark"><i class="fa fa-hourglass-half"></i> {% if test_case.elapsed_time >= 1 %}{{ test_case.elapsed_time|round(3) }} s{% else %}{{ (test_case.elapsed_time * 1000)|round(2) }} ms{% endif %}</small></td>
                         <td>
                             <button data-toggle="collapse" data-target=".{{ short_test_case_name }}{{ test_name }}" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye-slash text-white m-0"></i></button>
                         </td>
@@ -112,7 +113,6 @@
                         </td>
                     </tr>
                     {% endwith %}
-                    {% endif %}
                     {% endfor %}
                     </tbody>
                     <!-- summaries -->
