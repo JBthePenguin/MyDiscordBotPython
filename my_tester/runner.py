@@ -127,6 +127,14 @@ class TestCaseRunner(HTMLTestRunner):
             for test_case_name, suite in self.suites:
                 self.stream.writeln(f"\n{test_case_name}\n")
                 suite(result)
+                t_case_time = 0
+                for t_result in result.successes + result.failures + (
+                        result.errors + result.skipped):
+                    if t_result.test_name.split('.')[-1] == test_case_name:
+                        t_case_time += t_result.elapsed_time
+                # self.stream.writeln("\n")
+                self.stream.writeln(
+                    f"\n({result._format_duration(t_case_time)})")
                 self.stream.writeln(f"\n{result.separator2}")
             result.printErrors()
             self.stream.writeln(result.separator2)
