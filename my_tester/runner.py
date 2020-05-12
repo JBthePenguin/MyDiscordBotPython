@@ -96,7 +96,8 @@ class TestCaseRunner(HTMLTestRunner):
             output='html_test_reports', combine_reports=True,
             report_name='result', add_timestamp=False,
             resultclass=HtmlTestCaseResult, template_args=template_args,
-            template='html_test_reports/base_temp.html',
+            template=os.path.join(
+                os.path.dirname(__file__), 'template', 'base_temp.html'),
             report_title=f"{os.path.basename(os.getcwd())} Unittest Results")
 
     def update_suites_docs(self, test_case):

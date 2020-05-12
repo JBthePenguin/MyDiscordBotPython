@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container mb-2">
+        <!-- Header -->
+        <div class="row bg-dark mt-2 pt-2">
+            <div class="card col-12 bg-dark text-light text-center">
+                <!-- title - duration -->
+                <div class="card-header">
+                    <h3 class="card-title">{{ title }}</h3>
+                    <h5 class="card-subtitle text-white-50 mb-2">
+                        <ul class="list-inline">
+                            <li class="list-inline-item"><i class="fa fa-clock-o"></i> {{ header_info.start_time.strftime("%Y-%m-%d %H:%M:%S") }}</li>
+                            <li class="list-inline-item"><i class="fa fa-hourglass-half"></i> {{ header_info.status.duration }}</li>
+                        </ul>
+                    </h5>
+                </div>
+                <!-- infos -->
+                <div class="card-body">
+                    <h4>
+                      <ul class="list-inline">
+                          <li class="list-inline-item"><span class="badge badge-light"><strong>Total</strong> <span class="badge badge-pill badge-dark">{{ header_info.status.total }}</span></span></li>
+                          <li class="list-inline-item"><span class="badge badge-success"><i class="fa fa-thumbs-o-up"></i> <strong>Pass</strong> <span class="badge badge-pill badge-dark">{{ header_info.status.success }}</span></span></li>
+                          <li class="list-inline-item"><span class="badge badge-warning"><i class="fa fa-thumbs-o-down"></i> <strong>Fail</strong> <span class="badge badge-pill badge-dark">{{ header_info.status.failure }}</span></span></li>
+                          <li class="list-inline-item"><span class="badge badge-danger"><i class="fa fa-times-circle"></i> <strong>Error</strong> <span class="badge badge-pill badge-dark">{{ header_info.status.error }}</span></span></li>
+                          <li class="list-inline-item"><span class="badge badge-info"><i class="fa fa-cut"></i> <strong>Skip</strong> <span class="badge badge-pill badge-dark">{{ header_info.status.skip }}</span></span></li>
+                      </ul>
+                    </h4>
+                </div>
+            </div>
+        </div>
+        <!-- Tests Cases -->
+        <div class="row bg-secondary pt-2 pb-2">
+        {% for test_case_name, tests_results in all_results.items() %}
+        {% if tests_results %}
+            <!-- Test case -->
+            {% with short_t_case_name = test_case_name.split('.')[-1] %}
+            <div class="col-12 col-md-10 card bg-light mx-auto m-2">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <ul class="list-inline mb-1">
+                            <li class="list-inline-item">{{ short_t_case_name }}</li>
+                            <small>
+                                <li class="list-inline-item"><i class="fa fa-file-code-o"></i> {{ '/'.join(test_case_name.split('.')[:-1]) + '.py' }}</li>
+                                <li class="list-inline-item"><i class="fa fa-hourglass-half"></i> {{ summaries[test_case_name].duration }}</li>
+                            </small>
+                        </ul>
+                    </h5>
+                </div>
+                <div class="card-body table-responsive pt-0 pb-0">
+                    <table class='table table-sm table-dark table-hover mb-0'>
+                        <thead>
+                            <tr>
+                                <th class="pl-2"><i class="fa fa-flask"></i> Tests</th>
+                                <th class="text-center"><i class="fa fa-clipboard"></i> Status</th>
+                                <th class="text-center"><i class="fa fa-hourglass-half"></i> Duration</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <!-- Tests -->
+                        {% for test_result in tests_results %}
+                            {% with t_name = test_result.test_id.split(".")[-1] %}
+                            <!-- Test -->
+                            <tr>
+                                <td class="pl-2"  style="vertical-align: middle;"><i>{{ t_name }}</i></td>
+                                <td class="text-center" style="vertical-align: middle;">
+                                {% if test_result.outcome == test_result.SUCCESS %}
+                                    <h6 class="m-0"><span class="badge badge-success"><i class="fa fa-thumbs-o-up"></i></span></h6>
+                                {% elif test_result.outcome == test_result.SKIP %}
+                                    <h6 class="m-0"><span class="badge badge-info"><i class="fa fa-cut"></i></span></h6>
+                                {% elif test_result.outcome == test_result.FAILURE %}
+                                    <h6 class="m-0"><span class="badge badge-warning"><i class="fa fa-thumbs-o-down"></i></span></h6>
+                                {% else %}
+                                    <h6 class="m-0"><span class="badge badge-danger"><i class="fa fa-times-circle"></i></span></h6>
+                                {% endif %}
+                                </td>
+                                <td class="text-center" style="vertical-align: middle;">
+                                    <small>
+                                    {% if test_result.elapsed_time >= 1 %}
+                                        {{ test_result.elapsed_time|round(3) }} s
+                                    {% else %}
+                                        {{ (test_result.elapsed_time * 1000)|round(2) }} ms{% endif %}
+                                    </small>
+                                </td>
+                                <td style="vertical-align: middle;">
+                                    <button data-toggle="collapse" data-target=".{{ short_t_case_name }}{{ t_name }}" class="btn btn-dark pb-0 pt-0"><i class="fa fa-eye text-white m-0 show {{ short_t_case_name }}{{ t_name }} collapse"></i><i class="fa fa-eye-slash {{ short_t_case_name }}{{ t_name }} collapse text-white m-0"></i></button>
+                                </td>
+                            </tr>
+                            <!-- hidden infos -->
+                            <!-- description Error-->
+                            <tr class="collapse bg-secondary {{ short_t_case_name }}{{ t_name }}" >
+                                <td colspan=4 style="border-top: 0px;">
+                                    <small style="vertical-align: middle;">
+                                    {% if test_result.stdout %}
+                                        <div class="text-dark m-1">{{ tests_docs[short_t_case_name][t_name] }}</div>
+                                        <div class="alert alert-dark rounded m-1" role="alert">{{ test_result.stdout }}</div>
+                                    {% endif %}
+                                    {% if test_result.outcome == test_result.SUCCESS %}
+                                        <div class="alert alert-success rounded m-1" role="alert">{{ tests_docs[short_t_case_name][t_name] }}<br>PASS</div>
+                                    {% elif  test_result.outcome == test_result.SKIP %}
+                                        <div class="alert alert-info rounded m-1" role="alert">{{ tests_docs[short_t_case_name][t_name] }}<br>SKIP: {{ test_result.err }}</div>
+                                    {% elif test_result.outcome == test_result.FAILURE %}
+                                        <div class="alert alert-warning rounded m-1" role="alert">{{ tests_docs[short_t_case_name][t_name] }}<br>FAIL: {{ test_result.err[0].__name__ }}: {{ test_result.err[1] }}</div>
+                                        <div class="alert alert-dark rounded m-1" role="alert">{{ test_result.test_exception_info.replace("\n", "<br>") }}</div>
+                                    {% else %}
+                                        <div class="alert alert-danger rounded m-1" role="alert">{{ tests_docs[short_t_case_name][t_name] }}<br>ERROR: {{ test_result.err[0].__name__ }}: {{ test_result.err[1] }}</div>
+                                        <div class="alert alert-dark rounded m-1" role="alert">{{ test_result.test_exception_info.replace("\n", "<br>") }}</div>
+                                    {% endif %}
+                                    </small>
+                                </td>
+                            </tr>
+                            {% endwith %}
+                        {% endfor %}
+                        </tbody>
+                        <!-- summaries -->
+                        <caption class="pb-0">
+                            <h5 class="mb-0">
+                                <ul class="list-inline">
+                                    <li class="list-inline-item"><span class="badge badge-dark"><strong>Total</strong> <span class="badge badge-pill badge-light">{{ summaries[test_case_name].total }}</span></span></li>
+                                    <li class="list-inline-item"><span class="badge badge-success"><i class="fa fa-thumbs-o-up"></i> <strong>Pass</strong> <span class="badge badge-pill badge-dark">{{ summaries[test_case_name].success }}</span></span></li>
+                                    <li class="list-inline-item"><span class="badge badge-warning"><i class="fa fa-thumbs-o-down"></i> <strong>Fail</strong> <span class="badge badge-pill badge-dark">{{ summaries[test_case_name].failure }}</span></span></li>
+                                    <li class="list-inline-item"><span class="badge badge-danger"><i class="fa fa-times-circle"></i> <strong>Error</strong> <span class="badge badge-pill badge-dark">{{ summaries[test_case_name].error }}</span></span></li>
+                                    <li class="list-inline-item"><span class="badge badge-info"><i class="fa fa-cut"></i> <strong>Skip</strong> <span class="badge badge-pill badge-dark">{{ summaries[test_case_name].skip }}</span></span></li>
+                                </ul>
+                            </h5>
+                        </caption>
+                    </table>
+                </div>
+            </div>
+            {% endwith %}
+        {% endif %}
+        {% endfor %}
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js" integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+</html>
