@@ -1,34 +1,82 @@
+import os
 from unittest import TestLoader, TestSuite
 from HtmlTestRunner import HTMLTestRunner
 from HtmlTestRunner.result import HtmlTestResult
 from datetime import datetime
+from fnmatch import fnmatchcase
 
 
 class HtmlTestCaseResult(HtmlTestResult):
+    """Override HtmlTestResult to change desription and format duration,
+    and get a non alphabetical order for test methods."""
 
     def getDescription(self, test):
         """Return the test description with the test method name."""
         return test._testMethodName
 
-    def _prepare_callback(self, test_info, target_list, verbose_str,
-                          short_str):
-        """ Appends a 'info class' to the given target list and sets a
-            callback method to be called by stopTest method."""
-        target_list.append(test_info)
+    def _get_info_by_testcase(self):
+        """Organize test results by TestCase module,
+        without alphabetical order for metohds."""
+        tests_by_testcase = {}
+        for tests in (
+                self.successes, self.failures, self.errors, self.skipped):
+            for test_info in tests:
+                testcase_name = ".".join(test_info.test_id.split(".")[:-1])
+                if testcase_name not in tests_by_testcase:
+                    tests_by_testcase[testcase_name] = []
+                tests_by_testcase[testcase_name].append(test_info)
+        return tests_by_testcase
+
+    @staticmethod
+    def _format_duration(elapsed_time):
+        """Format the elapsed time in seconds,
+        or milliseconds if the duration is less than 1 second."""
+        if elapsed_time >= 1:
+            duration = f"{str(round(elapsed_time, 3))} s"
+        else:
+            duration = f"{str(round(elapsed_time * 1000, 2))} ms"
+        return duration
+
+    def _prepare_callback(self, t_info, target_list, v_str, short_str):
+        """Appends a 'info class' to the given target list,
+         and sets a callback method to be called by stopTest method."""
+        target_list.append(t_info)
 
         def callback():
             """ Print test method outcome to the stream and elapsed time."""
-            test_info.test_finished()
+            t_info.test_finished()
             if self.showAll:
-                self.stream.writeln(
-                    f"{verbose_str} {str(round(test_info.elapsed_time * 1000, 3))}ms")
+                self.stream.writeln(  # change original here: format duration
+                    f"{v_str} ({self._format_duration(t_info.elapsed_time)})")
             elif self.dots:
                 self.stream.write(short_str)
         self.callback = callback
 
 
+class MyTestLoader(TestLoader):
+    """Override TestLoader to get a non alphabetical order for test methods."""
+
+    def getTestCaseNames(self, testCaseClass):
+        """Return a sequence of method names found within TestCaseClass,
+        ordered by declaration."""
+        def shouldIncludeMethod(attrname):
+            if not attrname.startswith(self.testMethodPrefix):
+                return False
+            testFunc = getattr(testCaseClass, attrname)
+            if not callable(testFunc):
+                return False
+            fullName = f'%s.%s.%s' % (
+                testCaseClass.__module__, testCaseClass.__qualname__, attrname
+            )
+            return self.testNamePatterns is None or \
+                any(fnmatchcase(
+                    fullName, pattern) for pattern in self.testNamePatterns)
+        return list(filter(
+            shouldIncludeMethod, vars(testCaseClass).keys()))
+
+
 class TestCaseRunner(HTMLTestRunner):
-    """Override HTMLTestRunner..."""
+    """A HTMLTestRunner for TestCase."""
 
     def __init__(self, test_cases):
         """Set property suites a dict for all tests docs.
@@ -42,15 +90,14 @@ class TestCaseRunner(HTMLTestRunner):
         for test_case in test_cases:
             self.update_suites_docs(test_case)
         template_args = {
-            "report_title": "MyDiscordBotPython Unittest Results",
             'tests_docs': self.tests_docs
         }
         super().__init__(
             output='html_test_reports', combine_reports=True,
             report_name='result', add_timestamp=False,
-            resultclass=HtmlTestCaseResult,
+            resultclass=HtmlTestCaseResult, template_args=template_args,
             template='html_test_reports/base_temp.html',
-            template_args=template_args)
+            report_title=f"{os.path.basename(os.getcwd())} Unittest Results")
 
     def update_suites_docs(self, test_case):
         """Init a TestSuite for test_case (or methods) and corresponding docs.
@@ -59,7 +106,7 @@ class TestCaseRunner(HTMLTestRunner):
             test_case, m_names = test_case
             suite = TestSuite([test_case(m_name) for m_name in m_names])
         else:  # suite with TestCase
-            suite = TestLoader().loadTestsFromTestCase(test_case)
+            suite = MyTestLoader().loadTestsFromTestCase(test_case)
         if suite._tests:
             self.suites.append((test_case.__name__, suite))  # update suites
             tests_docs = {}  # corresponding docs
@@ -80,20 +127,17 @@ class TestCaseRunner(HTMLTestRunner):
                 self.stream.writeln(f"\n{test_case_name}\n")
                 suite(result)
                 self.stream.writeln(f"\n{result.separator2}")
-            stop_time = datetime.now()
-            self.time_taken = stop_time - self.start_time
-            # print(round(self.time_taken.total_seconds() * 1000, 3))
             result.printErrors()
             self.stream.writeln(result.separator2)
             full_time = 0
-            for t_r in result.successes + result.failures + result.errors + result.skipped:
-                full_time += t_r.elapsed_time
+            for t_result in result.successes + result.failures + (
+                    result.errors + result.skipped):
+                full_time += t_result.elapsed_time
             run = result.testsRun
-            self.stream.writeln("Ran {} test{} in {} ms".format(
+            self.stream.writeln("Ran {} test{} in {}".format(
                 run, run != 1 and "s" or "",
-                str(round(full_time * 1000, 3))))
+                result._format_duration(full_time)))
             self.stream.writeln()
-
             expectedFails = len(result.expectedFailures)
             unexpectedSuccesses = len(result.unexpectedSuccesses)
             skipped = len(result.skipped)
