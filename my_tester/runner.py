@@ -32,7 +32,7 @@ class MyTestLoader(TestLoader):
 class TestCaseRunner(HTMLTestRunner):
     """A HTMLTestRunner for TestCase."""
 
-    def __init__(self, test_cases):
+    def __init__(self, test_cases, add_timestamp, open_in_browser):
         """Set property suites a dict for all tests docs.
         For each tests cases list
         Init ArgumentParser with formatter class and description.
@@ -43,16 +43,15 @@ class TestCaseRunner(HTMLTestRunner):
         self.tests_docs = {}
         for test_case in test_cases:
             self.update_suites_docs(test_case)
-        template_args = {
-            'tests_docs': self.tests_docs
-        }
+        template_args = {'tests_docs': self.tests_docs}
         super().__init__(
             output='html_test_reports', combine_reports=True,
-            report_name='result', add_timestamp=False,
+            report_name='result', add_timestamp=add_timestamp,
             resultclass=HtmlTestCaseResult, template_args=template_args,
             template=os.path.join(
                 os.path.dirname(__file__), 'template', 'base_temp.html'),
-            report_title=f"{os.path.basename(os.getcwd())} Unittest Results")
+            report_title=f"{os.path.basename(os.getcwd())} Unittest Results",
+            open_in_browser=open_in_browser)
 
     def update_suites_docs(self, test_case):
         """Init a TestSuite for test_case (or methods) and corresponding docs.
@@ -89,66 +88,21 @@ class TestCaseRunner(HTMLTestRunner):
 
     def run(self):
         """ Runs the given testcase or testsuite. """
-        try:
-            result = self._make_result()
-            result.failfast = self.failfast
-            self.stream.writeln()
-            self.stream.writeln("Running tests... ")
-            self.stream.writeln(result.separator2)
-            self.run_suites(result)
-            result.printErrors()
-            self.stream.writeln(result.separator2)
-            full_time = 0
-            for t_result in result.successes + result.failures + (
-                    result.errors + result.skipped):
-                full_time += t_result.elapsed_time
-            run = result.testsRun
-            s_test = "test"
-            if run > 1:
-                s_test += "s"
-            ran_text = f"{Style.BRIGHT}Ran {run} {s_test}{Style.NORMAL}"
-            full_time_str = result._format_duration(full_time)
-            self.stream.writeln(
-                f"{ran_text} in {Fore.MAGENTA}{full_time_str}{Fore.RESET}")
-            self.stream.writeln()
-            expectedFails = len(result.expectedFailures)
-            unexpectedSuccesses = len(result.unexpectedSuccesses)
-            skipped = len(result.skipped)
-
-            infos = []
-            if not result.wasSuccessful():
-                self.stream.writeln(f"{Fore.RED}FAILED{Fore.RESET}")
-                failed, errors = map(len, (result.failures, result.errors))
-                if failed:
-                    infos.append(f"{Fore.YELLOW}Failures={failed}{Fore.RESET}")
-                if errors:
-                    infos.append(f"{Fore.RED}Errors={errors}{Fore.RESET}")
-            else:
-                self.stream.writeln(f"{Fore.GREEN}OK{Fore.RESET}")
-
-            if skipped:
-                infos.append(f"{Fore.CYAN}Skipped={skipped}{Fore.RESET}")
-            if expectedFails:
-                e_fail = "Expected Failures="
-                infos.append(
-                    f"{Fore.YELLOW}{e_fail}{expectedFails}{Fore.RESET}")
-            if unexpectedSuccesses:
-                u_suc = "Unexpected Successes="
-                infos.append(
-                    f"{Fore.GREEN}{u_suc}{unexpectedSuccesses}{Fore.RESET}")
-            if infos:
-                self.stream.writeln(" ({})".format(", ".join(infos)))
-            else:
-                self.stream.writeln("\n")
-
-            self.stream.writeln()
-            self.stream.writeln(f"Generating HTML reports...{Style.DIM}")
-            result.generate_reports(self)
-            self.stream.writeln(f"{Style.RESET_ALL}")
-            if self.open_in_browser:
-                import webbrowser
-                for report in result.report_files:
-                    webbrowser.open_new_tab('file://' + report)
-        finally:
-            pass
+        result = self._make_result()
+        result.failfast = self.failfast
+        self.stream.writeln("\nRunning tests... ")
+        self.stream.writeln(result.separator2)
+        self.run_suites(result)
+        result.printErrors()
+        self.stream.writeln(result.separator2)
+        result.printTotal()
+        self.stream.writeln()
+        result.printInfos()
+        self.stream.writeln(f"Generating HTML reports...{Style.DIM}")
+        result.generate_reports(self)
+        self.stream.writeln(f"{Style.RESET_ALL}")
+        if self.open_in_browser:
+            import webbrowser
+            for report in result.report_files:
+                webbrowser.open_new_tab('file://' + report)
         return result

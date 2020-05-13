@@ -82,3 +82,47 @@ class HtmlTestCaseResult(HtmlTestResult):
                 f"{error_name}: {str(test_info.err[1])}{Fore.RESET}")
             self.stream.writeln(self.separator2)
             self.stream.writeln(f"{Style.DIM}{traceback}{Style.NORMAL}")
+
+    def printTotal(self):
+        full_time = 0
+        for t_result in self.successes + self.failures + (
+                self.errors + self.skipped):
+            full_time += t_result.elapsed_time
+        run = self.testsRun
+        s_test = "test"
+        if run > 1:
+            s_test += "s"
+        ran_text = f"{Style.BRIGHT}Ran {run} {s_test}{Style.NORMAL}"
+        full_time_str = self._format_duration(full_time)
+        self.stream.writeln(
+            f"{ran_text} in {Fore.MAGENTA}{full_time_str}{Fore.RESET}")
+
+    def printInfos(self):
+        """Print infos at the end of all tests."""
+        expectedFails = len(self.expectedFailures)
+        unexpectedSuccesses = len(self.unexpectedSuccesses)
+        skipped = len(self.skipped)
+        infos = []
+        if not self.wasSuccessful():
+            self.stream.writeln(f"{Fore.RED}FAILED{Fore.RESET}")
+            failed, errors = map(len, (self.failures, self.errors))
+            if failed:
+                infos.append(f"{Fore.YELLOW}Failures={failed}{Fore.RESET}")
+            if errors:
+                infos.append(f"{Fore.RED}Errors={errors}{Fore.RESET}")
+        else:
+            self.stream.writeln(f"{Fore.GREEN}OK{Fore.RESET}")
+        if skipped:
+            infos.append(f"{Fore.CYAN}Skipped={skipped}{Fore.RESET}")
+        if expectedFails:
+            e_fail = "Expected Failures="
+            infos.append(
+                f"{Fore.YELLOW}{e_fail}{expectedFails}{Fore.RESET}")
+        if unexpectedSuccesses:
+            u_suc = "Unexpected Successes="
+            infos.append(
+                f"{Fore.GREEN}{u_suc}{unexpectedSuccesses}{Fore.RESET}")
+        if infos:
+            self.stream.writeln(" ({})".format(", ".join(infos)))
+        else:
+            self.stream.writeln("\n")

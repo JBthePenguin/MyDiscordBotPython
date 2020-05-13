@@ -6,7 +6,7 @@ db.json
 
 __pycache__/
 
-html_test_reports/cut_parts.html
+html_test_reports/result_*.html
 
 my_bot/*.pyc
 

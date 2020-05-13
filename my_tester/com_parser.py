@@ -47,7 +47,13 @@ class ArgumentParserTestCase(ArgumentParser):
                 'one(s) without option to run group or TestCase tests, or ',
                 'with method names in options to a TestCase arg to run',
                 'specific test methods.']))
-        self._optionals.title = 'Help'  # help msg's title for help command
+        self._optionals.title = 'Optionnal'  # help msg title for help command
+        self.add_argument(  # arg to open report diretly in browser
+            "-t", "--timestamp", action='store_true',
+            help="Add timestamp in report file name.")
+        self.add_argument(  # arg to open report diretly in browser
+            "-o", "--open", action='store_true',
+            help="Open report in browser directly after tests.")
         self.make_arg_groups()  # groups
         self.check_and_run()  # check args and run the corresponding tests
 
@@ -74,10 +80,13 @@ class ArgumentParserTestCase(ArgumentParser):
         """Check args, set a list and append to it corresponding tests cases,
         before run it."""
         all_test_cases = []
-        if len(sys.argv) == 1:  # no arg -> all tests
-            all_test_cases += self.all_tests
+        args = self.parse_args()
+        if (len(sys.argv) == 1) or (
+                (len(sys.argv) == 2) and (args.open or args.timestamp)) or (
+                    (len(sys.argv) == 3) and args.open and args.timestamp):
+            all_test_cases += self.all_tests  # no arg or open -> all tests
         else:
-            args_dict = vars(self.parse_args())
+            args_dict = vars(args)
             for group_name, test_cases in self.tests_groups:
                 if args_dict[group_name]:  # group's name arg -> group tests
                     all_test_cases += test_cases
@@ -89,4 +98,4 @@ class ArgumentParserTestCase(ArgumentParser):
                         all_test_cases.append(test_case)
                     else:  # method name(s) param -> methods's tests
                         all_test_cases.append((test_case, options))
-        TestCaseRunner(all_test_cases).run()
+        TestCaseRunner(all_test_cases, args.timestamp, args.open).run()
