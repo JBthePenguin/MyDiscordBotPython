@@ -84,8 +84,8 @@ class TestCaseRunner(HTMLTestRunner):
                 if t_result.test_name.split('.')[-1] == test_case.__name__:
                     t_case_time += t_result.elapsed_time
             self.stream.writeln(
-                f"\n {Fore.MAGENTA}{result._format_duration(t_case_time)}{Fore.RESET}")
-            self.stream.writeln(f"\n{result.separator2}")
+                f"\n {Fore.MAGENTA}{result._format_duration(t_case_time)}")
+            self.stream.writeln(f"{Fore.RESET}\n{result.separator2}")
 
     def run(self):
         """ Runs the given testcase or testsuite. """
@@ -103,9 +103,13 @@ class TestCaseRunner(HTMLTestRunner):
                     result.errors + result.skipped):
                 full_time += t_result.elapsed_time
             run = result.testsRun
-            self.stream.writeln("Ran {} test{} in {}".format(
-                run, run != 1 and "s" or "",
-                result._format_duration(full_time)))
+            s_test = "test"
+            if run > 1:
+                s_test += "s"
+            ran_text = f"{Style.BRIGHT}Ran {run} {s_test}{Style.NORMAL}"
+            full_time_str = result._format_duration(full_time)
+            self.stream.writeln(
+                f"{ran_text} in {Fore.MAGENTA}{full_time_str}{Fore.RESET}")
             self.stream.writeln()
             expectedFails = len(result.expectedFailures)
             unexpectedSuccesses = len(result.unexpectedSuccesses)
@@ -113,31 +117,34 @@ class TestCaseRunner(HTMLTestRunner):
 
             infos = []
             if not result.wasSuccessful():
-                self.stream.writeln("FAILED")
+                self.stream.writeln(f"{Fore.RED}FAILED{Fore.RESET}")
                 failed, errors = map(len, (result.failures, result.errors))
                 if failed:
-                    infos.append("Failures={0}".format(failed))
+                    infos.append(f"{Fore.YELLOW}Failures={failed}{Fore.RESET}")
                 if errors:
-                    infos.append("Errors={0}".format(errors))
+                    infos.append(f"{Fore.RED}Errors={errors}{Fore.RESET}")
             else:
-                self.stream.writeln("OK")
+                self.stream.writeln(f"{Fore.GREEN}OK{Fore.RESET}")
 
             if skipped:
-                infos.append("Skipped={}".format(skipped))
+                infos.append(f"{Fore.CYAN}Skipped={skipped}{Fore.RESET}")
             if expectedFails:
-                infos.append("Expected Failures={}".format(expectedFails))
+                e_fail = "Expected Failures="
+                infos.append(
+                    f"{Fore.YELLOW}{e_fail}{expectedFails}{Fore.RESET}")
             if unexpectedSuccesses:
-                infos.append("Unexpected Successes={}".format(unexpectedSuccesses))
-
+                u_suc = "Unexpected Successes="
+                infos.append(
+                    f"{Fore.GREEN}{u_suc}{unexpectedSuccesses}{Fore.RESET}")
             if infos:
                 self.stream.writeln(" ({})".format(", ".join(infos)))
             else:
                 self.stream.writeln("\n")
 
             self.stream.writeln()
-            self.stream.writeln('Generating HTML reports... ')
+            self.stream.writeln(f"Generating HTML reports...{Style.DIM}")
             result.generate_reports(self)
-            self.stream.writeln()
+            self.stream.writeln(f"{Style.RESET_ALL}")
             if self.open_in_browser:
                 import webbrowser
                 for report in result.report_files:

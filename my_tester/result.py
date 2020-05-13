@@ -1,5 +1,5 @@
 from HtmlTestRunner.result import HtmlTestResult
-from colorama import Fore
+from colorama import Fore, Style
 
 
 class HtmlTestCaseResult(HtmlTestResult):
@@ -35,19 +35,50 @@ class HtmlTestCaseResult(HtmlTestResult):
 
     def _prepare_callback(self, t_info, target_list, v_str, short_str):
         """Appends a 'info class' to the given target list,
-         and sets a callback method to be called by stopTest method."""
+        and sets a callback method to be called by stopTest method."""
         target_list.append(t_info)
 
         def callback():
             """ Print test method outcome to the stream and elapsed time."""
             t_info.test_finished()
-            if self.showAll:
+            if self.showAll:  # add colors
                 if v_str == "OK":
                     t_color = Fore.GREEN
+                elif v_str == "FAIL":
+                    t_color = Fore.YELLOW
+                elif v_str == "ERROR":
+                    t_color = Fore.RED
+                elif v_str == "SKIP":
+                    t_color = Fore.CYAN
                 else:
                     t_color = ''
-                self.stream.writeln(  # change original here: format duration
-                    f"{t_color}{v_str}{Fore.RESET} ... {Fore.MAGENTA}{self._format_duration(t_info.elapsed_time)}{Fore.RESET}")
+                status = f"{t_color}{v_str}{Fore.RESET}"
+                time_str = f"{self._format_duration(t_info.elapsed_time)}"
+                self.stream.writeln(
+                    f"{status} ... {Fore.MAGENTA}{time_str}{Fore.RESET}")
             elif self.dots:
                 self.stream.write(short_str)
         self.callback = callback
+
+    def printErrorList(self, flavour, errors):
+        for test_info in errors:
+            if flavour == "ERROR":
+                t_color = Fore.RED
+            else:
+                t_color = Fore.YELLOW
+            self.stream.writeln(self.separator1)
+            c_flavour = f"{t_color}{flavour}"
+            test_name = f"{test_info.test_id}".split('.')[-2:]
+            test_str = f"{Style.BRIGHT}{test_name[0]}{Style.NORMAL}"
+            test_str += f".{test_name[1]}"
+            time_str = f"{Fore.MAGENTA}"
+            time_str += f"{self._format_duration(test_info.elapsed_time)}"
+            error_name = f"{t_color}{test_info.err[0].__name__}"
+            traceback = test_info.get_error_info()
+            self.stream.writeln(
+                f"{c_flavour} {time_str}{Fore.RESET}: {test_str}")
+            self.stream.writeln(self.separator2)
+            self.stream.writeln(
+                f"{error_name}: {str(test_info.err[1])}{Fore.RESET}")
+            self.stream.writeln(self.separator2)
+            self.stream.writeln(f"{Style.DIM}{traceback}{Style.NORMAL}")
