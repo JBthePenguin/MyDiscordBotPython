@@ -1,56 +1,10 @@
 import os
 from unittest import TestLoader, TestSuite
 from HtmlTestRunner import HTMLTestRunner
-from HtmlTestRunner.result import HtmlTestResult
 from datetime import datetime
 from fnmatch import fnmatchcase
-
-
-class HtmlTestCaseResult(HtmlTestResult):
-    """Override HtmlTestResult to change desription and format duration,
-    and get a non alphabetical order for test methods."""
-
-    def getDescription(self, test):
-        """Return the test description with the test method name."""
-        return test._testMethodName
-
-    def _get_info_by_testcase(self):
-        """Organize test results by TestCase module,
-        without alphabetical order for metohds."""
-        tests_by_testcase = {}
-        for tests in (
-                self.successes, self.failures, self.errors, self.skipped):
-            for test_info in tests:
-                testcase_name = ".".join(test_info.test_id.split(".")[:-1])
-                if testcase_name not in tests_by_testcase:
-                    tests_by_testcase[testcase_name] = []
-                tests_by_testcase[testcase_name].append(test_info)
-        return tests_by_testcase
-
-    @staticmethod
-    def _format_duration(elapsed_time):
-        """Format the elapsed time in seconds,
-        or milliseconds if the duration is less than 1 second."""
-        if elapsed_time >= 1:
-            duration = f"{str(round(elapsed_time, 3))} s"
-        else:
-            duration = f"{str(round(elapsed_time * 1000, 2))} ms"
-        return duration
-
-    def _prepare_callback(self, t_info, target_list, v_str, short_str):
-        """Appends a 'info class' to the given target list,
-         and sets a callback method to be called by stopTest method."""
-        target_list.append(t_info)
-
-        def callback():
-            """ Print test method outcome to the stream and elapsed time."""
-            t_info.test_finished()
-            if self.showAll:
-                self.stream.writeln(  # change original here: format duration
-                    f"{v_str} ({self._format_duration(t_info.elapsed_time)})")
-            elif self.dots:
-                self.stream.write(short_str)
-        self.callback = callback
+from colorama import Fore, Style
+from .result import HtmlTestCaseResult
 
 
 class MyTestLoader(TestLoader):
@@ -109,11 +63,29 @@ class TestCaseRunner(HTMLTestRunner):
         else:  # suite with TestCase
             suite = MyTestLoader().loadTestsFromTestCase(test_case)
         if suite._tests:
-            self.suites.append((test_case.__name__, suite))  # update suites
+            self.suites.append((test_case, suite))  # update suites
             tests_docs = {}  # corresponding docs
             for test in suite._tests:
                 tests_docs[test._testMethodName] = test._testMethodDoc
             self.tests_docs[test_case.__name__] = tests_docs  # update docs
+
+    def run_suites(self, result):
+        """Run all TestCases suites and display result in console."""
+        self.start_time = datetime.now()
+        for test_case, suite in self.suites:
+            self.stream.writeln(  # test case title
+                f"\n {Style.BRIGHT}--- {test_case.__name__} ---")
+            self.stream.writeln(
+                f" {Style.DIM}{test_case.__module__}.py{Style.NORMAL}\n")
+            suite(result)  # run tests
+            t_case_time = 0  # calculate  and display time for TestCase
+            for t_result in result.successes + result.failures + (
+                    result.errors + result.skipped):
+                if t_result.test_name.split('.')[-1] == test_case.__name__:
+                    t_case_time += t_result.elapsed_time
+            self.stream.writeln(
+                f"\n {Fore.MAGENTA}{result._format_duration(t_case_time)}{Fore.RESET}")
+            self.stream.writeln(f"\n{result.separator2}")
 
     def run(self):
         """ Runs the given testcase or testsuite. """
@@ -123,19 +95,7 @@ class TestCaseRunner(HTMLTestRunner):
             self.stream.writeln()
             self.stream.writeln("Running tests... ")
             self.stream.writeln(result.separator2)
-            self.start_time = datetime.now()
-            for test_case_name, suite in self.suites:
-                self.stream.writeln(f"\n{test_case_name}\n")
-                suite(result)
-                t_case_time = 0
-                for t_result in result.successes + result.failures + (
-                        result.errors + result.skipped):
-                    if t_result.test_name.split('.')[-1] == test_case_name:
-                        t_case_time += t_result.elapsed_time
-                # self.stream.writeln("\n")
-                self.stream.writeln(
-                    f"\n({result._format_duration(t_case_time)})")
-                self.stream.writeln(f"\n{result.separator2}")
+            self.run_suites(result)
             result.printErrors()
             self.stream.writeln(result.separator2)
             full_time = 0
